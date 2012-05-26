@@ -62,21 +62,17 @@ var init = exports.init = function (config) {
   
   app.get('/osmbbox', function(req,res) {
     var bbox = req.query["bbox"];
-    var osmurl = 'http://www.openstreetmap.org/api/0.6/map?bbox=' + bbox;
+    var osmurl = 'http://poidough.herokuapp.com/osmbbox/' + bbox;
     var requestOptions = {
       'uri': osmurl,
       'User-Agent': 'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.0)'
     };
     request(requestOptions, function (err, response, body) {
+      //res.send(body);
       res.send(body);
     });
 /*
-	gotdata = res.body.split("\n")
-	index = 0
-	readex = 0
-	isfirst = 1
-	nodes = {} # used to match nodes with ways
-	printout = 'processOSM(['
+
 	while readex < gotdata.length
 		line = gotdata[readex]
 		if (line.index('<node') != nil) and (line.index('/>') == nil)
