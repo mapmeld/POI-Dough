@@ -2,6 +2,7 @@ head
   meta(charset='utf-8')
   script(src='/scripts/leaflet.js', type='text/javascript')
   script(src='https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js', type='text/javascript')
+  script(src='/scripts/turn.min.js', type='text/javascript')
   script(src='/scripts/myeditor.js', type='text/javascript')
   link(rel='stylesheet', href='/stylesheets/bootswatch.min.css', type='text/css')
   link(rel='stylesheet', href='/stylesheets/leaflet.css', type='text/css')
@@ -27,6 +28,6 @@ body(onload='init()')
         form.navbar-search.pull-right
           input.search-query(type='text', placeholder='Find Maps')
 
-  div.container
+  div.container.book
     .span12
       #map
