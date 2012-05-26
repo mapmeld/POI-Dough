@@ -1,26 +1,18 @@
-div.navbar
-  .navbar-inner
-    .container
-      a.brand(href='#')
-        span POI Mark II
-      form.navbar-search.pull-right
-        input.search-query(type='text', placeholder='Find Maps')
+head
+  meta(charset='utf-8')
+  script(src='/scripts/leaflet.js', type='text/javascript')
+  script(src='/scripts/myeditor.js', type='text/javascript')
+  link(rel='stylesheet', href='/stylesheets/bootswatch.min.css', type='text/css')
+  link(rel='stylesheet', href='/stylesheets/leaflet.css', type='text/css')
+  title POI Mark II: Home
+body(onload='init()')
+  div.navbar
+    .navbar-inner
+      .container
+        a.brand(href='#')
+          span POI Mark II
+        form.navbar-search.pull-right
+          input.search-query(type='text', placeholder='Find Maps')
 
-div.container
-  .hero-unit
-    h1 It's Maptastic!
-    p #{poimap.body}
-
-  .row
-    .span12
-      h2 Highlight Buildings
-      img(src='http://i.imgur.com/Bb9Ed.png')
-
-  .row
-    .span12
-      h2 Create Textures
-      img(src='http://i.imgur.com/voVdd.png')
-    
-  .row
-    .span12
-      h2 Import Data
+  div.container
+    #map(style='width:500px;height:500px')
