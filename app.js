@@ -203,7 +203,7 @@ var init = exports.init = function (config) {
             attrs[ attarray[a][0] ] = attarray[a][1];
           }
           if(elem == "node"){
-            latlngs[ attrs["id"] ] = [ attrs["lat"], attrs["lon"] ]);
+            latlngs[ attrs["id"] ] = [ attrs["lat"], attrs["lon"] ];
             lastObject = "node";
           }
           else if(elem == "way"){
