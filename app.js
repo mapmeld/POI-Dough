@@ -60,6 +60,16 @@ var init = exports.init = function (config) {
     });
   });
   
+  app.get('/openmap', function(req, res) {
+    if(req.query["id"]){
+      poimap.POIMap.findById(req.query["id"], function(err, myViewMap){
+        if(!err){
+          res.render('poieditor', { poimap: myViewMap });          
+        }
+      });
+    }  
+  });
+  
   app.get('/savemap', function(req,res) {
     if(req.query["id"]){
       poimap.POIMap.findById(req.query["id"], function(err, myEditMap){
