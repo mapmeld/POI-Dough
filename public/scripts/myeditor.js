@@ -17,8 +17,8 @@ function init(){
   menuPopup = new L.Popup();
 
   miniIcon = L.Icon.extend({
-    iconUrl: "../images/marker.png",
-    shadowUrl: "../images/marker-shadow.png",
+    iconUrl: "/images/marker.png",
+    shadowUrl: "/images/marker-shadow.png",
     iconSize: new L.Point(20, 36),
     shadowSize: new L.Point(25, 30),
     iconAnchor: new L.Point(10, 18),
@@ -26,8 +26,8 @@ function init(){
   });
 
   baseIcon = L.Icon.extend({
-    iconUrl: "../images/marker.png",
-    shadowUrl: "../images/marker-shadow.png",
+    iconUrl: "/images/marker.png",
+    shadowUrl: "/images/marker-shadow.png",
     iconSize: new L.Point(30, 36),
     shadowSize: new L.Point(42, 30),
     iconAnchor: new L.Point(15, 18),
@@ -609,7 +609,7 @@ function processOSM(data){
     }
     else{
       // show this node as a marker
-      var marker = new L.Marker( new L.LatLng( data[i].lat, data[i].lon ), { icon: new baseIcon('../images/marker.png') } );
+      var marker = new L.Marker( new L.LatLng( data[i].lat, data[i].lon ) );
       map.addLayer(marker);
       marker.bindPopup( '<h3>' + (data[i].name || data[i].designation || data[i].wayid || data[i].wayid) + '</h3>' + tableOfData(data[i]))
       bounce_on_hover(marker, null);
