@@ -50,15 +50,12 @@ var init = exports.init = function (config) {
   });
   
   // POI Dough Mark 2
-  app.get('/', function(req,res) {
-    res.render('poihome', { title: "My Title", app_name: "Test App", comments: [ ] });
-  });
-  
   app.get('/editor', function(req,res) {
     res.render('poieditor', { poimap: poimap.POIMap.findOne() });
   });
   
   app.get('/rand', function(req,res) {
+    try{
     var randmap = new poimap.POIMap();
     randmap.body = "sample";
     randmap.date = new Date();
@@ -70,6 +67,15 @@ var init = exports.init = function (config) {
         console.log('Fail! ' + err);
       }
     });
+    }
+    catch(e){
+    	return "Error " + e;
+    }
+    
+  });
+
+  app.get('/', function(req,res) {
+    res.render('poihome', { title: "My Title", app_name: "Test App", comments: [ ] });
   });
   
   // Poang Routes
