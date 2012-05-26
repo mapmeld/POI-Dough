@@ -4,6 +4,11 @@ head
   script(src='/scripts/myeditor.js', type='text/javascript')
   link(rel='stylesheet', href='/stylesheets/bootswatch.min.css', type='text/css')
   link(rel='stylesheet', href='/stylesheets/leaflet.css', type='text/css')
+  style(type='text/css')
+    html, body, .container, #map{
+      height: 100%;
+      width: 100%;
+    }
   title POI Mark II: Home
 body(onload='init()')
   div.navbar
