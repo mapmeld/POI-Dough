@@ -52,7 +52,6 @@ var init = exports.init = function (config) {
   
   // POI Dough Mark 2
   app.get('/editor', function(req,res) {
-	res.contentType(app.defs.CONTENTTYPE_HTML);
     var findEditMap = poimap.POIMap.findOne({}, function(err, myEditMap){
       if(!err){
         res.render('poieditor', { poimap: myEditMap });
@@ -61,7 +60,6 @@ var init = exports.init = function (config) {
   });
   
   app.get('/osmbbox', function(req,res) {
-	res.contentType(app.defs.CONTENTTYPE_JSON);
     var bbox = req.query["bbox"];
     var osmurl = 'http://www.openstreetmap.org/api/0.6/map?bbox=' + bbox;
     scraper({
