@@ -53,11 +53,50 @@ var init = exports.init = function (config) {
   
   // POI Dough Mark 2
   app.get('/editor', function(req,res) {
-    var findEditMap = poimap.POIMap.findOne({}, function(err, myEditMap){
+    poimap.POIMap.findOne({}, function(err, myEditMap){
       if(!err){
         res.render('poieditor', { poimap: myEditMap });
       }
     });
+  });
+  
+  app.get('/savemap', function(req,res) {
+    if(req.query["id"] != ""){
+      poimap.POIMap.findById(params["id"], function(err, myEditMap){
+        if(!err){
+          res.render('poieditor', { poimap: myEditMap });
+          myEditMap.updated = new Date();
+          myEditMap.save(function (err) {
+            if (!err){
+              console.log('Success!');
+            }
+            else{
+              console.log('Fail! ' + err);
+            }
+          });
+        }
+      });
+    }
+    else{
+      myNewMap = new poimap.POIMap({
+        buildings : params["bld"].split(","),
+        parks : params["prk"].split(","),
+        basemap : "http://otile1.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png",
+        createdby : "POI Dough Test",
+        attribution : "Data &copy; 2012 OpenStreetMap, Tiles by MapQuest",
+        updated : new Date()
+      })
+      myNewMap.save(function (err) {
+        if (!err){
+          console.log('Success!');
+          res.redirect('/openmap/' + saved.ObjectId);
+        }
+        else{
+          console.log('Fail! ' + err);
+          res.send('Did not save');
+        }
+      });
+    }
   });
   
   app.get('/osmbbox', function(req,res) {

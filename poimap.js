@@ -1,10 +1,13 @@
 var mongoose = require('mongoose'),
-    mongoose_auth = require('mongoose-auth'),
-    Schema = mongoose.Schema;
+  mongoose_auth = require('mongoose-auth'),
+  Schema = mongoose.Schema;
 
 var POIMapSchema = new Schema({
-    body      : String,
-    date      : Date
+  buildings: Array,
+  parks: Array,
+  basemap: String,
+  createdby: String,
+  updated: Date
 });
 
 var POIMap = mongoose.model('POIMap', POIMapSchema);
