@@ -23,6 +23,9 @@ head
       position:fixed;
       left:0px;
     }
+    #parkCanvas{
+      display:none;
+    }
   title POI Mark II: Home
 body(onload='init()')
   div.navbar
@@ -39,3 +42,5 @@ body(onload='init()')
         Import OSM
     .span12
       #map
+
+  canvas#parkCanvas(width="300", height="300")
