@@ -191,7 +191,8 @@ var init = exports.init = function (config) {
         "sections": [{
           "vertices": [
           
-          ]
+          ],
+          "levels": 1
         }]
       };
       var latlngs = { };
