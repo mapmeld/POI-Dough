@@ -22,6 +22,27 @@ head
         script(type="text/javascript", src="http://poidough.herokuapp.com/textures/#{parkid}")
 
   style(type="text/css")
+  style(type='text/css')
+    html, body{
+      height: 100%;
+      width: 100%;
+    }
+    .container, .container .span12{
+      height: 100%;
+    }
+    #map{
+      width: 100%;
+      height: 90%;
+    }
+    .sidebar{
+      padding:10px;
+      border-right: 1px solid #000;
+      position:fixed;
+      left:0px;
+    }
+    #parkCanvas{
+      display:none;
+    }
     /* supports icon animation */
     .leaflet-marker-icon{
       border: 1px solid transparent;
