@@ -62,7 +62,7 @@ var init = exports.init = function (config) {
   
   app.get('/savemap', function(req,res) {
     if(req.query["id"] != ""){
-      poimap.POIMap.findById(params["id"], function(err, myEditMap){
+      poimap.POIMap.findById(req.query["id"], function(err, myEditMap){
         if(!err){
           res.render('poieditor', { poimap: myEditMap });
           myEditMap.updated = new Date();
@@ -79,8 +79,8 @@ var init = exports.init = function (config) {
     }
     else{
       myNewMap = new poimap.POIMap({
-        buildings : params["bld"].split(","),
-        parks : params["prk"].split(","),
+        buildings : req.query["bld"].split(","),
+        parks : req.query["prk"].split(","),
         basemap : "http://otile1.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png",
         createdby : "POI Dough Test",
         attribution : "Data &copy; 2012 OpenStreetMap, Tiles by MapQuest",
