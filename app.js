@@ -142,11 +142,11 @@ var init = exports.init = function (config) {
               if(lastObject.user.indexOf("-pt") > -1){
                 lastObject.user = lastObject.user.replace("-pt","");
               }
-              lastObject.keys.push({ key: [attrs.k, attrs.v] });
+              lastObject.keys.push({ attrs["k"]: attrs["v"] });
             }
             else if(lastObject.wayid){
               // it's a way!
-              lastObject.keys.push({ key: [attrs.k, attrs.v] });
+              lastObject.keys.push({ key: attrs["k"]: attrs["v"] });
             }
           }
           else if((elem == "nd") && ( lastObject ) && ( lastObject.wayid )){
