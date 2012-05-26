@@ -603,7 +603,7 @@ function processOSM(data){
       wll[j] = new L.LatLng(wll[j][0], wll[j][1]);
     }
     var activePoly = new L.Polygon( wll, { color: "#00f", fillOpacity: 0.3, opacity: 0.65 } );
-    promoted[ data.ways[i].wayid ] = { poly: activePoly, osmdata: data.ways[i].keys, effect: "none" };
+    promoted[ data.ways[i].wayid ] = { poly: activePoly, osmdata: data.ways[i], effect: "none" };
 
     // test editing
     activePoly.editing.enable();
@@ -651,7 +651,7 @@ function setEffect(wayid, settype){
       buildings.push({
         wayid: wayid,
     	sections: [{
-    		vertices: promoted[wayid].osmdata.line.slice(0),
+    		vertices: promoted[wayid].line.slice(0),
     		levels: 1
     	}],
     	color: "#ff0000",
@@ -686,7 +686,7 @@ function setEffect(wayid, settype){
     if(!promoted[wayid].tiled || promoted[wayid].tiled != settype.replace("2D","")){
       parks.push({
         wayid: wayid,
-	    vertices: promoted[wayid].osmdata.line.slice(0),
+	    vertices: promoted[wayid].line.slice(0),
 	    effect: "park",
 	    texture: settype.replace("2D","")
       });

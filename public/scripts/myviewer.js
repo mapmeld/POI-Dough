@@ -7,7 +7,7 @@ var pix_x_offset, pix_y_offset;
 
 $(document).ready(function(){
   for(var b=0;b<buildids.length;b++){
-    $.getJSON("/isomerics?wayid=" + buildids[b], function(data){
+    $.getJSON("/isometrics?wayid=" + buildids[b], function(data){
       buildings.push(data);
       prepBuilding(buildings.length-1);
       writeBuilding(buildings.length-1);
