@@ -10,6 +10,7 @@ var auth = require('./auth')
     , mongoStore = require('connect-mongo')(express)
     , routes = require('./routes')
     , middleware = require('./middleware')
+    , poimap = require('./poimap')
     ;
 
 var HOUR_IN_MILLISECONDS = 3600000;
@@ -51,6 +52,24 @@ var init = exports.init = function (config) {
   // POI Dough Mark 2
   app.get('/', function(req,res) {
     res.render('poihome', { title: "My Title", app_name: "Test App", comments: [ ] });
+  });
+  
+  app.get('/editor', function(req,res) {
+    res.render('poieditor', { poimap: poimap.POIMap.findOne() });
+  });
+  
+  app.get('/rand', function(req,res) {
+    var randmap = new poimap.POIMap();
+    randmap.body = "sample";
+    randmap.date = new Date();
+    randmap.save(function (err) {
+      if (!err){
+        console.log('Success!');
+      }
+      else{
+        console.log('Fail! ' + err);
+      }
+    });
   });
   
   // Poang Routes

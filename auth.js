@@ -6,8 +6,8 @@ var mongoose = require('mongoose')
 
 
 var CommentSchema = new Schema({
-    body      : String
-  , date      : Date
+    body      : String,
+    date      : Date
 });
 
 var Comment = mongoose.model('Comment', CommentSchema);
