@@ -10,8 +10,9 @@ var auth = require('./auth')
     , mongoStore = require('connect-mongo')(express)
     , routes = require('./routes')
     , middleware = require('./middleware')
+
     , poimap = require('./poimap')
-    , scraper = require('./scraper');
+    , request = require('request');
     ;
 
 var HOUR_IN_MILLISECONDS = 3600000;
@@ -62,22 +63,12 @@ var init = exports.init = function (config) {
   app.get('/osmbbox', function(req,res) {
     var bbox = req.query["bbox"];
     var osmurl = 'http://www.openstreetmap.org/api/0.6/map?bbox=' + bbox;
-    scraper({
-      uri: osmurl,
-      headers: {
-        'User-Agent': 'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.0)'
-      }
-    }, function(err, $){
-      if(err){
-        res.send({ error: "problem" });
-      }
-      else{
-        var nodes = [ ];
-        $.each($('node'), function(node){
-          nodes.push( "rofl" );
-        });
-        res.send({ success: nodes });
-      }
+    var requestOptions = {
+      'uri': osmurl,
+      'User-Agent': 'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.0)'
+    };
+    request(requestOptions, function (err, response, body) {
+      res.send(body);
     });
 /*
 	gotdata = res.body.split("\n")
