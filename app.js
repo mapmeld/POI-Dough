@@ -51,7 +51,11 @@ var init = exports.init = function (config) {
   
   // POI Dough Mark 2
   app.get('/editor', function(req,res) {
-    res.render('poieditor', { poimap: poimap.POIMap.findOne() });
+    var findEditMap = poimap.POIMap.findOne({}, function(err, myEditMap){
+      if(!err){
+        res.render('poieditor', { poimap: myEditMap });
+      }
+    });
   });
   
   app.get('/rand', function(req,res) {
