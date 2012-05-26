@@ -11,12 +11,14 @@ head
     var parks = [ ];
     var tileURL = "#{poimap.basemap}";
     var attribution = "#{poimap.attribution}";
-  ```jade
-  each buildingid in poimap.buildings
-    script(type="text/javascript", src="/isometrics/#{buildingid}")
-  each parkid in poimap.parks
-    script(type="text/javascript", src="/textures/#{parkid}")
-  ```
+
+  if poimap.buildings.length > 0
+    each buildingid in poimap.buildings
+      script(type="text/javascript", src="/isometrics/#{buildingid}")
+  if poimap.parks.length > 0
+    each parkid in poimap.parks
+      script(type="text/javascript", src="/textures/#{parkid}")
+
   style(type="text/css")
     /* supports icon animation */
     .leaflet-marker-icon{
