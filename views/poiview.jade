@@ -14,10 +14,10 @@ head
 
   if poimap.buildings.length > 0
     each buildingid in poimap.buildings
-      script(type="text/javascript", src="/isometrics/#{buildingid}")
+      script(type="text/javascript", src="http://poidough.herokuapp.com/isometrics/#{buildingid}")
   if poimap.parks.length > 0
     each parkid in poimap.parks
-      script(type="text/javascript", src="/textures/#{parkid}")
+      script(type="text/javascript", src="http://poidough.herokuapp.com/textures/#{parkid}")
 
   style(type="text/css")
     /* supports icon animation */
