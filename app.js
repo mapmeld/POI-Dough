@@ -56,17 +56,18 @@ var init = exports.init = function (config) {
   
   app.get('/rand', function(req,res) {
     try{
-    var randmap = new poimap.POIMap();
-    randmap.body = "sample";
-    randmap.date = new Date();
-    randmap.save(function (err) {
-      if (!err){
-        console.log('Success!');
-      }
-      else{
-        console.log('Fail! ' + err);
-      }
-    });
+      var randmap = new poimap.POIMap();
+      randmap.body = "sample";
+      randmap.date = new Date();
+      randmap.save(function (err) {
+        if (!err){
+          console.log('Success!');
+        }
+        else{
+          console.log('Fail! ' + err);
+        }
+      });
+      res.render('poieditor', { poimap: randmap });
     }
     catch(e){
     	return "Error " + e;
