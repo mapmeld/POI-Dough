@@ -59,7 +59,7 @@ function init(){
   watermelon = new Image();
   watermelon.src = "/watermelon.png";
   
-  $('.book').turn();
+  //$('.book').turn();
 }
 
 function prepBuilding(b){
