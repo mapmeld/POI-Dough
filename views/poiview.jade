@@ -14,7 +14,7 @@ head
   ```jade
   each buildingid in poimap.buildings
     script(type="text/javascript", src="/isometrics/#{buildingid}")
-  each parkid
+  each parkid in poimap.parks
     script(type="text/javascript", src="/textures/#{parkid}")
   ```
   style(type="text/css")
