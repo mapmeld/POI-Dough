@@ -12,7 +12,7 @@
     , "connect-mongo": ">=0.1.9"
     , "connect": ">= 1.8.5 < 2"
     , "request": ">=0.10.0"
-    , "jsdom": ">=0.1.20"
+    , "node-xml": ">=1.0.1"
   },  
   "engines": {
         "node": ">= 0.6.14",

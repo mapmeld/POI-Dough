@@ -12,7 +12,8 @@ var auth = require('./auth')
     , middleware = require('./middleware')
 
     , poimap = require('./poimap')
-    , request = require('request');
+    , request = require('request')
+    , xml = require('node-xml')
     ;
 
 var HOUR_IN_MILLISECONDS = 3600000;
@@ -109,15 +110,49 @@ var init = exports.init = function (config) {
     }
   });
   
+  var standardParser = function(cb) {
+    cb.onStartDocument(function() {
+    });
+    cb.onEndDocument(function() {
+    });
+    cb.onStartElementNS(function(elem, attrs, prefix, uri, namespaces) {
+      util.log("=> Started: " + elem + " uri="+uri +" (Attributes: " + JSON.stringify(attrs) + " )");
+    });
+    cb.onEndElementNS(function(elem, prefix, uri) {
+      util.log("<= End: " + elem + " uri="+uri + "\n");
+      parser.pause();// pause the parser
+      setTimeout(function (){parser.resume();}, 200); //resume the parser
+    });
+    cb.onCharacters(function(chars) {
+      //util.log('<CHARS>'+chars+"</CHARS>");
+    });
+    cb.onCdata(function(cdata) {
+      util.log('<CDATA>'+cdata+"</CDATA>");
+    });
+    cb.onComment(function(msg) {
+      util.log('<COMMENT>'+msg+"</COMMENT>");
+    });
+    cb.onWarning(function(msg) {
+      util.log('<WARNING>'+msg+"</WARNING>");
+    });
+    cb.onError(function(msg) {
+      util.log('<ERROR>'+JSON.stringify(msg)+"</ERROR>");
+    });
+  };
+  
   app.get('/osmbbox', function(req,res) {
     var bbox = req.query["bbox"];
-    var osmurl = 'http://poidough.herokuapp.com/osmbbox/' + bbox;
+    //var osmurl = 'http://poidough.herokuapp.com/osmbbox/' + bbox;
+    var osmurl = 'http://api.openstreetmap.org/api/0.6/map?bbox=' + bbox;
     var requestOptions = {
       'uri': osmurl,
       'User-Agent': 'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.0)'
     };
     request(requestOptions, function (err, response, body) {
       //res.send(body);
+      var parser = new xml.SaxParser(standardParser);
+      var bbox = parser.parseString(body);
+      
       res.send(body);
     });
 /*
