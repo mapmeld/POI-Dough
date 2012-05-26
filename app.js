@@ -177,7 +177,6 @@ var init = exports.init = function (config) {
     var wayid = req.query["wayid"]
 
     // generate from API: http://www.openstreetmap.org/api/0.6/way/[WAYID]/full
-    // OSM takes awhile to do this, so you should probably have this done with a real server
     var osmurl = 'http://www.openstreetmap.org/api/0.6/way/' + wayid + '/full'
 
     var requestOptions = {
@@ -189,9 +188,7 @@ var init = exports.init = function (config) {
       var isometric = {
         "wayid": wayid,
         "sections": [{
-          "vertices": [
-          
-          ],
+          "vertices": [ ],
           "levels": 1
         }]
       };
@@ -227,61 +224,54 @@ var init = exports.init = function (config) {
     });
   });
 
-/*
-get '/textures/:wayid' do
+  app.get('/textures', function(req,res){
   
-	wayid = params[:wayid]
+	var wayid = req.query["wayid"];
 
-	if wayid != ''
-    	# generate from API: http://www.openstreetmap.org/api/0.6/way/[WAYID]/full
-    	# OSM takes awhile to do this, so you should probably have this done with a real server
-    	url = 'http://www.openstreetmap.org/api/0.6/way/' + wayid + '/full'
-    	url = URI.parse(url)
-    	res = Net::HTTP.start(url.host, url.port) {|http|
-    	  http.get('/api/0.6/way/' + wayid + '/full')
-    	}
-    	
-		gotdata = res.body.split("\n")
-		
-		firstpt = ''
-		levels = '1'
-		name = 'OSM Way'
-      
-		# opening for this building format
-		printout = "parks.push(
-   {
-   	  wayid: \"" + wayid + "\",
-      vertices: [\n"
+    // generate from API: http://www.openstreetmap.org/api/0.6/way/[WAYID]/full
+    var osmurl = 'http://www.openstreetmap.org/api/0.6/way/' + wayid + '/full'
 
-		gotdata.each do |line|
-			if line.index('node id=') != nil
-				mylat = line.slice( line.index('lat=')+5 .. line.length )
-				mylat = mylat.slice(0 .. mylat.index('"') - 1 )
-				mylon = line.slice( line.index('lon=')+5 .. line.length )
-				mylon = mylon.slice(0 .. mylon.index('"') - 1 )
-				if firstpt == ''
-					firstpt = '[ ' + mylat + ', ' + mylon + ' ]'
-				end
-				printout += "[ " + mylat + ", " + mylon + " ],\n"
-			elsif line.index('k="name"') != nil
-				# building name is specified!
-				name = line.slice( line.index('v=')+3 .. line.length )
-				name = name.slice( 0 .. name.index('"') - 1 )
-			elsif line.index('/way') != nil
-				# repeat first point and close
-        		printout += firstpt + "\n         ],\n"
-
-        		# report name as OSM building if not set otherwise
-        		# then close the whole object 
-        		printout += '    name: "' + name.sub('"','\\"') + '"'
-        		printout += "   }\n);\n"
-        		break
-        	end
-		end
-    	printout
-	end
-end
-*/
+    var requestOptions = {
+      'uri': osmurl,
+      'User-Agent': 'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.0)'
+    };
+    request(requestOptions, function (err, response, body) {
+      //res.send(body);
+      var park = {
+        "wayid": wayid,
+        "vertices": [ ]
+      };
+      var latlngs = { };
+      var lastObject = null;
+      var parser = new xml.SaxParser(function(alerts){
+        alerts.onStartElementNS(function(elem, attarray, prefix, uri, namespaces){
+          var attrs = { };
+          for(var a=0;a<attarray.length;a++){
+            attrs[ attarray[a][0] ] = attarray[a][1];
+          }
+          if(elem == "node"){
+            latlngs[ attrs["id"] ] = [ attrs["lat"] * 1, attrs["lon"] * 1 ];
+            lastObject = "node";
+          }
+          else if(elem == "way"){
+            lastObject = "way";
+          }
+          else if(elem == "nd"){
+            park.vertices.push( latlngs[ attrs["ref"] ] );
+          }
+          else if(elem == "tag"){
+            if(lastObject == "way" && attrs["k"] == "name"){
+              park.name = attrs["v"];
+            }
+          }
+        });
+        alerts.onEndDocument(function(){
+          res.send( park );
+        });
+      });
+      parser.parseString(body);
+    });
+  });
   
 /* Sample Document Creation Script
   app.get('/rand', function(req,res) {
