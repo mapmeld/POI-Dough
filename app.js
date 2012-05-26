@@ -69,7 +69,7 @@ var init = exports.init = function (config) {
       }
     }, function(err, $){
       if(err){
-        throw err;
+        res.send({ error: "pwoblem" });
       }
       else{
         res.send({ nodes: $('node'), ways: $('way') });
