@@ -51,13 +51,13 @@ function init(){
 	}
   );*/
   tree = new Image();
-  tree.src = "/treeblot.png";
+  tree.src = "../images/treeblot.png";
   corn = new Image();
-  corn.src = "/corn.png";
+  corn.src = "../images/corn.png";
   coffee = new Image();
-  coffee.src = "/coffee.png";
+  coffee.src = "../images/coffee.png";
   watermelon = new Image();
-  watermelon.src = "/watermelon.png";
+  watermelon.src = "../images/watermelon.png";
   
   //$('.book').turn();
 }
