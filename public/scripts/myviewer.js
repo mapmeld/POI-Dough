@@ -13,6 +13,13 @@ $(document).ready(function(){
       writeBuilding(buildings.length-1);
     });
   }
+  for(var p=0;p<parkids.length;p++){
+    $.getJSON("/textures?wayid=" + parkids[p], function(data){
+      parks.push(data);
+      prepPark(parks.length-1);
+      writePark(parks.length-1);
+    });
+  }
   init();
 });
 
@@ -42,11 +49,6 @@ function init(){
     iconAnchor: new L.Point(15, 18),
     popupAnchor: new L.Point(0, -12)
   });
-  
-  for(var p=0;p<parks.length;p++){
-    prepPark(p);
-    writePark(p);
-  }
 }
 
 tree = new Image();

@@ -22,7 +22,7 @@ head
   if poimap.parks.length > 0
     if poimap.parks[0].length > 1
       each parkid in poimap.parks
-        script(type="text/javascript", src="http://poidough.herokuapp.com/textures/#{parkid}")
+        script(type="text/javascript") parkids.push("#{parkid}");
 
   style(type="text/css")
   style(type='text/css')
