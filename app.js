@@ -120,130 +120,55 @@ var init = exports.init = function (config) {
     };
     request(requestOptions, function (err, response, body) {
       //res.send(body);
-      var parser = new xml.SaxParser(function(alerts){ });
-      var bbox = parser.parseString(body);
-      res.send(bbox);
+      var nodesandways = { nodes:[ ], ways: [ ] };
+      var lastObject = null;
+      var parser = new xml.SaxParser(function(alerts){
+        alerts.onStartElementNS(function(elem, attrs, prefix, uri, namespaces){
+          if(elem == "node"){
+            nodesandways.nodes.push( { id: attrs["id"], user: attrs["user"] + "-pt", latlng: [ attrs["lat"], attrs["lon"] ], keys: [ ] } );
+            lastObject = nodesandways.nodes[ nodesandways.nodes.length-1 ];
+          }
+          else if(elem == "way"){
+            nodesandways.ways.push( { wayid: attrs["id"], user: attrs["user"], line: [ ], keys: [ ] } );
+            lastObject = nodesandways.ways[ nodesandways.ways.length-1 ];
+          }
+          else if((elem == "tag") && ( lastObject )){
+            if(lastObject.id){
+              // it's a node, and it should be sent to the user
+              if(lastObject.user.indexOf("-pt") > -1){
+                lastObject.user = lastObject.user.replace("-pt","");
+              }
+              lastObject.keys.push({ attrs["k"] : attrs["v"] });
+            }
+            else if(lastObject.wayid){
+              // it's a way!
+              lastObject.keys.push({ attrs["k"] : attrs["v"] });
+            }
+          }
+          else if((elem == "nd") && ( lastObject ) && ( lastObject.wayid )){
+            for(var n=0;n<nodesandways.nodes.length;n++){
+              if(nodesandways.nodes[n].id == attrs["ref"]){
+                lastObject.line.push( nodesandways.nodes[n].latlng );
+                break;
+              }
+            }
+          }
+        });
+        alerts.onEndElementNS(function(elem, prefix, uri){
+          lastObject = null;
+        });
+        alerts.onEndDocument(function(){
+          for(var n=nodesandways.nodes.length-1;n>=0;n--){
+            if(nodesandways.nodes[n].user.lastIndexOf("-pt") == nodesandways.nodes[n].user.length - 3){
+              // point without its own tags
+              nodesandways.nodes[n].splice(n,1);
+            }
+          }
+          res.send( nodesandways );
+        });
+      });
+      parser.parseString(body);
     });
-/*
-
-	while readex < gotdata.length
-		line = gotdata[readex]
-		if (line.index('<node') != nil) and (line.index('/>') == nil)
-			# this node has tags! share it with all OSM services
-			myid = line.slice( line.index('id=')+4 .. line.length )
-			myid = myid.slice( 0 .. myid.index('"')-1 )
-			mylat = line.slice( line.index('lat=')+5 .. line.length )
-			mylat = mylat.slice( 0 .. mylat.index('"')-1 )
-			mylon = line.slice( line.index('lon=')+5 .. line.length )
-			mylon = mylon.slice( 0 .. mylon.index('"')-1 )
-			myusr = line.slice( line.index('user=')+6 .. line.length )
-			myusr = myusr.slice( 0 .. myusr.index('"')-1 )
-
-			nodes[myid] = [ mylat, mylon ]
-
-			# skip the preceding comma on the first node
-			if isfirst == 0
-				printout += ','
-			else
-				isfirst = 0
-			end
-			
-			# write the basic node properties
-			# possible issues with UTF-8? Try it on accented placenames
-			printout += '{id:"' + myid + '",lat:'+mylat+',lon:'+mylon+',user:"'+myusr+'"'
-			readex = readex + 1
-			line = gotdata[readex]
-			
-			# import and write additional node keys and values
-			while line.index('node>') == nil
-				myk = line.slice( line.index('k="')+3 .. line.length )
-				myk = myk.slice( 0 .. myk.index('"')-1 )
-				myv = line.slice( line.index('v="')+3 .. line.length )
-				myv = myv.slice( 0 .. myv.index('"')-1 )
-				printout += ',"' + myk + '":"' + myv + '"'
-				readex = readex + 1
-				line = gotdata[readex]
-			end
-			printout += '}'
-
-		elsif (line.index('<node') != nil) and (line.index('/>') != nil)
-			# node without special properties, likely part of a way
-			# store it in case called later
-			myid = line.slice( line.index('id=')+4 .. line.length )
-			myid = myid.slice( 0 .. myid.index('"')-1 )
-			mylat = line.slice( line.index('lat=')+5 .. line.length )
-			mylat = mylat.slice( 0 .. mylat.index('"')-1 )
-			mylon = line.slice( line.index('lon=')+5 .. line.length )
-			mylon = mylon.slice( 0 .. mylon.index('"')-1 )
-			nodes[myid] = [ mylat, mylon ]
-
-		elsif line.index('<way') != nil
-			# store basic properties of a way
-			wayid = line.slice( line.index('id=')+4 .. line.length )
-			wayid = wayid.slice( 0 .. wayid.index('"')-1 )
-			wayusr = line.slice( line.index('user=')+6 .. line.length )
-			wayusr = wayusr.slice( 0 .. wayusr.index('"')-1 )
-			wroteway = 0
-			wrotenodes = 0
-			readex = readex + 1
-			line = gotdata[readex]
-			while line.index('way>') == nil
-				# if special=lines, print all of the known nodes making up the way
-				if line.index('<nd ref="') != nil
-					myid = line.slice( line.index('ref="')+5 .. line.length )
-					myid = myid.slice( 0 .. myid.index('"')-1 )
-					if nodes.has_key?(myid)
-						if wroteway == 0
-							wroteway = 1
-							if isfirst == 0
-								printout += ','
-							else
-								isfirst = 0
-							end
-							printout += '{wayid:"' + wayid + '",user:"'+myusr+'"'
-						end
-						if wrotenodes == 0
-							printout += ',"line":['
-							printout += '[' + nodes[myid].join(',') + ']'
-							wrotenodes = 1
-						else
-							printout += ',[' + nodes[myid].join(',') + ']'
-						end
-					end
-	
-				# print keys and values for ways with this information
-				elsif line.index('k="') != nil
-					if wrotenodes == 1
-						printout += ']'
-						wrotenodes = 2
-					elsif wroteway == 0
-						wroteway = 1
-						if isfirst == 0
-							printout += ','
-						else
-							isfirst = 0
-						end
-						printout += '{wayid:"' + wayid + '",user:"'+wayusr+'"'
-					end
-					myk = line.slice( line.index('k="')+3 .. line.length )
-					myk = myk.slice( 0 .. myk.index('"')-1 )
-					myv = line.slice( line.index('v="')+3 .. line.length )
-					myv = myv.slice( 0 .. myv.index('"')-1 )
-					printout += ',"' + myk + '":"' + myv + '"'
-				end
-				readex = readex + 1
-				line = gotdata[readex]
-			end
-			if wroteway == 1
-				printout += '}'
-			end
-		end
-		readex = readex + 1
-	end
-	printout += '])'
-	printout
-*/
-
   });
   
 /* Sample Document Creation Script
