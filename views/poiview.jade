@@ -14,10 +14,10 @@ head
     var tileURL = "#{poimap.basemap}";
     var attribution = "#{poimap.attribution}";
 
-    if poimap.buildings.length > 0
-      if poimap.buildings[0].length > 1
-        each buildingid in poimap.buildings
-          buildids.push("#{buildingid}");
+  if poimap.buildings.length > 0
+    if poimap.buildings[0].length > 1
+      each buildingid in poimap.buildings
+        script(type="text/javascript") buildids.push("#{buildingid}");
 
   if poimap.parks.length > 0
     if poimap.parks[0].length > 1
