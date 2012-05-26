@@ -51,7 +51,7 @@ var init = exports.init = function (config) {
   // POI Dough Mark 2
   app.get('/', function(req,res) {
     res.render('poihome', { title: "My Title", app_name: "Test App", comments: [ ] });
-  }
+  });
   
   // Poang Routes
 
