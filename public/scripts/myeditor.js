@@ -609,7 +609,7 @@ function processOSM(data){
     }
     else{
       // show this node as a marker
-      var marker = new L.Marker( new L.LatLng( data[i].lat, data[i].lon ), { icon: baseIcon } );
+      var marker = new L.Marker( new L.LatLng( data[i].lat, data[i].lon ), { icon: new baseIcon() } );
       map.addLayer(marker);
       marker.bindPopup( '<h3>' + (data[i].name || data[i].designation || data[i].wayid || data[i].wayid) + '</h3>' + tableOfData(data[i]))
       bounce_on_hover(marker, null);
