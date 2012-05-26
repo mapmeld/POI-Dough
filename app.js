@@ -122,8 +122,7 @@ var init = exports.init = function (config) {
       //res.send(body);
       var parser = new xml.SaxParser(function(alerts){ });
       var bbox = parser.parseString(body);
-      
-      res.send(body);
+      res.send(bbox);
     });
 /*
 
