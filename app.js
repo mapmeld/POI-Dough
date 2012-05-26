@@ -123,7 +123,11 @@ var init = exports.init = function (config) {
       var nodesandways = { nodes:[ ], ways: [ ] };
       var lastObject = null;
       var parser = new xml.SaxParser(function(alerts){
-        alerts.onStartElementNS(function(elem, attrs, prefix, uri, namespaces){
+        alerts.onStartElementNS(function(elem, attarray, prefix, uri, namespaces){
+          var attrs = { };
+          for(var a=0;a<attarray.length;a++){
+            attrs[ attarray[0] ] = attarray[1];
+          }
           if(elem == "node"){
             nodesandways.nodes.push( { id: attrs["id"], user: attrs["user"] + "-pt", latlng: [ attrs["lat"], attrs["lon"] ], keys: [ ] } );
             lastObject = nodesandways.nodes[ nodesandways.nodes.length-1 ];
