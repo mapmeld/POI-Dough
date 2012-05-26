@@ -5,6 +5,17 @@ var bopon = [ ];
 var extraMapLayer;
 var pix_x_offset, pix_y_offset;
 
+$(document).ready(function(){
+  for(var b=0;b<buildids.length;b++){
+    $.getJSON("/isomerics?wayid=" + buildings[b], function(data){
+      buildings.push(data);
+      prepBuilding(buildings.length-1);
+      writeBuilding(buildings.length-1);
+    });
+  }
+  init();
+});
+
 function init(){
   var baseMapLayer = new L.TileLayer(tileURL, {maxZoom: 18, attribution: attribution});
 
@@ -35,10 +46,6 @@ function init(){
   for(var p=0;p<parks.length;p++){
     prepPark(p);
     writePark(p);
-  }
-  for(var b=0;b<buildings.length;b++){
-    prepBuilding(b);
-    writeBuilding(b);
   }
 }
 
