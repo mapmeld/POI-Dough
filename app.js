@@ -187,12 +187,12 @@ var init = exports.init = function (config) {
     request(requestOptions, function (err, response, body) {
       //res.send(body);
       var isometric = {
-        wayid: wayid,
-        sections: [
-          vertices: [
+        "wayid": wayid,
+        "sections": [{
+          "vertices": [
           
           ]
-        ]
+        }]
       };
       var latlngs = { };
       var lastObject = null;
