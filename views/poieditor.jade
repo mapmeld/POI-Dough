@@ -28,5 +28,8 @@ body(onload='init()')
           input.search-query(type='text', placeholder='Find Maps')
 
   div.container.book
+    .span1
+      a.btn.btn-info(href='#', onclick='importOSM()')
+        Import OSM
     .span12
       #map
