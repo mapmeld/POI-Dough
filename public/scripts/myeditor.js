@@ -577,7 +577,7 @@ function importOSM(){
   var ne = map.getBounds().getNorthEast();
   var sw = map.getBounds().getSouthWest();
   var s = document.createElement('script');
-  s.src = '/osmbbox/' + sw.lng + ',' +  sw.lat + ',' + ne.lng + ',' + ne.lat;
+  s.src = '/osmbbox?bbox=' + sw.lng + ',' +  sw.lat + ',' + ne.lng + ',' + ne.lat;
   s.type = "text/javascript";
   document.body.appendChild(s);
 }
