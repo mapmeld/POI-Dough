@@ -72,7 +72,7 @@ var init = exports.init = function (config) {
         throw err;
       }
       else{
-        res.send( $('way') );
+        res.send({ nodes: $('node'), ways: $('way') });
       }
     });
 /*
