@@ -126,7 +126,7 @@ var init = exports.init = function (config) {
         alerts.onStartElementNS(function(elem, attarray, prefix, uri, namespaces){
           var attrs = { };
           for(var a=0;a<attarray.length;a++){
-            attrs[ attarray[0] ] = attarray[1];
+            attrs[ attarray[a][0] ] = attarray[a][1];
           }
           if(elem == "node"){
             nodesandways.nodes.push( { id: attrs["id"], user: attrs["user"] + "-pt", latlng: [ attrs["lat"], attrs["lon"] ], keys: [ ] } );
