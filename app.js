@@ -69,10 +69,14 @@ var init = exports.init = function (config) {
       }
     }, function(err, $){
       if(err){
-        res.send({ error: "pwoblem" });
+        res.send({ error: "problem" });
       }
       else{
-        res.send({ success: "now what?" });
+        var nodes = [ ];
+        $.each($('node'), function(node){
+          nodes.push( "rofl" );
+        });
+        res.send({ success: nodes });
       }
     });
 /*
