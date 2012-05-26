@@ -576,44 +576,44 @@ function importOSM(){
   $("#importButton").addClass("disabled");
   var ne = map.getBounds().getNorthEast();
   var sw = map.getBounds().getSouthWest();
-  var s = document.createElement('script');
-  s.src = '/osmbbox?bbox=' + sw.lng + ',' +  sw.lat + ',' + ne.lng + ',' + ne.lat;
-  s.type = "text/javascript";
-  document.body.appendChild(s);
+  //var s = document.createElement('script');
+  //s.src = '/osmbbox?bbox=' + sw.lng + ',' +  sw.lat + ',' + ne.lng + ',' + ne.lat;
+  //s.type = "text/javascript";
+  //document.body.appendChild(s);
+  $.getJSON('/osmbbox?bbox=' + sw.lng + ',' +  sw.lat + ',' + ne.lng + ',' + ne.lat, processOSM);
 }
 function processOSM(data){
   $("#importButton").removeClass("disabled");
-  for(var i=0;i<data.length;i++){
-    if(data[i].line){
-      if(data[i].highway){
-      	//don't mark up roads just yet
-      	continue;
-      }
-      // add this way
-      var wll = data[i].line.slice(0);
-      for(var j=0;j<wll.length;j++){
-        wll[j] = new L.LatLng(wll[j][0], wll[j][1]);
-      }
-      var activePoly = new L.Polygon( wll, { color: "#00f", fillOpacity: 0.3, opacity: 0.65 } );
-      promoted[ data[i].wayid ] = { poly: activePoly, osmdata: data[i], effect: "none" };
-
-      // test editing
-      activePoly.editing.enable();
-      activePoly.on('edit', function() {
-        console.log(activePoly);
-      });
-
-      menu_on_click(activePoly, data[i]);
-      highlight_on_hover(activePoly);
-      map.addLayer(activePoly, data[i].wayid);
+  for(var i=0;i<data.nodes.length;i++){
+    // show this node as a marker
+    var marker = new L.Marker( new L.LatLng( data.nodes[i].latlng[0], data.nodes[i].latlng[1] ) );
+    map.addLayer(marker);
+    
+    marker.bindPopup( '<h3>' + getName(data.nodes[i]) + '</h3>' + tableOfData(data.nodes[i]) );
+    bounce_on_hover(marker, null);
+  }
+  for(var i=0;i<data.ways.length;i++){
+    if(data[i].highway){
+      //don't mark up roads just yet
+      continue;
     }
-    else{
-      // show this node as a marker
-      var marker = new L.Marker( new L.LatLng( data[i].lat, data[i].lon ) );
-      map.addLayer(marker);
-      marker.bindPopup( '<h3>' + (data[i].name || data[i].designation || data[i].wayid || data[i].wayid) + '</h3>' + tableOfData(data[i]))
-      bounce_on_hover(marker, null);
+    // add this way
+    var wll = data[i].line.slice(0);
+    for(var j=0;j<wll.length;j++){
+      wll[j] = new L.LatLng(wll[j][0], wll[j][1]);
     }
+    var activePoly = new L.Polygon( wll, { color: "#00f", fillOpacity: 0.3, opacity: 0.65 } );
+    promoted[ data[i].wayid ] = { poly: activePoly, osmdata: data[i], effect: "none" };
+
+    // test editing
+    activePoly.editing.enable();
+    activePoly.on('edit', function() {
+      //console.log(activePoly);
+    });
+
+    menu_on_click(activePoly, data[i]);
+    highlight_on_hover(activePoly);
+    map.addLayer(activePoly, data[i].wayid);
   }
 }
 function menu_on_click(p, shard){
@@ -715,9 +715,20 @@ function setEffect(wayid, settype){
   }
   promoted[wayid].effect = settype;
 }
-function tableOfData(dict){
+function getName(item){
+  var attrs = { };
+  for(var k=0;k<item.keys.length;k++){
+    attrs[ item.keys[k][0] ] = item.keys[k][1];
+  }
+  return attrs["name"] || attrs["designation"] || item.id || item.wayid;
+}
+function tableOfData(item){
   var table = "<table class='table-condensed table-striped'>";
-  for(var k in dict){
+  var attrs = { };
+  for(var k=0;k<item.keys.length;k++){
+    attrs[ item.keys[k][0] ] = item.keys[k][1];
+  }
+  for(var k in attrs){
     if(k == "id" || k == "wayid" || k == "name" || k == "lat" || k == "lon" || k == "line" || k == "user"){
       continue;
     }

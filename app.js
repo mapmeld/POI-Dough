@@ -158,9 +158,6 @@ var init = exports.init = function (config) {
             }
           }
         });
-        alerts.onEndElementNS(function(elem, prefix, uri){
-          lastObject = null;
-        });
         alerts.onEndDocument(function(){
           for(var n=nodesandways.nodes.length-1;n>=0;n--){
             if(nodesandways.nodes[n].user.lastIndexOf("-pt") == nodesandways.nodes[n].user.length - 3){
