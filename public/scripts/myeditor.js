@@ -651,7 +651,7 @@ function setEffect(wayid, settype){
       buildings.push({
         wayid: wayid,
     	sections: [{
-    		vertices: promoted[wayid].line.slice(0),
+    		vertices: promoted[wayid].osmdata.line.slice(0),
     		levels: 1
     	}],
     	color: "#ff0000",
@@ -686,7 +686,7 @@ function setEffect(wayid, settype){
     if(!promoted[wayid].tiled || promoted[wayid].tiled != settype.replace("2D","")){
       parks.push({
         wayid: wayid,
-	    vertices: promoted[wayid].line.slice(0),
+	    vertices: promoted[wayid].osmdata.line.slice(0),
 	    effect: "park",
 	    texture: settype.replace("2D","")
       });
