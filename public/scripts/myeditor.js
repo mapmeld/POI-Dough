@@ -593,17 +593,17 @@ function processOSM(data){
     bounce_on_hover(marker, null);
   }
   for(var i=0;i<data.ways.length;i++){
-    if(data[i].highway){
+    if(hasKey(data.ways[i],"highway")){
       //don't mark up roads just yet
       continue;
     }
     // add this way
-    var wll = data[i].line.slice(0);
+    var wll = data.ways[i].line.slice(0);
     for(var j=0;j<wll.length;j++){
       wll[j] = new L.LatLng(wll[j][0], wll[j][1]);
     }
     var activePoly = new L.Polygon( wll, { color: "#00f", fillOpacity: 0.3, opacity: 0.65 } );
-    promoted[ data[i].wayid ] = { poly: activePoly, osmdata: data[i], effect: "none" };
+    promoted[ data.ways[i].wayid ] = { poly: activePoly, osmdata: data.ways[i].keys, effect: "none" };
 
     // test editing
     activePoly.editing.enable();
@@ -611,9 +611,9 @@ function processOSM(data){
       //console.log(activePoly);
     });
 
-    menu_on_click(activePoly, data[i]);
+    menu_on_click(activePoly, data.ways[i]);
     highlight_on_hover(activePoly);
-    map.addLayer(activePoly, data[i].wayid);
+    map.addLayer(activePoly, data.ways[i].wayid);
   }
 }
 function menu_on_click(p, shard){
@@ -722,6 +722,14 @@ function getName(item){
   }
   return attrs["name"] || attrs["designation"] || item.id || item.wayid;
 }
+function hasKey(item, key){
+  for(var k=0;k<item.keys.length;k++){
+    if(item.keys[k].key[0] == key){
+      return true;
+    }
+  }
+  return false;
+}
 function tableOfData(item){
   var table = "<table class='table-condensed table-striped'>";
   var attrs = { };
@@ -732,7 +740,7 @@ function tableOfData(item){
     if(k == "id" || k == "wayid" || k == "name" || k == "lat" || k == "lon" || k == "line" || k == "user"){
       continue;
     }
-    table += "<tr><td>" + k + "</td><td>" + dict[k] + "</td></tr>";
+    table += "<tr><td>" + k + "</td><td>" + attrs[k] + "</td></tr>";
   }
   table += "</table>";
   return table;
