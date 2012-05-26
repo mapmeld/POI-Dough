@@ -1,0 +1,42 @@
+head
+  meta(charset='utf-8')
+  title POI Mark II: Viewer
+  link(rel="stylesheet", href="/stylesheets/leaflet.css", type="text/css")
+  link(rel="stylesheet", href="/stylesheets/bootswatch.min.css", type="text/css")
+  script(type="text/javascript", src="/scripts/leaflet.js")
+  script(type="text/javascript", src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js")
+  script(type="text/javascript", src="/scripts/myviewer.js")
+  script(type="text/javascript")
+    var buildings = [ ];
+    var parks = [ ];
+    var tileURL = "#{poimap.basemap}";
+    var attribution = "#{poimap.attribution}";
+  ```jade
+  each buildingid in poimap.buildings
+    script(type="text/javascript", src="/isometrics/#{buildingid}")
+  each parkid
+    script(type="text/javascript", src="/textures/#{parkid}")
+  ```
+  style(type="text/css")
+    /* supports icon animation */
+    .leaflet-marker-icon{
+      border: 1px solid transparent;
+      border-radius:8px;
+    }
+
+body(onload="init()")
+  div.navbar
+    .navbar-inner
+      .container
+        a.brand(href='#')
+          span POI Mark II
+        form.navbar-search.pull-right
+          input.search-query(type='text', placeholder='Find Maps')
+
+  div.container.book
+    .span2.sidebar
+      Sample Info
+    .span12
+      #map
+
+  canvas#parkCanvas(width="300", height="300")
