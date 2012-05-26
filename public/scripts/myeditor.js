@@ -718,7 +718,7 @@ function setEffect(wayid, settype){
 function getName(item){
   var attrs = { };
   for(var k=0;k<item.keys.length;k++){
-    attrs[ item.keys[k][0] ] = item.keys[k][1];
+    attrs[ item.keys[k].key[0] ] = item.keys[k].key[1];
   }
   return attrs["name"] || attrs["designation"] || item.id || item.wayid;
 }
@@ -726,7 +726,7 @@ function tableOfData(item){
   var table = "<table class='table-condensed table-striped'>";
   var attrs = { };
   for(var k=0;k<item.keys.length;k++){
-    attrs[ item.keys[k][0] ] = item.keys[k][1];
+    attrs[ item.keys[k].key[0] ] = item.keys[k].key[1];
   }
   for(var k in attrs){
     if(k == "id" || k == "wayid" || k == "name" || k == "lat" || k == "lon" || k == "line" || k == "user"){
