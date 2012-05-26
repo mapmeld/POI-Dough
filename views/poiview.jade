@@ -12,10 +12,11 @@ head
     var tileURL = "#{poimap.basemap}";
     var attribution = "#{poimap.attribution}";
 
-  if poimap.buildings.length > 0
-    if poimap.buildings[0].length > 1
-      each buildingid in poimap.buildings
-        script(type="text/javascript", src="http://poidough.herokuapp.com/isometrics/#{buildingid}")
+    if poimap.buildings.length > 0
+      if poimap.buildings[0].length > 1
+        each buildingid in poimap.buildings
+          buildings.push("#{buildingid}");
+
   if poimap.parks.length > 0
     if poimap.parks[0].length > 1
       each parkid in poimap.parks
@@ -49,7 +50,7 @@ head
       border-radius:8px;
     }
 
-body(onload="init()")
+body
   div.navbar
     .navbar-inner
       .container
