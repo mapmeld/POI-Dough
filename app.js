@@ -48,11 +48,15 @@ var init = exports.init = function (config) {
     app.use(express.errorHandler({ dumpExceptions: true, showStack: false}));
   });
   
+  // POI Dough Mark 2
+  app.get('/', function(req,res) {
+    res.render('poihome', { title: "My Title", app_name: "Test App", comments: [ ] });
+  }
   
-  // Routes
+  // Poang Routes
 
-  app.get('/', middleware.require_auth_browser, routes.index);
-  app.post('/add_comment',middleware.require_auth_browser, routes.add_comment);
+  app.get('/poang', middleware.require_auth_browser, routes.index);
+  app.post('/poang/add_comment',middleware.require_auth_browser, routes.add_comment);
   
   // redirect all non-existent URLs to doesnotexist
   app.get('*', function onNonexistentURL(req,res) {
