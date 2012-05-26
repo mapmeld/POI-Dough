@@ -16,8 +16,7 @@ head
 
   if poimap.buildings.length > 0
     if poimap.buildings[0].length > 1
-      each buildingid in poimap.buildings
-        script(type="text/javascript") buildids.push("#{buildingid}");
+      script(type="text/javascript") buildids.push("#{poimap.buildings.join('","')}");
 
   if poimap.parks.length > 0
     if poimap.parks[0].length > 1
