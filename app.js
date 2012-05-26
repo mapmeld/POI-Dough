@@ -165,7 +165,7 @@ var init = exports.init = function (config) {
           for(var n=nodesandways.nodes.length-1;n>=0;n--){
             if(nodesandways.nodes[n].user.lastIndexOf("-pt") == nodesandways.nodes[n].user.length - 3){
               // point without its own tags
-              nodesandways.nodes[n].splice(n,1);
+              nodesandways.nodes.splice(n,1);
             }
           }
           res.send( nodesandways );
