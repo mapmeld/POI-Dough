@@ -100,7 +100,7 @@ var init = exports.init = function (config) {
       myNewMap.save(function (err) {
         if (!err){
           console.log('Success!');
-          res.redirect('/openmap/' + myNewMap._id);
+          res.redirect('/openmap?id=' + myNewMap._id);
         }
         else{
           console.log('Fail! ' + err);
