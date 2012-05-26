@@ -61,7 +61,7 @@ var init = exports.init = function (config) {
   });
   
   app.get('/savemap', function(req,res) {
-    if(req.query["id"] != ""){
+    if(req.query["id"]){
       poimap.POIMap.findById(req.query["id"], function(err, myEditMap){
         if(!err){
           res.render('poieditor', { poimap: myEditMap });
