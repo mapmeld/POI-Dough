@@ -17,6 +17,11 @@ head
       width: 100%;
       height: 90%;
     }
+    .sidebar{
+      float:left;
+      padding:10px;
+      border-right: 1px solid #000;
+    }
   title POI Mark II: Home
 body(onload='init()')
   div.navbar
@@ -28,7 +33,7 @@ body(onload='init()')
           input.search-query(type='text', placeholder='Find Maps')
 
   div.container.book
-    .span1
+    .span2.sidebar
       a.btn.btn-info(href='#', onclick='importOSM()')
         Import OSM
     .span12
