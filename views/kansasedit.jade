@@ -31,10 +31,10 @@ body
       div.row
         div.span6(style='border-right:1px solid #000;')
           ul.nav.nav-tabs
-            li.active
-              a(id='codeTab', href='#', onclick='switchToCode()') Code
-            li
-              a(id='editTab', href='#', onclick='switchToEdit()') Edit
+            li#codeTab.active
+              a(href='#', onclick='switchToCode()') Code
+            li#editTab
+              a(href='#', onclick='switchToEdit()') Edit
           div#currentcode
             div Code: #{program.name}
             div#codestore
