@@ -14,6 +14,7 @@ var auth = require('./auth')
     , poimap = require('./poimap')
     , request = require('request')
     , xml = require('node-xml')
+    , procedure = require('./procedure')
     ;
 
 var HOUR_IN_MILLISECONDS = 3600000;
@@ -322,6 +323,20 @@ var init = exports.init = function (config) {
     }
     
   }); */
+
+
+  // Project Kansas: different procedural buildings / art effects
+  // using HTML5 Canvas
+  app.get('/kansas', function(req, res){
+    if(req.query["id"]){
+      procedure.Procedure.findById(req.query["id"], function(err, canvProgram){
+        res.render('kansasedit', { program: canvProgram });
+      });
+    }
+    else{
+      res.render('kansasedit', { });
+    }
+  });
 
   app.get('/', function(req,res) {
     res.render('poihome', { title: "My Title", app_name: "Test App", comments: [ ] });

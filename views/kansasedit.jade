@@ -1,0 +1,23 @@
+head
+  meta(charset='utf-8')
+  title Project Kansas - Editor
+  script(type="text/javascript", src="/scripts/shCore.js")
+  script(type="text/javascript", src="/scripts/shBrushJScript.js")
+  link(rel='stylesheet', type='text/css', href='/stylesheets/shCore.css')
+  link(rel='stylesheet', type='text/css', href='/stylesheets/shThemeDefault.css')
+
+body
+  span#codetitle(style="font-family:courier;")
+  input(type="button", value="Refresh", onclick="window.location.reload()")
+  hr
+  if program
+    pre #{program.code}
+  else
+    form(action='/saveprogram',method='get')
+      input(name='name' type='text')
+      br
+      textarea(name='code' rows='8' cols='30')
+      br
+      input(type='submit' value='Store Procedure')
+
+  script(type="text/javascript") SyntaxHighlighter.all();
