@@ -1,3 +1,10 @@
+var ctx, shape;
+function testCanvasCode(){
+  shape = [ [ 10, 10 ], [ 15, 30 ], [ 20, 10 ] ];
+  document.getElementById("parkCanvas").width = document.getElementById("parkCanvas").width;
+  ctx = document.getElementById("parkCanvas").getContext('2d');
+  eval( document.getElementById("codedraft").value + " drawSample(ctx);" );
+}
 function syntaxCheck(){
   switchToCode();
   document.getElementById("codestore").innerHTML = "<pre class='brush:jscript'>" + document.getElementById("codedraft").value + "</pre>";

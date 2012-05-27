@@ -22,12 +22,13 @@ body
     form(action='/kansassave', method='get')
       input(name='name', type='text')
       br
-      textarea(id='codedraft', name='code', rows='8', cols='30')
+      textarea(id='codedraft', name='code', rows='8', cols='30') function drawSample(ctx){ }
       br
       input(type='submit', value='Store Procedure')
   else
-    h2 HTML5 Effects
     div.container
+      div.row
+        h2 HTML5 Effects
       div.row
         div.span6(style='border-right:1px solid #000;')
           ul.nav.nav-tabs
@@ -41,6 +42,8 @@ body
               pre(class="brush:jscript") #{program.code}
             script(type="text/javascript") SyntaxHighlighter.all();
             br
+            a.btn.btn-info(href='#', onclick='testCanvasCode()') Sketch Now
+            br
             a.btn.btn-primary(href='#', onclick='storeProcedure()') Store Procedure
 
           div#editcode(style='display:none;')
@@ -51,3 +54,15 @@ body
               textarea(id='codedraft', name='code', rows='8', cols='30') #{program.code}
               br
               a.btn.btn-primary(href='#', onclick='syntaxCheck()') Syntax Check
+
+        div.span6
+          ul.nav.nav-tabs
+            li#pointTab
+              a(href='#', onclick='simulatePoint()') Point
+            li#lineTab
+              a(href='#', onclick='simulateLine()') Line
+            li#polylineTab
+              a(href='#', onclick='simulatePolyline()') Lines
+            li#polygonTab.active
+              a(href='#', onclick='simulatePolygon()') Building
+          canvas#parkCanvas(height='300', width='300')
