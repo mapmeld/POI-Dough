@@ -1,3 +1,38 @@
+# About POI Mark 2
+
+Show off Places of Interest (POI) by importing them from OpenStreetMap and styling them with HTML5 Canvas and CSS3.
+Each Place will be connected to a record on MongoDB (through POI Dough) or CouchDB (through DataCouch).
+
+Here are some visual effects available now:
+<ul>
+<li>Build on top of the best OpenStreetMap, Stamen, and MapBox map tiles</li>
+<li>Explore and interact with the Leaflet.js maps API</li>
+<li>Make buildings pop out of the map with a 3D effect</li>
+<li>Choose textures for parks, farms, forests, and other areas.</li>
+<li>Tie appearance of buildings and polygons to tags within OpenStreetMap</li>
+</ul>
+
+3D Building with Roof, on MapQuest Open Tiles
+
+<img src="http://i.imgur.com/Bb9Ed.png"/>
+
+## Theory
+
+### Old Model
+The author uses the wealth of OpenStreetMap data as a background, then builds their own layer from scratch.
+Participation by users is difficult to build into the system.
+
+<img src="http://i.imgur.com/FOwFW.png"/>
+
+### New Model
+The author imports buildings, parks, and other places from OpenStreetMap to populate their map.
+Users are invited to interact with the data available at each Place.
+Authors can import a dataset from DataCouch to populate their map.
+
+<img src="http://i.imgur.com/5aQ9p.png"/>
+
+# About Poang Framework
+
 ## Poang - A sample node.js/MongoDB app for Strider &amp; Heroku/MongoLab
 
 Poang demonstrates a few of the ways that we write tests in Node.js for Strider (Strider is a hosted continuous deployment platform for Node.js and Python. Learn more at [StriderApp.com](http://striderapp.com)).
