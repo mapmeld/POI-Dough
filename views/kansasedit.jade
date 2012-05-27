@@ -4,6 +4,7 @@ head
   script(type="text/javascript", src="/scripts/shCore.js")
   script(type="text/javascript", src="/scripts/shBrushJScript.js")
   script(type="text/javascript", src="/scripts/kansas.js")
+  link(rel='stylesheet', href='/stylesheets/bootswatch.min.css', type='text/css')
   link(rel='stylesheet', type='text/css', href='/stylesheets/shCore.css')
   link(rel='stylesheet', type='text/css', href='/stylesheets/shThemeDefault.css')
   style(type='text/css')
@@ -25,18 +26,26 @@ body
       br
       input(type='submit', value='Store Procedure')
   else
-    div(style='padding:15px;border-right:1px solid #000;')
-      div Code: #{program.name}
-      div#codestore
-        pre(class="brush:jscript") #{program.code}
-      script(type="text/javascript") SyntaxHighlighter.all();
-    div(style='float:left;padding:15px;border-left:1px solid #000;')
-      form(action='/kansassave', method='get')
-        input(type='hidden', name='id', value='#{program._id}')
-        input(name='name', type='text')
-        br
-        textarea(id='codedraft', name='code', rows='8', cols='30') #{program.code}
-        br
-        input(type='button', value='Syntax Check', onclick='syntaxCheck()')
-        br
-        input(type='submit', value='Store Procedure')
+    h2 HTML5 Effects
+    div.container
+      div.row
+        div.span6(style='border-right:1px solid #000;')
+          ul.nav.nav-tabs
+            li.active
+              a(href='#') Code
+            li.active
+              a(href='#') Edit
+          div Code: #{program.name}
+          div#codestore
+            pre(class="brush:jscript") #{program.code}
+          script(type="text/javascript") SyntaxHighlighter.all();
+        div.span6
+          form(action='/kansassave', method='get')
+            input(type='hidden', name='id', value='#{program._id}')
+            input(name='name', type='text')
+            br
+            textarea(id='codedraft', name='code', rows='8', cols='30') #{program.code}
+            br
+            input(type='button', value='Syntax Check', onclick='syntaxCheck()')
+            br
+            input(type='submit', value='Store Procedure')
