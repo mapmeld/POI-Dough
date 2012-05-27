@@ -7,15 +7,18 @@ head
   link(rel='stylesheet', type='text/css', href='/stylesheets/shThemeDefault.css')
 
 body
-  span#codetitle(style="font-family:courier;") Named #{name}
-  input(type="button", value="Refresh", onclick="window.location.reload()")
-  br
-  br
-  form(action='/saveprogram', method='get')
-    input(name='name', type='text')
+  if program
+    span #{program.name}
+    pre #{program.code}
+    script(type="text/javascript") SyntaxHighlighter.all();
+  else
+    span#codetitle(style="font-family:courier;") My Procedure
+    input(type="button", value="Refresh", onclick="window.location.reload()")
     br
-    textarea(name='code', rows='8', cols='30')
     br
-    input(type='submit', value='Store Procedure')
-
-  script(type="text/javascript") SyntaxHighlighter.all();
+    form(action='/saveprogram', method='get')
+      input(name='name', type='text')
+      br
+      textarea(name='code', rows='8', cols='30')
+      br
+      input(type='submit', value='Store Procedure')
