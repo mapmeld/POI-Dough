@@ -3,6 +3,7 @@ head
   title Project Kansas - Editor
   script(type="text/javascript", src="/scripts/shCore.js")
   script(type="text/javascript", src="/scripts/shBrushJScript.js")
+  script(type="text/javascript", src="/scripts/kansas.js")
   link(rel='stylesheet', type='text/css', href='/stylesheets/shCore.css')
   link(rel='stylesheet', type='text/css', href='/stylesheets/shThemeDefault.css')
   style(type='text/css')
@@ -20,10 +21,21 @@ body
     form(action='/kansassave', method='get')
       input(name='name', type='text')
       br
-      textarea(name='code', rows='8', cols='30')
+      textarea(id='codedraft' name='code', rows='8', cols='30')
       br
       input(type='submit', value='Store Procedure')
   else
-    div Code: #{program.name}
-    pre(class="brush:jscript") #{program.code}
-    script(type="text/javascript") SyntaxHighlighter.all();
+    div(style='float:left;padding:15px;border-right:1px solid #000;')
+      div Code: #{program.name}
+      pre(class="brush:jscript") #{program.code}
+      script(type="text/javascript") SyntaxHighlighter.all();
+    div(style='float:left;padding:15px;border-left:1px solid #000;')
+      form(action='/kansassave', method='get')
+        input(type='hidden', name='id', value='#{program._id}')
+        input(name='name', type='text')
+        br
+        textarea(id='codedraft' name='code', rows='8', cols='30') #{program.code}
+        br
+        input(type='button', value='Syntax Check' onclick='syntaxCheck()')
+        br
+        input(type='submit', value='Store Procedure')
