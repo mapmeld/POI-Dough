@@ -33,7 +33,7 @@ body
       .container
         a.brand(href='#')
           span POI Mark II
-        select#mapTiler(onchange='changeTiles()')
+        select#mapTiler.navbar-search(onchange='changeTiles()')
           option(value="mapquest", selected="selected") MapQuest Open
           option(value="mapbox") MapBox Streets
           option(value="mapnik") OSM: Mapnik
