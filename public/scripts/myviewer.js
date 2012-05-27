@@ -52,7 +52,7 @@ function init(){
 }
 
 tree = new Image();
-tree.src = "/treeblot.png";
+tree.src = "../images/treeblot.png";
 
 function prepBuilding(b){
   promoted[ buildings[b].wayid ] = { effect: "3Dblock" };
