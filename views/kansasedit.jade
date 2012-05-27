@@ -11,7 +11,7 @@ body
   input(type="button", value="Refresh", onclick="window.location.reload()")
   hr
   if program
-    pre #{program.code}
+    pre= program.code
   else
     form(action='/saveprogram',method='get')
       input(name='name' type='text')
