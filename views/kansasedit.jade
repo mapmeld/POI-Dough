@@ -21,7 +21,7 @@ body
     form(action='/kansassave', method='get')
       input(name='name', type='text')
       br
-      textarea(id='codedraft' name='code', rows='8', cols='30')
+      textarea(id='codedraft', name='code', rows='8', cols='30')
       br
       input(type='submit', value='Store Procedure')
   else
@@ -34,7 +34,7 @@ body
         input(type='hidden', name='id', value='#{program._id}')
         input(name='name', type='text')
         br
-        textarea(id='codedraft' name='code', rows='8', cols='30') #{program.code}
+        textarea(id='codedraft', name='code', rows='8', cols='30') #{program.code}
         br
         input(type='button', value='Syntax Check' onclick='syntaxCheck()')
         br
