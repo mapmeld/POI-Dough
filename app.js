@@ -125,7 +125,7 @@ var init = exports.init = function (config) {
         updated : new Date(),
         center: req.query["ctr"].split(','),
         zoom: req.query["z"]
-      })
+      });
       myNewMap.save(function (err) {
         if (!err){
           console.log('Success!');
@@ -335,6 +335,44 @@ var init = exports.init = function (config) {
     }
     else{
       res.render('kansasedit', { program: { name: "" } });
+    }
+  });
+  
+  app.get('/kansassave', function(req, res){
+    if(req.query["id"]){
+      // update
+      procedure.Procedure.findById(req.query["id"], function(err, canvProgram){
+        canvProgram.name = req.query["name"];
+        canvProgram.code = req.query["code"];
+        canvProgram.save(function (err) {
+          if (!err){
+            console.log('Success!');
+            res.redirect('/kansas?id=' + canvProgram._id);
+          }
+          else{
+            console.log('Fail! ' + err);
+            res.send('Did not save');
+          }
+        });
+      });
+    }
+    else{
+      // creating new procedure
+      var myProcedure = new procedure.Procedure({
+        name: req.query["name"],
+        code: req.query["code"],
+        updated: new Date()
+      });
+      myProcedure.save(function (err) {
+        if (!err){
+          console.log('Success!');
+          res.redirect('/kansas?id=' + myProcedure._id);
+        }
+        else{
+          console.log('Fail! ' + err);
+          res.send('Did not save');
+        }
+      });
     }
   });
 
