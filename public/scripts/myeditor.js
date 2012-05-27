@@ -160,8 +160,18 @@ function changeTiles(){
     extraMapLayer = new L.TileLayer(tileURL, {maxZoom: 18, attribution: attribution});
   }
   else if(tiles == "terrain"){
-    var tileURL = "http://tile.stamen.com/terrain/{z}/{x}/{y}.jpg";
-    var attribution = "Map data &copy; 2012 OpenStreetMap contributors, Tiles by Mike Migurski of Stamen Design";
+    var tileURL = "http://{s}.tile.stamen.com/terrain/{z}/{x}/{y}.jpg";
+    var attribution = "Map data &copy; 2012 OpenStreetMap contributors, Tiles by Stamen Design";
+    extraMapLayer = new L.TileLayer(tileURL, {maxZoom: 18, attribution: attribution});
+  }
+  else if(tiles == "watercolor"){
+    var tileURL = "http://{s}.tile.stamen.com/watercolor/{z}/{x}/{y}.jpg";
+    var attribution = "Map data &copy; 2012 OpenStreetMap contributors, Tiles by Stamen Design";
+    extraMapLayer = new L.TileLayer(tileURL, {maxZoom: 18, attribution: attribution});
+  }
+  else if(tiles == "mapbox"){
+    var tileURL = "http://{s}.tiles.mapbox.com/v3/mapbox.mapbox-streets/{z}/{x}/{y}.png";
+    var attribution = "Map data &copy; 2012 OpenStreetMap contributors, Tiles by MapBox";
     extraMapLayer = new L.TileLayer(tileURL, {maxZoom: 18, attribution: attribution});
   }
   map.addLayer(extraMapLayer);
@@ -758,3 +768,5 @@ function exportPOI(){
   window.location = url;
 }
 function gup(nm){nm=nm.replace(/[\[]/,"\\\[").replace(/[\]]/,"\\\]");var rxS="[\\?&]"+nm+"=([^&#]*)";var rx=new RegExp(rxS);var rs=rx.exec(window.location.href);if(!rs){return null;}else{return rs[1];}}
+
+$(document).ready(init);

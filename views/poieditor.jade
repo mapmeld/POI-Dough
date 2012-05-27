@@ -27,12 +27,20 @@ head
       display:none;
     }
   title POI Mark II: Home
-body(onload='init()')
+body
   div.navbar
     .navbar-inner
       .container
         a.brand(href='#')
           span POI Mark II
+        select#mapTiler(onchange='changeTiles()')
+          option(value="mapquest", selected="selected") MapQuest Open
+          option(value="mapbox") MapBox Streets
+          option(value="mapnik") OSM: Mapnik
+          option(value="transit") Transit
+          option(value="terrain") Stamen Terrain
+          option(value="watercolor") Stamen Watercolor
+
         form.navbar-search.pull-right
           input.search-query(type='text', placeholder='Find Maps')
 
