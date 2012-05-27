@@ -121,7 +121,9 @@ var init = exports.init = function (config) {
         basemap : basemapProviders[ req.query["tiler"] ].url,
         createdby : "POI Dough Test",
         attribution : basemapProviders[ req.query["tiler"] ].credit,
-        updated : new Date()
+        updated : new Date(),
+        center: req.query["ctr"].split(','),
+        zoom: req.query["z"]
       })
       myNewMap.save(function (err) {
         if (!err){

@@ -27,8 +27,8 @@ function init(){
   var baseMapLayer = new L.TileLayer(tileURL, {maxZoom: 18, attribution: attribution});
 
   map = new L.Map('map');
-  cityll = new L.LatLng(32.836183, -83.631266);
-  map.setView(cityll, 18).addLayer(baseMapLayer);
+  cityll = new L.LatLng(start_pos[0], start_pos[1]);
+  map.setView(cityll, start_pos[2]).addLayer(baseMapLayer);
   
   menuPopup = new L.Popup();
 

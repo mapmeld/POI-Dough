@@ -5,6 +5,8 @@ var mongoose = require('mongoose'),
 var POIMapSchema = new Schema({
   buildings: Array,
   parks: Array,
+  center: Array,
+  zoom: String,
   basemap: String,
   createdby: String,
   updated: Date
