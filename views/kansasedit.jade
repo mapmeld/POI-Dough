@@ -10,7 +10,7 @@ body
   span#codetitle(style="font-family:courier;")
   input(type="button", value="Refresh", onclick="window.location.reload()")
   hr
-  if program
+  if name == ""
     pre= program.code
   else
     form(action='/saveprogram',method='get')
