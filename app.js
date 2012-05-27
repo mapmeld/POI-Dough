@@ -334,7 +334,7 @@ var init = exports.init = function (config) {
       });
     }
     else{
-      res.send('no id');
+      res.render('kansasedit', { });
     }
   });
 
