@@ -37,25 +37,26 @@ body
             li#editTab
               a(href='#', onclick='switchToEdit()') Edit
           div#currentcode
-            div Code: #{program.name}
+            div Procedure Name: #{program.name}
             div#codestore
               pre(class="brush:jscript") #{program.code}
             script(type="text/javascript") SyntaxHighlighter.all();
             br
             a.btn.btn-info(href='#', onclick='testCanvasCode()') Sketch Now
             br
+            br
             a.btn.btn-primary(href='#', onclick='storeProcedure()') Store Procedure
 
           div#editcode(style='display:none;')
             form(id='codeform', action='/kansassave', method='get')
               input(type='hidden', name='id', value='#{program._id}')
-              input(name='name', type='text')
+              input(name='name', type='text', value='#{program.name}')
               br
               textarea(id='codedraft', name='code', rows='8', cols='30') #{program.code}
               br
               a.btn.btn-primary(href='#', onclick='syntaxCheck()') Syntax Check
 
-        div.span6
+        div.span5
           ul.nav.nav-tabs
             li#pointTab
               a(href='#', onclick='simulatePoint()') Point
