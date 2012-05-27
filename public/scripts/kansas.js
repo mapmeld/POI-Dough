@@ -1,4 +1,4 @@
 function syntaxCheck(){
-  document.getElementsByClassName("brush:jscript")[0].innerHTML = document.getElementById("codedraft").innerHTML;
+  document.getElementById("codestore").innerHTML = "<pre class='brush:jscript'>" + document.getElementById("codedraft").innerHTML + "</pre>";
   SyntaxHighlighter.all();
 }

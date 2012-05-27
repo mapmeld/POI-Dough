@@ -27,7 +27,8 @@ body
   else
     div(style='float:left;padding:15px;border-right:1px solid #000;')
       div Code: #{program.name}
-      pre(class="brush:jscript") #{program.code}
+      div#codestore
+        pre(class="brush:jscript") #{program.code}
       script(type="text/javascript") SyntaxHighlighter.all();
     div(style='float:left;padding:15px;border-left:1px solid #000;')
       form(action='/kansassave', method='get')
