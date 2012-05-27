@@ -334,7 +334,7 @@ var init = exports.init = function (config) {
       });
     }
     else{
-      res.render('kansasedit', { });
+      res.render('kansasedit', { program: { name: "" } });
     }
   });
 

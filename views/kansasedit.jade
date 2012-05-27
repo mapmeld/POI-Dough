@@ -7,7 +7,7 @@ head
   link(rel='stylesheet', type='text/css', href='/stylesheets/shThemeDefault.css')
 
 body
-  if program
+  unless program.name == ""
     span #{program.name}
     pre #{program.code}
     script(type="text/javascript") SyntaxHighlighter.all();
