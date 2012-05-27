@@ -8,11 +8,7 @@ head
   link(rel='stylesheet', type='text/css', href='/stylesheets/shThemeDefault.css')
 
 body
-  unless program.name == ""
-    span Program is #{program.name}
-    pre.brush:jscript Program is #{program.code}
-    script(type="text/javascript") SyntaxHighlighter.all();
-  else
+  if program.name == ""
     span#codetitle(style="font-family:courier;") My Procedure
     input(type="button", value="Refresh", onclick="window.location.reload()")
     br
@@ -23,3 +19,8 @@ body
       textarea(name='code', rows='8', cols='30')
       br
       input(type='submit', value='Store Procedure')
+
+  else
+    p prg_ #{program.name}
+    pre.brush:jscript prg_ #{program.code}
+    script(type="text/javascript") SyntaxHighlighter.all();
