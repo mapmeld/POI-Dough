@@ -20,9 +20,9 @@ body
     br
     br
     form(action='/kansassave', method='get')
-      input(name='name', type='text')
+      input.span5(name='name', type='text')
       br
-      textarea(id='codedraft', name='code', rows='8', cols='30') function drawSample(ctx){ }
+      textarea.span5(id='codedraft', name='code', rows='15') function drawSample(ctx){ }
       br
       input(type='submit', value='Store Procedure')
   else
@@ -50,9 +50,9 @@ body
           div#editcode(style='display:none;')
             form(id='codeform', action='/kansassave', method='get')
               input(type='hidden', name='id', value='#{program._id}')
-              input(name='name', type='text', value='#{program.name}')
+              input.span5(name='name', type='text', value='#{program.name}')
               br
-              textarea(id='codedraft', name='code', rows='8', cols='30') #{program.code}
+              textarea.span5(id='codedraft', name='code', rows='15') #{program.code}
               br
               a.btn.btn-primary(href='#', onclick='syntaxCheck()') Syntax Check
 
