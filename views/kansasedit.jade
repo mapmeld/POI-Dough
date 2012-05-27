@@ -10,14 +10,11 @@ body
   span#codetitle(style="font-family:courier;")
   input(type="button", value="Refresh", onclick="window.location.reload()")
   hr
-  if name == ""
-    pre= program.code
-  else
-    form(action='/saveprogram',method='get')
-      input(name='name' type='text')
-      br
-      textarea(name='code' rows='8' cols='30')
-      br
-      input(type='submit' value='Store Procedure')
+  form(action='/saveprogram',method='get')
+    input(name='name' type='text')
+    br
+    textarea(name='code' rows='8' cols='30')
+    br
+    input(type='submit' value='Store Procedure')
 
   script(type="text/javascript") SyntaxHighlighter.all();
