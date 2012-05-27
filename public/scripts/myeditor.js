@@ -140,7 +140,7 @@ function darken(hexcolor){
 }
 
 function changeTiles(){
-  var tiles = $('#mapTiler')[0].value;
+  var tiles = $('#mapTiler').val();
   if(extraMapLayer){
 	map.removeLayer(extraMapLayer);
   }
@@ -172,7 +172,7 @@ function changeTiles(){
   else if(tiles == "mapbox"){
     var tileURL = "http://{s}.tiles.mapbox.com/v3/mapbox.mapbox-streets/{z}/{x}/{y}.png";
     var attribution = "Map data &copy; 2012 OpenStreetMap contributors, Tiles by MapBox";
-    extraMapLayer = new L.TileLayer(tileURL, {maxZoom: 18, attribution: attribution});
+    extraMapLayer = new L.TileLayer(tileURL, {maxZoom: 17, attribution: attribution});
   }
   map.addLayer(extraMapLayer);
 }
@@ -764,7 +764,7 @@ function exportPOI(){
   for(var p=0;p<parks.length;p++){
     allparks.push( parks[p].wayid );
   }
-  var url = "/savemap?bld=" + allbuildings.join(",") + "&prk=" + allparks.join(",") + "&createdby=POI_Dough_Test"
+  var url = "/savemap?bld=" + allbuildings.join(",") + "&prk=" + allparks.join(",") + "&createdby=POI_Dough_Test&tiler=" + $("#mapTiler").val();
   window.location = url;
 }
 function gup(nm){nm=nm.replace(/[\[]/,"\\\[").replace(/[\]]/,"\\\]");var rxS="[\\?&]"+nm+"=([^&#]*)";var rx=new RegExp(rxS);var rs=rx.exec(window.location.href);if(!rs){return null;}else{return rs[1];}}

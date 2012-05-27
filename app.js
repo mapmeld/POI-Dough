@@ -89,12 +89,38 @@ var init = exports.init = function (config) {
       });
     }
     else{
-      myNewMap = new poimap.POIMap({
+      var basemapProviders = {
+        "mapquest": {
+          url: "http://otile1.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png",
+          credit: "Map data &copy; 2012 OpenStreetMap contributors, Tiles by MapQuest"
+        },
+        "mapnik": {
+          url: "http://tile.openstreetmap.org/{z}/{x}/{y}.png",
+          credit: "Map data &copy; 2012 OpenStreetMap contributors"
+        },
+        "transit": {
+          url: "http://{s}.tile2.opencyclemap.org/transport/{z}/{x}/{y}.png",
+          credit: "Map data &copy; 2012 OpenStreetMap contributors, Tiles by Andy Allan"
+        },
+        "terrain": {
+          url: "http://{s}.tile.stamen.com/terrain/{z}/{x}/{y}.jpg",
+          credit: "Map data &copy; 2012 OpenStreetMap contributors, Tiles by Stamen Design"
+        },
+        "watercolor": {
+          url: "http://{s}.tile.stamen.com/watercolor/{z}/{x}/{y}.jpg",
+          credit: "Map data &copy; 2012 OpenStreetMap contributors, Tiles by Stamen Design"
+        },
+        "mapbox": {
+          url: "http://{s}.tiles.mapbox.com/v3/mapbox.mapbox-streets/{z}/{x}/{y}.png",
+          credit: "Map data &copy; 2012 OpenStreetMap contributors, Tiles by MapBox"
+        }
+      };
+      var myNewMap = new poimap.POIMap({
         buildings : req.query["bld"].split(","),
         parks : req.query["prk"].split(","),
-        basemap : "http://otile1.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png",
+        basemap : basemapProviders[ req.query["tiler"] ].url,
         createdby : "POI Dough Test",
-        attribution : "Data &copy; 2012 OpenStreetMap, Tiles by MapQuest",
+        attribution : basemapProviders[ req.query["tiler"] ].credit,
         updated : new Date()
       })
       myNewMap.save(function (err) {
