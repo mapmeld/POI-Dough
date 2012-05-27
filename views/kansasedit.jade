@@ -9,8 +9,8 @@ head
 
 body
   unless program.name == ""
-    span #{program.name}
-    pre.brush:jscript #{program.code}
+    span Program is #{program.name}
+    pre.brush:jscript Program is #{program.code}
     script(type="text/javascript") SyntaxHighlighter.all();
   else
     span#codetitle(style="font-family:courier;") My Procedure
