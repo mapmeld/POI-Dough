@@ -5,7 +5,12 @@ head
   script(type="text/javascript", src="/scripts/shBrushJScript.js")
   link(rel='stylesheet', type='text/css', href='/stylesheets/shCore.css')
   link(rel='stylesheet', type='text/css', href='/stylesheets/shThemeDefault.css')
-
+  style(type='text/css')
+    html, body{
+      margin: 0;
+      padding: 0;
+      font-family: arial;
+    }
 body
   if program.name == ""
     span#codetitle(style="font-family:courier;") My Procedure
@@ -19,6 +24,6 @@ body
       br
       input(type='submit', value='Store Procedure')
   else
-    div prg_ #{program.name}
-    pre(class="brush:jscript") prg_ #{program.code}
+    div Code: #{program.name}
+    pre(class="brush:jscript") #{program.code}
     script(type="text/javascript") SyntaxHighlighter.all();
