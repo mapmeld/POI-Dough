@@ -756,7 +756,7 @@ function parseParams(str)
 
 	while ((match = regex.exec(str)) != null) 
 	{
-		var value = match.value
+		var value = match
 			.replace(/^['"]|['"]$/g, '') // strip quotes from end of strings
 			;
 		
