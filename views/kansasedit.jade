@@ -8,7 +8,7 @@ head
   link(rel='stylesheet', type='text/css', href='/stylesheets/shThemeDefault.css')
 
 body
-  - if program.name == ""
+  if program.name == ""
     span#codetitle(style="font-family:courier;") My Procedure
     input(type="button", value="Refresh", onclick="window.location.reload()")
     br
@@ -19,7 +19,7 @@ body
       textarea(name='code', rows='8', cols='30')
       br
       input(type='submit', value='Store Procedure')
-  - else
+  else
     div prg_ #{program.name}
     pre(class="brush:jscript") prg_ #{program.code}
     script(type="text/javascript") SyntaxHighlighter.all();
