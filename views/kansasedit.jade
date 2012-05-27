@@ -1,6 +1,7 @@
 head
   meta(charset='utf-8')
   title Project Kansas - Editor
+  script(type="text/javascript", src="/scripts/xregexp-min.js")
   script(type="text/javascript", src="/scripts/shCore.js")
   script(type="text/javascript", src="/scripts/shBrushJScript.js")
   link(rel='stylesheet', type='text/css', href='/stylesheets/shCore.css')
@@ -9,7 +10,7 @@ head
 body
   unless program.name == ""
     span #{program.name}
-    pre #{program.code}
+    pre.brush:jscript #{program.code}
     script(type="text/javascript") SyntaxHighlighter.all();
   else
     span#codetitle(style="font-family:courier;") My Procedure
