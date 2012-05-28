@@ -143,8 +143,9 @@ var init = exports.init = function (config) {
   app.get('/customgeo', function(req,res) {
     // store custom polygons
     if(req.query["id"]){
+      var poi_id = req.query["id"].replace("poi:","");
       // requesting or updating a polygon
-      customgeo.CustomGeo.findById(req.query["id"], function(err, custompoly){
+      customgeo.CustomGeo.findById(poi_id, function(err, custompoly){
         if(req.query["pts"]){
           // updating this polygon
           custompoly.pts = req.query["pts"].split("|");
