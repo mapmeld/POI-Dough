@@ -590,8 +590,8 @@ function importOSM(){
 }
 function llserial(latlngs){
   var llstr = [ ];
-  for(ll in latlngs){
-    llstr.push(ll.lat.toFixed(6) + "," + ll.lng.toFixed(6));
+  for(var i=0;i<latlngs.length;i++){
+    llstr.push(latlngs[i].lat.toFixed(6) + "," + latlngs[i].lng.toFixed(6));
   }
   return llstr.join("|");
 }
