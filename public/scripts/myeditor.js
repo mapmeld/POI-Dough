@@ -586,10 +586,6 @@ function importOSM(){
   $("#importButton").addClass("disabled");
   var ne = map.getBounds().getNorthEast();
   var sw = map.getBounds().getSouthWest();
-  //var s = document.createElement('script');
-  //s.src = '/osmbbox?bbox=' + sw.lng + ',' +  sw.lat + ',' + ne.lng + ',' + ne.lat;
-  //s.type = "text/javascript";
-  //document.body.appendChild(s);
   $.getJSON('/osmbbox?bbox=' + sw.lng + ',' +  sw.lat + ',' + ne.lng + ',' + ne.lat, processOSM);
 }
 function processOSM(data){
@@ -601,8 +597,15 @@ function processOSM(data){
     
     marker.bindPopup( '<h3>' + getName(data.nodes[i]) + '</h3>' + tableOfData(data.nodes[i]) );
     bounce_on_hover(marker, null);
+    
+    // TODO: add markers to promotion layer
+    //promoted[ "node:" + data.nodes[i].id ] = marker;
   }
   for(var i=0;i<data.ways.length;i++){
+    if(promoted[ data.ways[i].wayid ]){
+      // already loaded this way
+      continue;
+    }
     if(hasKey(data.ways[i],"highway")){
       //don't mark up roads just yet
       continue;
@@ -633,9 +636,14 @@ function menu_on_click(p, shard){
     var header = '<h3>' + (shard.name || shard.designation || shard.wayid) + '</h3>';
     var effectSelect = '<select onchange="setEffect(activeWay,this.value)"><option value="none">None</option><option value="3Droof">3D Roof</option><option value="3Dblock">3D Block</option><option value="2Dpark">Park</option><option value="2Dcoffee">Coffee</option><option value="2Dcorn">Corn</option><option value="2Dwatermelon">Watermelon</option></select>';
     effectSelect = effectSelect.replace('value="' + promoted[activeWay].effect + '"', 'value="' + promoted[activeWay].effect + '" selected="selected"');
-    menuPopup.setContent(header + tableOfData(shard) + effectSelect );
+    var hideOption = '<br/><a href="#" onclick="hideWay(activeWay)">Hide</a>';
+    menuPopup.setContent(header + tableOfData(shard) + effectSelect + hideOption);
     map.openPopup( menuPopup );
   });
+}
+function hideWay(wayid){
+  map.removeLayer(promoted[ wayid ].poly);
+  promoted[ wayid ] = null;
 }
 function setEffect(wayid, settype){
   if(promoted[wayid].effect == settype){
