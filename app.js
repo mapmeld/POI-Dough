@@ -150,21 +150,42 @@ var init = exports.init = function (config) {
           custompoly.pts = req.query["pts"].split("|");
           custompoly.updated = new Date();
           custompoly.save(function(err){
-            res.send( { id: custompoly._id, pts: custompoly.latlngs } );
+            res.send( { id: custompoly._id } );
           });
         }
         else{
           // requesting this polygon
+          var pts = [ ];
+          for(var p=0;p<custompoly.latlngs.length;p++){
+            pts.push(custompoly.latlngs[p].split(","));
+            pts[pts.length-1][0] *= 1.0;
+            pts[pts.length-1][1] *= 1.0;
+          }
+          if(req.query["form"] == "build"){
+            // isometrics request
+            res.send( {
+              customgeoid: custompoly._id,
+              wayid: custompoly.sourceid,
+              sections: [
+                {
+                  vertices: pts,
+                  levels: 1
+                }
+              ]
+            } );
+          }
+          else{
+            // textures or general shape request
+            res.send( {
+              customgeoid: custompoly._id,
+              wayid: custompoly.sourceid,
+              vertices: pts
+            } );
+          }
           if(!custompoly.addedToMap){
             // confirm this polygon is used, so it isn't purged
             custompoly.addedToMap = "yes";
-            custompoly.save(function(err){
-              res.send( { id: custompoly._id, pts: custompoly.latlngs } );
-            });
-          }
-          else{
-            // already confirmed that this polygon is used
-            res.send( { id: custompoly._id, pts: custompoly.latlngs } );
+            custompoly.save(function(err){});
           }
         }
       });
@@ -173,7 +194,8 @@ var init = exports.init = function (config) {
       // store a new polygon, return id
       var shape = new customgeo.CustomGeo({
         latlngs: req.query["pts"].split("|"),
-        updated: new Date()
+        updated: new Date(),
+        sourceid: req.query["wayid"]
       });
       shape.save(function (err){
         res.send({ id: shape._id });
@@ -246,6 +268,10 @@ var init = exports.init = function (config) {
   app.get('/isometrics', function(req,res) {
     // '/isometrics?wayid=WAYID'  
     var wayid = req.query["wayid"]
+	if(wayid.indexOf("poi:") > -1){
+	  // custom geo
+	  res.redirect( '/customgeo?form=build&id=' + wayid );
+	}
 
     // generate from API: http://www.openstreetmap.org/api/0.6/way/[WAYID]/full
     var osmurl = 'http://www.openstreetmap.org/api/0.6/way/' + wayid + '/full'
@@ -296,8 +322,12 @@ var init = exports.init = function (config) {
   });
 
   app.get('/textures', function(req,res){
-  
+
 	var wayid = req.query["wayid"];
+	if(wayid.indexOf("poi:") > -1){
+	  // custom geo
+	  res.redirect( '/customgeo?id=' + wayid );
+	}
 
     // generate from API: http://www.openstreetmap.org/api/0.6/way/[WAYID]/full
     var osmurl = 'http://www.openstreetmap.org/api/0.6/way/' + wayid + '/full'

@@ -636,7 +636,7 @@ function processOSM(data){
           }
           else{
             // make this shape into a custom object
-            $.getJSON("/customgeo?pts=" + llserial(promoted[shape].poly), function(resp){
+            $.getJSON("/customgeo?wayid=" + shape + "&pts=" + llserial(promoted[shape].poly), function(resp){
               promoted[shape].customgeoid = resp.id;
             });
           }

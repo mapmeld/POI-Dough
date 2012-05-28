@@ -4,6 +4,7 @@ var mongoose = require('mongoose'),
 
 var CustomGeoSchema = new Schema({
   latlngs: Array,
+  sourceid: String,
   addedToMap: String,
   updated: Date
 });
