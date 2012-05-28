@@ -588,6 +588,13 @@ function importOSM(){
   var sw = map.getBounds().getSouthWest();
   $.getJSON('/osmbbox?bbox=' + sw.lng + ',' +  sw.lat + ',' + ne.lng + ',' + ne.lat, processOSM);
 }
+function llserial(latlngs){
+  var llstr = [ ];
+  for(ll in latlngs){
+    llstr.push(ll.lat.toFixed(6) + "," + ll.lng.toFixed(6));
+  }
+  return llstr.join("|");
+}
 function processOSM(data){
   $("#importButton").removeClass("disabled");
   for(var i=0;i<data.nodes.length;i++){
@@ -621,7 +628,21 @@ function processOSM(data){
     // test editing
     activePoly.editing.enable();
     activePoly.on('edit', function() {
-      //console.log(activePoly);
+      for(shape in promoted){
+        if(shape.poly == activePoly){
+          if(shape.customgeoid){
+            // update this shape's points
+            $.getJSON("/customgeo?id=" + shape.customgeoid + "&pts=" + llserial(shape.poly), function(resp){ });
+          }
+          else{
+            // make this shape into a custom object
+            $.getJSON("/customgeo?pts=" + llserial(shape.poly), function(resp){
+              shape.customgeoid = resp.id;
+            });
+          }
+          break;
+        }
+      }
     });
 
     menu_on_click(activePoly, data.ways[i]);
@@ -766,11 +787,21 @@ function tableOfData(item){
 function exportPOI(){
   var allbuildings = [];
   for(var b=0;b<buildings.length;b++){
-    allbuildings.push( buildings[b].wayid );
+    if(promoted[ buildings[b].wayid ].customgeoid){
+      allbuildings.push( "poi:" + promoted[ buildings[b].wayid ].customgeoid );
+    }
+    else{
+      allbuildings.push( buildings[b].wayid );
+    }
   }
   var allparks = [];
   for(var p=0;p<parks.length;p++){
-    allparks.push( parks[p].wayid );
+    if(promoted[ parks[p].wayid ].customgeoid){
+      allparks.push( "poi:" + promoted[ parks[p].wayid ].customgeoid );
+    }
+    else{
+      allparks.push( parks[p].wayid );
+    }
   }
   var url = "/savemap?bld=" + allbuildings.join(",") + "&prk=" + allparks.join(",") + "&createdby=POI_Dough_Test&tiler=" + $("#mapTiler").val() + "&ctr=" + map.getCenter().lat.toFixed(6) + "," + map.getCenter().lng.toFixed(6) + "&z=" + map.getZoom();
   window.location = url;

@@ -15,6 +15,7 @@ var auth = require('./auth')
     , request = require('request')
     , xml = require('node-xml')
     , procedure = require('./procedure')
+    , customgeo = require('./customgeo')
     ;
 
 var HOUR_IN_MILLISECONDS = 3600000;
@@ -66,7 +67,7 @@ var init = exports.init = function (config) {
     if(req.query["id"]){
       poimap.POIMap.findById(req.query["id"], function(err, myViewMap){
         if(!err){
-          res.render('poiview', { poimap: myViewMap });          
+          res.render('poiview', { poimap: myViewMap });
         }
       });
     }  
@@ -135,6 +136,47 @@ var init = exports.init = function (config) {
           console.log('Fail! ' + err);
           res.send('Did not save');
         }
+      });
+    }
+  });
+  
+  app.get('/customgeo', function(req,res) {
+    // store custom polygons
+    if(req.query["id"]){
+      // requesting or updating a polygon
+      customgeo.CustomGeo.findById(req.query["id"], function(err, custompoly){
+        if(req.query["pts"]){
+          // updating this polygon
+          custompoly.pts = req.query["pts"].split("|");
+          custompoly.updated = new Date();
+          custompoly.save(function(err){
+            res.send( { id: custompoly._id, pts: custompoly.latlngs } );
+          });
+        }
+        else{
+          // requesting this polygon
+          if(!custompoly.addedToMap){
+            // confirm this polygon is used, so it isn't purged
+            custompoly.addedToMap = "yes";
+            custompoly.save(function(err){
+              res.send( { id: custompoly._id, pts: custompoly.latlngs } );
+            });
+          }
+          else{
+            // already confirmed that this polygon is used
+            res.send( { id: custompoly._id, pts: custompoly.latlngs } );
+          }
+        }
+      });
+    }
+    else{
+      // store a new polygon, return id
+      var shape = new customgeo.CustomGeo({
+        latlngs: req.query["pts"].split("|"),
+        updated: new Date()
+      });
+      shape.save(function (err){
+        res.send({ id: shape._id });
       });
     }
   });
