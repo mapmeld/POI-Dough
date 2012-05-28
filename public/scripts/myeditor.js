@@ -632,11 +632,11 @@ function processOSM(data){
         if(promoted[shape] && promoted[shape].poly == this){
           if(promoted[shape].customgeoid){
             // update this shape's points
-            $.getJSON("/customgeo?id=" + promoted[shape].customgeoid + "&pts=" + llserial(promoted[shape].poly), function(resp){ });
+            $.getJSON("/customgeo?id=" + promoted[shape].customgeoid + "&pts=" + llserial(promoted[shape].poly.getLatLngs()), function(resp){ });
           }
           else{
             // make this shape into a custom object
-            $.getJSON("/customgeo?wayid=" + shape + "&pts=" + llserial(promoted[shape].poly), function(resp){
+            $.getJSON("/customgeo?wayid=" + shape + "&pts=" + llserial(promoted[shape].poly.getLatLngs()), function(resp){
               promoted[shape].customgeoid = resp.id;
             });
           }
