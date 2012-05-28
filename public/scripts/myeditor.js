@@ -630,14 +630,14 @@ function processOSM(data){
     activePoly.on('edit', function() {
       for(shape in promoted){
         if(promoted[shape] && promoted[shape].poly == this){
-          if(shape.customgeoid){
+          if(promoted[shape].customgeoid){
             // update this shape's points
-            $.getJSON("/customgeo?id=" + shape.customgeoid + "&pts=" + llserial(shape.poly), function(resp){ });
+            $.getJSON("/customgeo?id=" + promoted[shape].customgeoid + "&pts=" + llserial(promoted[shape].poly), function(resp){ });
           }
           else{
             // make this shape into a custom object
-            $.getJSON("/customgeo?pts=" + llserial(shape.poly), function(resp){
-              shape.customgeoid = resp.id;
+            $.getJSON("/customgeo?pts=" + llserial(promoted[shape].poly), function(resp){
+              promoted[shape].customgeoid = resp.id;
             });
           }
           break;
