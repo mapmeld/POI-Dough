@@ -629,7 +629,7 @@ function processOSM(data){
     activePoly.editing.enable();
     activePoly.on('edit', function() {
       for(shape in promoted){
-        if(shape.poly == this){
+        if(promoted[shape] && promoted[shape].poly == this){
           if(shape.customgeoid){
             // update this shape's points
             $.getJSON("/customgeo?id=" + shape.customgeoid + "&pts=" + llserial(shape.poly), function(resp){ });
