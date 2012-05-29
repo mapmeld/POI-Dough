@@ -500,7 +500,7 @@ function writePark(p){
 	}
   }
       
-  var poly = promoted[ parks[p] ].poly.getLatLngs();
+  var poly = promoted[ parks[p].wayid ].poly.getLatLngs();
   for(var i=0; i<poly.length; i++){
 	var at_pt = poly[i];
 	at_pt = toPixel( at_pt, ctrlat, ctrlng, scale );
@@ -698,10 +698,10 @@ function setEffect(wayid, settype){
       // create listing in building index
       buildings.push({
         wayid: wayid,
-    	/* sections: [{
-    		vertices: promoted[wayid].osmdata.line.slice(0),
+    	sections: [{
+    		/* vertices: promoted[wayid].osmdata.line.slice(0), */
     		levels: 1
-    	}], */
+    	}],
     	color: "#ff0000",
     	roofcolor: "#cccccc",
     	effect: settype
