@@ -68,7 +68,7 @@ function prepBuilding(b){
   var latmin = 1000;
   var lngmax = -1000;
   var lngmin = 1000;
-  for(var s=0; s<buildings[b].sections.length; s++){
+  /*for(var s=0; s<buildings[b].sections.length; s++){
     for(var v=0; v<buildings[b].sections[s].vertices.length; v++){
       var pt = buildings[b].sections[s].vertices[v];
       latmax = Math.max(latmax, pt[0]);
@@ -76,6 +76,14 @@ function prepBuilding(b){
       lngmax = Math.max(lngmax, pt[1]);
       lngmin = Math.min(lngmin, pt[1]);
     }
+  }*/
+  var vertices = promoted[ buildings[b].wayid ].poly.getLatLngs();
+  for(var v=0; v<vertices.length; v++){
+    var pt = vertices[v];
+    latmax = Math.max(latmax, pt.lat);
+    latmin = Math.min(latmin, pt.lat);
+    lngmax = Math.max(lngmax, pt.lng);
+    lngmin = Math.min(lngmin, pt.lng);
   }
   var ctrlat = (latmax + latmin) / 2;
   var ctrlng = (lngmax + lngmin) / 2;
@@ -92,12 +100,13 @@ function prepPark(p){
   var latmin = 1000;
   var lngmax = -1000;
   var lngmin = 1000;
-  for(var v=0; v<parks[p].vertices.length; v++){
-    var pt = parks[p].vertices[v];
-    latmax = Math.max(latmax, pt[0]);
-    latmin = Math.min(latmin, pt[0]);
-    lngmax = Math.max(lngmax, pt[1]);
-    lngmin = Math.min(lngmin, pt[1]);
+  var vertices = promoted[ parks[p].wayid ].poly.getLatLngs();
+  for(var v=0; v<vertices.length; v++){
+    var pt = vertices[v];
+    latmax = Math.max(latmax, pt.lat);
+    latmin = Math.min(latmin, pt.lat);
+    lngmax = Math.max(lngmax, pt.lng);
+    lngmin = Math.min(lngmin, pt.lng);
   }
   var ctrlat = (latmax + latmin) / 2;
   var ctrlng = (lngmax + lngmin) / 2;
@@ -229,28 +238,29 @@ function writeBuilding(b){
 
     // then draw each foot-point, its corresponding ceiling point, and connections
     // start from the northernmost point and work your way south
-    var sorted = buildings[b].sections[s].vertices.slice(0);
-    sorted.sort( function(pt1, pt2){ return pt2[0] - pt1[0] } );
+    var vertices = promoted[ buildings[b].wayid ].poly.getLatLngs();
+    var sorted = vertices.slice(0);
+    sorted.sort( function(pt1, pt2){ return pt2.lat - pt1.lat } );
 
     for(var v=0; v<sorted.length; v++){
       var at_pt = toPixel( sorted[v], ctrlat, ctrlng, scale );
       var last_pt, next_pt;
       // find points which appeared before and after the current one in SERIES, not in NORTH -> SOUTH
-	  for(var i=0; i<buildings[b].sections[s].vertices.length; i++){
-        if(buildings[b].sections[s].vertices[i][0] == sorted[v][0]){
-		  if(buildings[b].sections[s].vertices[i][1] == sorted[v][1]){
+	  for(var i=0; i<.length; i++){
+        if(vertices[i].lat == sorted[v].lat){
+		  if(vertices[i].lng == sorted[v].lng){
 		    if(i != 0){
-		      last_pt = buildings[b].sections[s].vertices[i-1];
+		      last_pt = vertices[i-1];
 		    }
 		    else{
-              last_pt = buildings[b].sections[s].vertices[buildings[b].sections[s].vertices.length - 1];
+              last_pt = vertices[vertices.length - 1];
 		    }
 		    last_pt = toPixel( last_pt, ctrlat, ctrlng, scale );
-		    if(i != buildings[b].sections[s].vertices.length-1){
-		      next_pt = buildings[b].sections[s].vertices[i+1];
+		    if(i != vertices.length-1){
+		      next_pt = vertices[i+1];
 		    }
 		    else{
-		      next_pt = buildings[b].sections[s].vertices[0];		    
+		      next_pt = vertices[0];		    
 		    }
 		    next_pt = toPixel( next_pt, ctrlat, ctrlng, scale );
 		    break;
@@ -300,35 +310,35 @@ function writeBuilding(b){
 
     if(buildings[b].effect == "3Droof"){
       var roofTip = [0, 0];
-      for(var i=0; i<buildings[b].sections[s].vertices.length; i++){
-	    var at_pt = buildings[b].sections[s].vertices[i];
+      for(var i=0; i<vertices.length; i++){
+	    var at_pt = vertices[i];
 	    at_pt = toPixel( at_pt, ctrlat, ctrlng, scale );
         roofTip[0] += at_pt[0] - levels_offset_x;
         roofTip[1] += at_pt[1] - levels_offset;
       }
-      roofTip[0] = roofTip[0] / (buildings[b].sections[s].vertices.length);
-      roofTip[1] = roofTip[1] / (buildings[b].sections[s].vertices.length);
+      roofTip[0] = roofTip[0] / vertices.length;
+      roofTip[1] = roofTip[1] / vertices.length;
     
       // draw triangles to form a roof
-      for(var i=buildings[b].sections[s].vertices.length-1; i>=0; i--){
+      for(var i=vertices.length-1; i>=0; i--){
       //for(var i=0; i<buildings[b].sections[s].vertices.length; i++){
         var last_pt;
         if(i != 0){
-          last_pt = buildings[b].sections[s].vertices[i-1];
+          last_pt = vertices[i-1];
         }
         else{
-          last_pt = buildings[b].sections[s].vertices[buildings[b].sections[s].vertices.length - 1];
+          last_pt = vertices[vertices.length - 1];
         }
 	    last_pt = toPixel( last_pt, ctrlat, ctrlng, scale );
 	    var next_pt;
-	    if(i != buildings[b].sections[s].vertices.length - 1){
-		  next_pt = buildings[b].sections[s].vertices[i+1];
+	    if(i != vertices.length - 1){
+		  next_pt = vertices[i+1];
 	    }
 	    else{
-		  next_pt = buildings[b].sections[s].vertices[0];		    
+		  next_pt = vertices[0];		    
 	    }
 	    next_pt = toPixel( next_pt, ctrlat, ctrlng, scale );
-	    var at_pt = buildings[b].sections[s].vertices[i];
+	    var at_pt = vertices[i];
 	    at_pt = toPixel( at_pt, ctrlat, ctrlng, scale );
 	  
 	    // calculate whether the current roofTip can be met without crossing lines
@@ -337,16 +347,16 @@ function writeBuilding(b){
 	    var roofLine_m = ((at_pt[1] - levels_offset) - roofTip[1]) / ((at_pt[0] - levels_offset_x) - roofTip[0] );
 	    var roofLine_i = (at_pt[1] - levels_offset) - (at_pt[0] - levels_offset_x) * roofLine_m;
 	    var newroofTip = roofTip;
-	    for(var f=0; f<buildings[b].sections[s].vertices.length; f++){
+	    for(var f=0; f<vertices.length; f++){
 	      // calculate a line from pt(i) to pt(i+1)
-	      var wallLine_a = buildings[b].sections[s].vertices[f];
+	      var wallLine_a = vertices[f];
 		  wallLine_a = toPixel( wallLine_a, ctrlat, ctrlng, scale );
 		  var wallLibe_b;
-		  if(f != buildings[b].sections[s].vertices.length - 1){
-	        wallLine_b = buildings[b].sections[s].vertices[f+1];
+		  if(f != vertices.length - 1){
+	        wallLine_b = vertices[f+1];
 	      }
 	      else{
-	        wallLine_b = buildings[b].sections[s].vertices[0];	    
+	        wallLine_b = vertices[0];	    
 	      }
 		  wallLine_b = toPixel( wallLine_b, ctrlat, ctrlng, scale );
 
@@ -422,11 +432,11 @@ function writeBuilding(b){
     else{
       // draw a flat roof
       // more complex roofs benefit by having all ceilings filled in event of failed drawing algorithm
-      var roof_start = toPixel( buildings[b].sections[s].vertices[0], ctrlat, ctrlng, scale );
+      var roof_start = toPixel( vertices[0], ctrlat, ctrlng, scale );
       ctx.moveTo( roof_start[0] - levels_offset_x, roof_start[1] - levels_offset );
       ctx.beginPath();
-	  for(var i=1; i<buildings[b].sections[s].vertices.length; i++){
-        var roof_pt = toPixel( buildings[b].sections[s].vertices[i], ctrlat, ctrlng, scale );
+	  for(var i=1; i<vertices.length; i++){
+        var roof_pt = toPixel( vertices[i], ctrlat, ctrlng, scale );
         ctx.lineTo( roof_pt[0] - levels_offset_x, roof_pt[1] - levels_offset );
       }
       ctx.closePath();
@@ -490,7 +500,7 @@ function writePark(p){
 	}
   }
       
-  var poly = parks[p].vertices;
+  var poly = promoted[ parks[p] ].poly.getLatLngs();
   for(var i=0; i<poly.length; i++){
 	var at_pt = poly[i];
 	at_pt = toPixel( at_pt, ctrlat, ctrlng, scale );
@@ -527,13 +537,12 @@ function ptInPoly(pt, polyCords){
 	}
 	return c;
 }
-var pix_x_offset = 150; // set to 1/2 the width of the canvas element before calling toPixel
-var pix_y_offset = 150; // set to 1/2 the height of the canvas element before calling toPixel
+var pix_x_offset, pix_y_offset;
 function toPixel(latlng, ctrlat, ctrlng, scale){
   pix_x_offset = document.getElementById("parkCanvas").width / 2;
   pix_y_offset = document.getElementById("parkCanvas").height / 2;  
-  var pix_x = Math.round( (latlng[1] - ctrlng) * scale + pix_x_offset);
-  var pix_y = Math.round( (ctrlat - latlng[0]) * scale + pix_y_offset);
+  var pix_x = Math.round( (latlng.lng - ctrlng) * scale + pix_x_offset);
+  var pix_y = Math.round( (ctrlat - latlng.lat) * scale + pix_y_offset);
   return [ pix_x, pix_y ];
 }
 function bounce_on_hover(m, b){
@@ -640,6 +649,10 @@ function processOSM(data){
               promoted[shape].customgeoid = resp.id;
             });
           }
+          // make sure edited polygon gets any existing 2D or 3D effect
+          if(promoted[shape].effect){
+            setEffect(shape, promoted[shape].effect);
+          }
           break;
         }
       }
@@ -667,10 +680,6 @@ function hideWay(wayid){
   promoted[ wayid ] = null;
 }
 function setEffect(wayid, settype){
-  if(promoted[wayid].effect == settype){
-    // ignore if unchanged effect
-    return;
-  }
   if(promoted[wayid].drawnLayer){
     // remove previously drawn layer if it exists
     map.removeLayer(promoted[wayid].drawnLayer);
@@ -689,15 +698,15 @@ function setEffect(wayid, settype){
       // create listing in building index
       buildings.push({
         wayid: wayid,
-    	sections: [{
+    	/* sections: [{
     		vertices: promoted[wayid].osmdata.line.slice(0),
     		levels: 1
-    	}],
+    	}], */
     	color: "#ff0000",
     	roofcolor: "#cccccc",
     	effect: settype
       });
-      prepBuilding(buildings.length-1);
+      prepBuilding(b_index);
     }
     else{
       for(var b=0;b<buildings.length;b++){
@@ -708,6 +717,7 @@ function setEffect(wayid, settype){
       }
     }
     promoted[wayid].building = true;
+    prepBuilding(b_index);
     writeBuilding(b_index);
   }
   else if(promoted[wayid].effect.indexOf("3D") > -1){
@@ -725,11 +735,10 @@ function setEffect(wayid, settype){
     if(!promoted[wayid].tiled || promoted[wayid].tiled != settype.replace("2D","")){
       parks.push({
         wayid: wayid,
-	    vertices: promoted[wayid].osmdata.line.slice(0),
+	    /* vertices: promoted[wayid].osmdata.line.slice(0), */
 	    effect: "park",
 	    texture: settype.replace("2D","")
       });
-      prepPark(parks.length-1);
     }
     else{
       for(var b=0;b<parks.length;b++){
@@ -737,9 +746,10 @@ function setEffect(wayid, settype){
           p_index = b;
           break;
         }
-      }    
+      }
     }
     promoted[wayid].tiled = true;
+    prepPark(p_index);
     writePark(p_index);
   }
   else if(promoted[wayid].effect.indexOf("2D") > -1){
