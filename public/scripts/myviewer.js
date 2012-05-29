@@ -74,6 +74,12 @@ function init(){
 
 tree = new Image();
 tree.src = "../images/treeblot.png";
+corn = new Image();
+corn.src = "../images/corn.png";
+coffee = new Image();
+coffee.src = "../images/coffee.png";
+watermelon = new Image();
+watermelon.src = "../images/watermelon.png";
 
 function prepBuilding(b){
   promoted[ buildings[b].wayid ] = { effect: "3Dblock" };
