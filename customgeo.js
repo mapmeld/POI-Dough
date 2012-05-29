@@ -6,6 +6,7 @@ var CustomGeoSchema = new Schema({
   latlngs: Array,
   sourceid: String,
   addedToMap: String,
+  textureOrEffect: String,
   updated: Date
 });
 

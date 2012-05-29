@@ -7,16 +7,22 @@ var pix_x_offset, pix_y_offset;
 
 $(document).ready(function(){
   for(var b=0;b<buildids.length;b++){
-    $.getJSON("/isometrics?wayid=" + buildids[b], function(data){
+    $.getJSON("/isometrics?wayid=" + buildids[b].split(":")[1].split("_")[0], function(data){
       buildings.push(data);
       prepBuilding(buildings.length-1);
+      if(buildids[b].indexOf("_") > -1){
+        buildings[buildings.length-1].effect = buildids[b].split("_")[1];
+      }
       writeBuilding(buildings.length-1);
     });
   }
   for(var p=0;p<parkids.length;p++){
-    $.getJSON("/textures?wayid=" + parkids[p], function(data){
+    $.getJSON("/textures?wayid=" + parkids[p].split(":")[1].split("_")[0], function(data){
       parks.push(data);
       prepPark(parks.length-1);
+      if(parkids[p].indexOf("_") > -1){
+        parks[parks.length-1].texture = parkids[p].split("_")[1];
+      }
       writePark(parks.length-1);
     });
   }

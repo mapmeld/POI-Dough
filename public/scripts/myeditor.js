@@ -798,19 +798,19 @@ function exportPOI(){
   var allbuildings = [];
   for(var b=0;b<buildings.length;b++){
     if(promoted[ buildings[b].wayid ].customgeoid){
-      allbuildings.push( "poi:" + promoted[ buildings[b].wayid ].customgeoid );
+      allbuildings.push( "poi:" + promoted[ buildings[b].wayid ].customgeoid + "_" + buildings[b].effect );
     }
     else{
-      allbuildings.push( buildings[b].wayid );
+      allbuildings.push( buildings[b].wayid + "_" + buildings[b].effect );
     }
   }
   var allparks = [];
   for(var p=0;p<parks.length;p++){
     if(promoted[ parks[p].wayid ].customgeoid){
-      allparks.push( "poi:" + promoted[ parks[p].wayid ].customgeoid );
+      allparks.push( "poi:" + promoted[ parks[p].wayid ].customgeoid + "_" + parks[p].texture );
     }
     else{
-      allparks.push( parks[p].wayid );
+      allparks.push( parks[p].wayid + "_" + parks[p].texture );
     }
   }
   var url = "/savemap?bld=" + allbuildings.join(",") + "&prk=" + allparks.join(",") + "&createdby=POI_Dough_Test&tiler=" + $("#mapTiler").val() + "&ctr=" + map.getCenter().lat.toFixed(6) + "," + map.getCenter().lng.toFixed(6) + "&z=" + map.getZoom();
