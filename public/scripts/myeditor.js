@@ -246,7 +246,7 @@ function writeBuilding(b){
       var at_pt = toPixel( sorted[v], ctrlat, ctrlng, scale );
       var last_pt, next_pt;
       // find points which appeared before and after the current one in SERIES, not in NORTH -> SOUTH
-	  for(var i=0; i<.length; i++){
+	  for(var i=0; i< vertices.length; i++){
         if(vertices[i].lat == sorted[v].lat){
 		  if(vertices[i].lng == sorted[v].lng){
 		    if(i != 0){
