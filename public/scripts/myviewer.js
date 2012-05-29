@@ -25,7 +25,7 @@ $(document).ready(function(){
     if(parkid.indexOf(":") > -1){
       parkid = parkid.split(":")[1];
     }
-    $.getJSON("/textures?wayid=" + parkid function(data){
+    $.getJSON("/textures?wayid=" + parkid, function(data){
       parks.push(data);
       prepPark(parks.length-1);
       if(parkids[p].indexOf("_") > -1){
