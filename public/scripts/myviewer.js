@@ -7,7 +7,11 @@ var pix_x_offset, pix_y_offset;
 
 $(document).ready(function(){
   for(var b=0;b<buildids.length;b++){
-    $.getJSON("/isometrics?wayid=" + buildids[b].split(":")[1].split("_")[0], function(data){
+    var buildid = buildids[b].split("_")[0];
+    if(buildid.indexOf(":") > -1){
+      buildid = buildid.split(":")[1];
+    }
+    $.getJSON("/isometrics?wayid=" + buildid, function(data){
       buildings.push(data);
       prepBuilding(buildings.length-1);
       if(buildids[b].indexOf("_") > -1){
@@ -17,7 +21,11 @@ $(document).ready(function(){
     });
   }
   for(var p=0;p<parkids.length;p++){
-    $.getJSON("/textures?wayid=" + parkids[p].split(":")[1].split("_")[0], function(data){
+    var parkid = parkids[p].split("_")[0];
+    if(parkid.indexOf(":") > -1){
+      parkid = parkid.split(":")[1];
+    }
+    $.getJSON("/textures?wayid=" + parkid function(data){
       parks.push(data);
       prepPark(parks.length-1);
       if(parkids[p].indexOf("_") > -1){
