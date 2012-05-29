@@ -1,5 +1,5 @@
 var ctx;
-var shape = [ [ 10, 10 ], [ 15, 30 ], [ 20, 10 ] ];
+var shape = [ [ 10, 10 ], [ 150, 275 ], [ 228, 100 ], [ 10, 10 ] ];
 function replaceAll(src, oldr, newr){
   while(src.indexOf(oldr) > -1){
     src = src.replace(oldr,newr);
@@ -49,6 +49,7 @@ function simulatePoint(){
   $("polylineTab").className = "";
   $("polygonTab").className = "";
   shape = [ [ 150, 220 ] ];
+  testCanvasCode();
 }
 function simulateLine(){
   $("pointTab").className = "";
@@ -56,6 +57,7 @@ function simulateLine(){
   $("polylineTab").className = "";
   $("polygonTab").className = "";
   shape = [ [ 15, 28 ], [ 280, 290 ] ];
+  testCanvasCode();
 }
 function simulatePolyline(){
   $("pointTab").className = "";
@@ -63,6 +65,7 @@ function simulatePolyline(){
   $("polylineTab").className = "active";
   $("polygonTab").className = "";
   shape = [ [ 10, 10 ], [ 150, 275 ], [ 228, 100 ] ];
+  testCanvasCode();
 }
 function simulatePolygon(){
   $("pointTab").className = "";
@@ -70,6 +73,7 @@ function simulatePolygon(){
   $("polylineTab").className = "";
   $("polygonTab").className = "active";
   shape = [ [ 10, 10 ], [ 150, 275 ], [ 228, 100 ], [ 10, 10 ] ];
+  testCanvasCode();
 }
 function $(id){
   return document.getElementById(id);
