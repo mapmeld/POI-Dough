@@ -499,8 +499,8 @@ function writePark(p){
 	    ctx.drawImage(icon, x, y, 25, 25);
 	}
   }
-      
-  var poly = promoted[ parks[p].wayid ].poly.getLatLngs();
+
+  var poly = promoted[ parks[p].wayid ].poly.getLatLngs().slice();
   for(var i=0; i<poly.length; i++){
 	var at_pt = poly[i];
 	at_pt = toPixel( at_pt, ctrlat, ctrlng, scale );
