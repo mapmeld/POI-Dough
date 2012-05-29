@@ -1,27 +1,76 @@
-var ctx, shape;
+var ctx;
+var shape = [ [ 10, 10 ], [ 15, 30 ], [ 20, 10 ] ];
+function replaceAll(src, oldr, newr){
+  while(src.indexOf(oldr) > -1){
+    src = src.replace(oldr,newr);
+  }
+  return src;
+}
 function testCanvasCode(){
-  shape = [ [ 10, 10 ], [ 15, 30 ], [ 20, 10 ] ];
-  document.getElementById("parkCanvas").width = document.getElementById("parkCanvas").width;
-  ctx = document.getElementById("parkCanvas").getContext('2d');
-  eval( document.getElementById("codedraft").value + " drawSample(ctx);" );
+  $("parkCanvas").width = $("parkCanvas").width;
+  ctx = $("parkCanvas").getContext('2d');
+  var codescan = $("codedraft").value;
+  codescan = replaceAll(replaceAll(codescan.toLowerCase()," ",""),"\n","");
+  if((codescan.indexOf("document") > -1) || (codescan.indexOf("script") > -1) || (codescan.indexOf("eval") > -1) || (codescan.indexOf("parent") > -1) || (codescan.indexOf("$") > -1) || (codescan.indexOf("jquery") > -1)){
+    alert("Access to document, script, eval, or parent denied");
+    return;
+  }
+  eval( $("codedraft").value + " drawSample(ctx);" );
 }
 function syntaxCheck(){
   switchToCode();
-  document.getElementById("codestore").innerHTML = "<pre class='brush:jscript'>" + document.getElementById("codedraft").value + "</pre>";
+  var codescan = $("codedraft").value;
+  codescan = replaceAll(replaceAll(codescan.toLowerCase()," ",""),"\n","");
+  if((codescan.indexOf("document") > -1) || (codescan.indexOf("script") > -1) || (codescan.indexOf("eval") > -1) || (codescan.indexOf("parent") > -1) || (codescan.indexOf("$") > -1) || (codescan.indexOf("jquery") > -1)){
+    alert("Access to document, script, eval, jQuery, or parent denied");
+    return;
+  }
+  $("codestore").innerHTML = "<pre class='brush:jscript'>" + $("codedraft").value + "</pre>";
   SyntaxHighlighter.highlight();
 }
 function storeProcedure(){
-  document.getElementById("codeform").submit();
+  $("codeform").submit();
 }
 function switchToCode(){
-  document.getElementById("codeTab").className = "active";
-  document.getElementById("editTab").className = "";
-  document.getElementById("currentcode").style.display = "block";
-  document.getElementById("editcode").style.display = "none";
+  $("codeTab").className = "active";
+  $("editTab").className = "";
+  $("currentcode").style.display = "block";
+  $("editcode").style.display = "none";
 }
 function switchToEdit(){
-  document.getElementById("codeTab").className = "";
-  document.getElementById("editTab").className = "active";
-  document.getElementById("currentcode").style.display = "none";
-  document.getElementById("editcode").style.display = "block";
+  $("codeTab").className = "";
+  $("editTab").className = "active";
+  $("currentcode").style.display = "none";
+  $("editcode").style.display = "block";
+}
+function simulatePoint(){
+  $("pointTab").className = "active";
+  $("lineTab").className = "";
+  $("polylineTab").className = "";
+  $("polygonTab").className = "";
+  shape = [ [ 150, 220 ] ];
+}
+function simulateLine(){
+  $("pointTab").className = "";
+  $("lineTab").className = "active";
+  $("polylineTab").className = "";
+  $("polygonTab").className = "";
+  shape = [ [ 15, 28 ], [ 280, 290 ] ];
+}
+function simulatePolyline(){
+  $("pointTab").className = "";
+  $("lineTab").className = "";
+  $("polylineTab").className = "active";
+  $("polygonTab").className = "";
+  shape = [ [ 10, 10 ], [ 150, 275 ], [ 228, 100 ] ];
+}
+function simulatePolygon(){
+  $("pointTab").className = "";
+  $("lineTab").className = "";
+  $("polylineTab").className = "";
+  $("polygonTab").className = "active";
+  shape = [ [ 10, 10 ], [ 150, 275 ], [ 228, 100 ], [ 10, 10 ] ];
+}
+function $(id){
+  return document.getElementById(id);
 }

@@ -410,10 +410,23 @@ var init = exports.init = function (config) {
       res.render('kansasedit', { program: { name: "" } });
     }
   });
+
+  function replaceAll(src, oldr, newr){
+    while(src.indexOf(oldr) > -1){
+      src = src.replace(oldr,newr);
+    }
+    return src;
+  }
   
   app.get('/kansassave', function(req, res){
     if(req.query["id"]){
-      // update
+      // search for dangerous DOM access before storing any code
+      var codescan = replaceAll(replaceAll(req.query["code"].toLowerCase()," ",""),"\n","");
+      if((codescan.indexOf("document") > -1) || (codescan.indexOf("script") > -1) || (codescan.indexOf("eval") > -1) || (codescan.indexOf("parent") > -1) || (codescan.indexOf("$") > -1) || (codescan.indexOf("jquery") > -1)){
+        res.redirect('/kansas')
+      }
+
+      // acceptable document - update file
       procedure.Procedure.findById(req.query["id"], function(err, canvProgram){
         canvProgram.name = req.query["name"];
         canvProgram.code = req.query["code"];

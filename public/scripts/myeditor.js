@@ -239,7 +239,7 @@ function writeBuilding(b){
     // then draw each foot-point, its corresponding ceiling point, and connections
     // start from the northernmost point and work your way south
     var vertices = promoted[ buildings[b].wayid ].poly.getLatLngs();
-    var sorted = vertices.slice(0);
+    var sorted = vertices.splice(0);
     sorted.sort( function(pt1, pt2){ return pt2.lat - pt1.lat } );
 
     for(var v=0; v<sorted.length; v++){
@@ -627,7 +627,7 @@ function processOSM(data){
       continue;
     }
     // add this way
-    var wll = data.ways[i].line.slice(0);
+    var wll = data.ways[i].line.splice(0);
     for(var j=0;j<wll.length;j++){
       wll[j] = new L.LatLng(wll[j][0], wll[j][1]);
     }
@@ -699,7 +699,7 @@ function setEffect(wayid, settype){
       buildings.push({
         wayid: wayid,
     	sections: [{
-    		/* vertices: promoted[wayid].osmdata.line.slice(0), */
+    		/* vertices: promoted[wayid].osmdata.line.splice(0), */
     		levels: 1
     	}],
     	color: "#ff0000",
@@ -735,7 +735,7 @@ function setEffect(wayid, settype){
     if(!promoted[wayid].tiled || promoted[wayid].tiled != settype.replace("2D","")){
       parks.push({
         wayid: wayid,
-	    /* vertices: promoted[wayid].osmdata.line.slice(0), */
+	    /* vertices: promoted[wayid].osmdata.line.splice(0), */
 	    effect: "park",
 	    texture: settype.replace("2D","")
       });
