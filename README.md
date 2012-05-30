@@ -9,7 +9,7 @@ Here are some visual effects available now:
 <li>Explore and interact with the Leaflet.js maps API</li>
 <li>Make buildings pop out of the map with a 3D effect</li>
 <li>Choose textures for parks, farms, forests, and other areas.</li>
-<li>Code new visualizations, such as <a href='http://poimark2.herokuapp.com/kansas?id=4fc578ff59e0840100000005'>crayon</a>, to apply to any building.</li>
+<li>Code new visualizations, such as <a href='http://poimark2.herokuapp.com/kansas?id=4fc57e1b91b1ab0100000005'>crayon</a>, to apply to any building.</li>
 </ul>
 
 Different directions this could take:
