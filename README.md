@@ -26,6 +26,10 @@ Different directions this could take:
 
 <img src="http://i.imgur.com/Bb9Ed.png"/>
 
+Generating the Crayon Visualization
+
+<img src="http://i.imgur.com/GjFPU.png"/>
+
 ## Theory
 
 ### Old Model
