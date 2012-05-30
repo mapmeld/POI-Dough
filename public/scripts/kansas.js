@@ -11,8 +11,8 @@ function testCanvasCode(){
   ctx = $("parkCanvas").getContext('2d');
   var codescan = $("codedraft").value;
   codescan = replaceAll(replaceAll(codescan.toLowerCase()," ",""),"\n","");
-  if((codescan.indexOf("document") > -1) || (codescan.indexOf("script") > -1) || (codescan.indexOf("eval") > -1) || (codescan.indexOf("parent") > -1) || (codescan.indexOf("$") > -1) || (codescan.indexOf("jquery") > -1)){
-    alert("Access to document, script, eval, or parent denied");
+  if((codescan.indexOf("document") > -1) || (codescan.indexOf("script") > -1) || (codescan.indexOf("eval") > -1) || (codescan.indexOf("parent") > -1) || (codescan.indexOf("$") > -1) || (codescan.indexOf("jquery") > -1) || (codescan.indexOf("alert") > -1)){
+    alert("Access to document, script, eval, alert, or parent denied");
     return;
   }
   eval( $("codedraft").value + " drawSample(ctx);" );
@@ -21,8 +21,8 @@ function syntaxCheck(){
   switchToCode();
   var codescan = $("codedraft").value;
   codescan = replaceAll(replaceAll(codescan.toLowerCase()," ",""),"\n","");
-  if((codescan.indexOf("document") > -1) || (codescan.indexOf("script") > -1) || (codescan.indexOf("eval") > -1) || (codescan.indexOf("parent") > -1) || (codescan.indexOf("$") > -1) || (codescan.indexOf("jquery") > -1)){
-    alert("Access to document, script, eval, jQuery, or parent denied");
+  if((codescan.indexOf("document") > -1) || (codescan.indexOf("script") > -1) || (codescan.indexOf("eval") > -1) || (codescan.indexOf("parent") > -1) || (codescan.indexOf("$") > -1) || (codescan.indexOf("jquery") > -1) || (codescan.indexOf("alert") > -1)){
+    alert("Access to document, script, eval, jQuery, alert, or parent denied");
     return;
   }
   $("codestore").innerHTML = "<pre class='brush:jscript'>" + $("codedraft").value + "</pre>";
