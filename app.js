@@ -435,7 +435,7 @@ var init = exports.init = function (config) {
     return src;
   }
   
-  app.get('/kansassave', function(req, res){
+  app.post('/kansassave', function(req, res){
     if(req.query["id"]){
       // search for dangerous DOM access before storing any code
       var codescan = replaceAll(replaceAll(req.query["code"].toLowerCase()," ",""),"\n","");

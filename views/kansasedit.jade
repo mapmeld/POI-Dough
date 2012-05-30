@@ -19,7 +19,7 @@ body
     input(type="button", value="Refresh", onclick="window.location.reload()")
     br
     br
-    form(action='/kansassave', method='get')
+    form(action='/kansassave', method='post')
       input.span5(name='name', type='text')
       br
       textarea.span5(id='codedraft', name='code', rows='15') function drawSample(ctx){ }
@@ -48,7 +48,7 @@ body
             a.btn.btn-primary(href='#', onclick='storeProcedure()') Store Procedure
 
           div#editcode(style='display:none;')
-            form(id='codeform', action='/kansassave', method='get')
+            form(id='codeform', action='/kansassave', method='post')
               input(type='hidden', name='id', value='#{program._id}')
               input.span5(name='name', type='text', value='#{program.name}')
               br
