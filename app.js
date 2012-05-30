@@ -436,17 +436,17 @@ var init = exports.init = function (config) {
   }
   
   app.post('/kansassave', function(req, res){
-    if(req.query["id"]){
+    if(req.body.id){
       // search for dangerous DOM access before storing any code
-      var codescan = replaceAll(replaceAll(req.query["code"].toLowerCase()," ",""),"\n","");
+      var codescan = replaceAll(replaceAll((req.body.code).toLowerCase()," ",""),"\n","");
       if((codescan.indexOf("document") > -1) || (codescan.indexOf("script") > -1) || (codescan.indexOf("eval") > -1) || (codescan.indexOf("parent") > -1) || (codescan.indexOf("$") > -1) || (codescan.indexOf("jquery") > -1)){
         res.redirect('/kansas')
       }
 
       // acceptable document - update file
-      procedure.Procedure.findById(req.query["id"], function(err, canvProgram){
-        canvProgram.name = req.query["name"];
-        canvProgram.code = req.query["code"];
+      procedure.Procedure.findById(req.body.id, function(err, canvProgram){
+        canvProgram.name = req.body.name;
+        canvProgram.code = req.body.code;
         canvProgram.save(function (err) {
           if (!err){
             console.log('Success!');
@@ -462,8 +462,8 @@ var init = exports.init = function (config) {
     else{
       // creating new procedure
       var myProcedure = new procedure.Procedure({
-        name: req.query["name"],
-        code: req.query["code"],
+        name: req.body.name,
+        code: req.body.code,
         updated: new Date()
       });
       myProcedure.save(function (err) {
