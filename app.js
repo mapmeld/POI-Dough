@@ -436,7 +436,8 @@ var init = exports.init = function (config) {
   }
   
   app.post('/kansassave', function(req, res){
-    if(req.body.id){
+    var fixedVisuals = [ "4fc578ff59e0840100000005", "4fc1b2a150270f0100000001" ];
+    if(req.body.id && fixedVisuals.indexOf(req.body.id) == -1){
       // search for dangerous DOM access before storing any code
       var codescan = replaceAll(replaceAll((req.body.code).toLowerCase()," ",""),"\n","");
       if((codescan.indexOf("document") > -1) || (codescan.indexOf("script") > -1) || (codescan.indexOf("eval") > -1) || (codescan.indexOf("parent") > -1) || (codescan.indexOf("$") > -1) || (codescan.indexOf("jquery") > -1)){
