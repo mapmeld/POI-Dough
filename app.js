@@ -161,6 +161,7 @@ var init = exports.init = function (config) {
     // store custom polygons
     if(req.query["id"]){
       var poi_id = req.query["id"].replace("poi:","");
+      console.log(poi_id);
       // requesting or updating a polygon
       customgeo.CustomGeo.findById(poi_id, function(err, custompoly){
         if(req.query["pts"]){
@@ -289,6 +290,7 @@ var init = exports.init = function (config) {
 	if(wayid.indexOf("poi:") > -1){
 	  // custom geo
 	  res.redirect( '/customgeo?form=build&id=' + wayid );
+	  return;
 	}
 
     // generate from API: http://www.openstreetmap.org/api/0.6/way/[WAYID]/full
