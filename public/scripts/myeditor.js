@@ -239,6 +239,9 @@ function writeBuilding(b){
     // then draw each foot-point, its corresponding ceiling point, and connections
     // start from the northernmost point and work your way south
     var vertices = promoted[ buildings[b].wayid ].poly.getLatLngs();
+    if(vertices.length == 0){
+      vertices = promoted[ buildings[b].wayid ].poly._originalPoints.slice();
+    }
     var sorted = vertices.splice(0);
     sorted.sort( function(pt1, pt2){ return pt2.lat - pt1.lat } );
 
@@ -501,6 +504,9 @@ function writePark(p){
   }
 
   var poly = promoted[ parks[p].wayid ].poly.getLatLngs().slice();
+  if(vertices.length == 0){
+    poly = promoted[ buildings[b].wayid ].poly._originalPoints.slice();
+  }
   for(var i=0; i<poly.length; i++){
 	var at_pt = poly[i];
 	at_pt = toPixel( at_pt, ctrlat, ctrlng, scale );
@@ -607,15 +613,17 @@ function llserial(latlngs){
 function processOSM(data){
   $("#importButton").removeClass("disabled");
   for(var i=0;i<data.nodes.length;i++){
-    // show this node as a marker
-    var marker = new L.Marker( new L.LatLng( data.nodes[i].latlng[0], data.nodes[i].latlng[1] ) );
-    map.addLayer(marker);
+    // show this node as a marker, only if it is notable
+    if((hasKey(data.nodes[i],"name")) || (hasKey(data.nodes[i],"amenity")) || (hasKey(data.nodes[i],"natural"))){
+      var marker = new L.Marker( new L.LatLng( data.nodes[i].latlng[0], data.nodes[i].latlng[1] ) );
+      map.addLayer(marker);
     
-    marker.bindPopup( '<h3>' + getName(data.nodes[i]) + '</h3>' + tableOfData(data.nodes[i]) );
-    bounce_on_hover(marker, null);
+      marker.bindPopup( '<h3>' + getName(data.nodes[i]) + '</h3>' + tableOfData(data.nodes[i]) );
+      bounce_on_hover(marker, null);
     
-    // TODO: add markers to promotion layer
-    //promoted[ "node:" + data.nodes[i].id ] = marker;
+      // TODO: add markers to promotion layer
+      //promoted[ "node:" + data.nodes[i].id ] = marker;
+    }
   }
   for(var i=0;i<data.ways.length;i++){
     if(promoted[ data.ways[i].wayid ]){
