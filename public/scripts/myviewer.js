@@ -8,16 +8,16 @@ var pix_x_offset, pix_y_offset;
 $(document).ready(function(){
   for(var b=0;b<buildids.length;b++){
     var buildid = buildids[b].split("_")[0];
-    if(buildid.indexOf(":") > -1){
+    /*if(buildid.indexOf(":") > -1){
       buildid = buildid.split(":")[1];
-    }
+    }*/
     fetchBuilding(buildid, b);
   }
   for(var p=0;p<parkids.length;p++){
     var parkid = parkids[p].split("_")[0];
-    if(parkid.indexOf(":") > -1){
+    /*if(parkid.indexOf(":") > -1){
       parkid = parkid.split(":")[1];
-    }
+    }*/
     fetchPark(parkid, p);
   }
   init();
