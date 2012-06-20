@@ -12,10 +12,6 @@ Here are some features available now:
 <li>Code new visualizations, such as <a href='http://poimark2.herokuapp.com/kansas?id=4fc578ff59e0840100000005'>crayon</a>, to apply to any map geometry.</li>
 </ul>
 
-About NoSQL:<br/>
-<p>Most databases are like a giant Excel sheet - each row has a set number of columns which can be used to compare it with other rows.</p>
-<p>NoSQL is more like a city - each block can have a completely different shape and function. A restaurant can be classified by the types of food they serve, a school can have information about number of students, and both can be classified by number of employees. MongoDB also has geospatial search ( listing objects closest to a point or within a set area ) making it possible to quickly find local data.</p>
-
 Different directions this could take:
 <ul>
 <li>Visualizations based on OSM tags or other geodata</li>
@@ -48,6 +44,12 @@ Users are invited to interact with the data available at each Place.
 Authors can match their own set of points to OpenStreetMap and DataCouch datasets.
 
 <img src="http://i.imgur.com/5aQ9p.png"/>
+
+# About NoSQL:
+<p>Most databases are like a giant Excel sheet - each row has a set number of columns which can be used to compare it with other rows.</p>
+<p>NoSQL is more like a city - each building can have a completely different shape and function. A restaurant can be classified by the types of food they serve, a school can have information about number of students, and both can be classified by number of employees.
+Our NoSQL database, MongoDB, makes it possible to search for objects closest to a point or within a set area (geospatial searching)</p>
+
 
 # About Poang Framework
 
