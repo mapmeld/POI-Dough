@@ -1,7 +1,7 @@
 # About POI Mark 2
 
 Show off Places of Interest (POI) by importing them from OpenStreetMap and styling them with HTML5 Canvas and CSS3.
-Each Place will be connected to a record on MongoDB (through POI Dough) or CouchDB (through DataCouch).
+Each Place will be connected to a record on a NoSQL database: either MongoDB (through MongoLab) or CouchDB (through DataCouch).
 
 Here are some visual effects available now:
 <ul>
@@ -14,10 +14,10 @@ Here are some visual effects available now:
 
 Different directions this could take:
 <ul>
-<li>Feeding geodata into MongoDB, with custom UI to query and visualize data</li>
 <li>Visualizations based on OSM tags or other geodata</li>
 <li>GitHub of procedural buildings, markers, etc</li>
 <li>Realtime map layer using node: https://github.com/whichlight/nodejs-leaflet-eventstreams</li>
+<li>Feeding geodata into MongoDB, with custom queries to search / change appearance of data</li>
 <li>Collaboration using node</li>
 <li>Data check-out</li>
 </ul>
@@ -41,7 +41,7 @@ Participation by users is difficult to build into the system.
 ### New Model
 The author imports buildings, parks, and other places from OpenStreetMap to populate their map.
 Users are invited to interact with the data available at each Place.
-Authors can import a dataset from DataCouch to populate their map.
+Authors can match their own set of points to OpenStreetMap and DataCouch datasets.
 
 <img src="http://i.imgur.com/5aQ9p.png"/>
 
