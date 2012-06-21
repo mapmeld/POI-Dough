@@ -242,7 +242,7 @@ function writeBuilding(b){
     if(vertices.length == 0){
       vertices = promoted[ buildings[b].wayid ].poly._originalPoints.slice();
     }
-    var sorted = vertices.splice(0);
+    var sorted = vertices.slice();
     sorted.sort( function(pt1, pt2){ return pt2.lat - pt1.lat } );
 
     for(var v=0; v<sorted.length; v++){
@@ -635,7 +635,7 @@ function processOSM(data){
       continue;
     }
     // add this way
-    var wll = data.ways[i].line.splice(0);
+    var wll = data.ways[i].line.slice();
     for(var j=0;j<wll.length;j++){
       wll[j] = new L.LatLng(wll[j][0], wll[j][1]);
     }
