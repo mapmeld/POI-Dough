@@ -4,6 +4,7 @@ var extraMapLayer;
 var map, baseIcon, miniIcon, activeWay, menuPopup;
 var tree, corn, watermelon, coffee;
 var promoted = { };
+var allowPolygonEditing = true;
 
 function init(){
   var tileURL = "http://otile1.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png";
@@ -610,7 +611,6 @@ function llserial(latlngs){
   }
   return llstr.join("|");
 }
-var allowPolygonEditing = true;
 function toggleEditing(){
   allowPolygonEditing = !allowPolygonEditing;
   if(allowPolygonEditing){
@@ -649,15 +649,21 @@ function processOSM(data){
       continue;
     }
     if(hasKey(data.ways[i],"highway")){
-      //don't mark up roads just yet
+      //don't promote roads just yet
       continue;
     }
-    // add this way
+    // this way might be promoted by the user. Convert to Leaflet polygon
     var wll = data.ways[i].line.slice();
     for(var j=0;j<wll.length;j++){
       wll[j] = new L.LatLng(wll[j][0], wll[j][1]);
     }
     var activePoly = new L.Polygon( wll, { color: "#00f", fillOpacity: 0.3, opacity: 0.65 } );
+
+    // if a polygon covers the entire viewport - it may be a zoning or territory item - skip it
+    if(activePoly.getBounds().contains( map.getBounds() )){
+      continue;
+    }
+    
     promoted[ data.ways[i].wayid ] = { poly: activePoly, osmdata: data.ways[i], effect: "none" };
 
     // test editing
