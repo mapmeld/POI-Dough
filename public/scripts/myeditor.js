@@ -613,6 +613,12 @@ function llserial(latlngs){
 var allowPolygonEditing = true;
 function toggleEditing(){
   allowPolygonEditing = !allowPolygonEditing;
+  if(allowPolygonEditing){
+    $("#editWand").html("Pause Editing");
+  }
+  else{
+    $("#editWand").html("Resume Editing");
+  }
   for(shape in promoted){
     if(allowPolygonEditing){
       promoted[shape].poly.editing.enable();
