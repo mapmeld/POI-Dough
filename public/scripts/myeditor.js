@@ -614,10 +614,10 @@ var allowPolygonEditing = true;
 function toggleEditing(){
   allowPolygonEditing = !allowPolygonEditing;
   if(allowPolygonEditing){
-    $("#editWand").html("Pause Editing");
+    $("#editWand").html("Freeze Points");
   }
   else{
-    $("#editWand").html("Resume Editing");
+    $("#editWand").html("Unfreeze Points");
   }
   for(shape in promoted){
     if(allowPolygonEditing){
