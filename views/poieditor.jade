@@ -45,13 +45,20 @@ body
           input.search-query(type='text', placeholder='Find Maps')
 
   div.container.book
-    .span2.sidebar
-      a#importButton.btn.btn-info(href='#', onclick='importOSM()') Import OSM
-      br
-      br
-      a.btn.btn-ifno(href='#', onclick='exportPOI()') Save Map
+    .row
+      .span2.sidebar
+        a#importButton.btn.btn-info(href='#', onclick='importOSM()') Import OSM
+        br
+        br
+        a.btn.btn-info(href='#', onclick='exportPOI()') Save Map
+        br
+        hr
+        br
+        a#editWand.btn.btn-info(href='#', onclick='toggleEditing()') Pause Editing
+        br
+        p Changing the shape of a building or park in this editor creates a copy of its new shape on POI Dough. You'll have the geometry you want, and keep a data link to OpenStreetMap.
 
-    .span12
-      #map
+      .span10
+        #map
 
   canvas#parkCanvas(width="300", height="300")
