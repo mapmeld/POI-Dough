@@ -8,7 +8,8 @@ Here are some features available now:
 <li>Build on top of the best OpenStreetMap, Stamen, and MapBox map tiles</li>
 <li>Explore and interact with the Leaflet.js maps API</li>
 <li>Make buildings pop out of the map with a 3D effect</li>
-<li>Choose textures for parks, farms, forests, and other areas.</li>
+<li>Choose textures for parks, farms, forests, and other areas</li>
+<li>Click and drag points to edit shapes imported from OpenStreetMap</li>
 <li>Code new visualizations, such as <a href='http://poimark2.herokuapp.com/kansas?id=4fc578ff59e0840100000005'>crayon</a>, to apply to any map geometry.</li>
 </ul>
 
