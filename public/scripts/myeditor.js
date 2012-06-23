@@ -820,7 +820,7 @@ function tableOfData(item){
     if(k == "id" || k == "wayid" || k == "name" || k == "lat" || k == "lon" || k == "line" || k == "user"){
       continue;
     }
-    table += "<tr><td>" + k + "</td><td>" + attrs[k] + "</td></tr>";
+    table += "<tr><td style='max-width:150px;word-wrap:break-word;'>" + k + "</td><td style='max-width:150px;word-wrap:break-word;'>" + attrs[k] + "</td></tr>";
   }
   table += "</table>";
   return table;
