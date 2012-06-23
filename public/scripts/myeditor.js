@@ -610,6 +610,18 @@ function llserial(latlngs){
   }
   return llstr.join("|");
 }
+var allowPolygonEditing = true;
+function toggleEditing(){
+  allowPolygonEditing = !allowPolygonEditing;
+  for(shape in promoted){
+    if(allowPolygonEditing){
+      promoted[shape].poly.editing.enable();
+    }
+    else{
+      promoted[shape].poly.editing.disable();    
+    }
+  }
+}
 function processOSM(data){
   $("#importButton").removeClass("disabled");
   for(var i=0;i<data.nodes.length;i++){
@@ -643,7 +655,9 @@ function processOSM(data){
     promoted[ data.ways[i].wayid ] = { poly: activePoly, osmdata: data.ways[i], effect: "none" };
 
     // test editing
-    activePoly.editing.enable();
+    if(allowPolygonEditing){
+      activePoly.editing.enable();
+    }
     activePoly.on('edit', function() {
       for(shape in promoted){
         if(promoted[shape] && promoted[shape].poly == this){
