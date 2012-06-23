@@ -746,7 +746,7 @@ function setEffect(wayid, settype){
       }
     }
     promoted[wayid].building = true;
-    buildings[b].effect = settype;
+    buildings[b_index].effect = settype;
     prepBuilding(b_index);
     writeBuilding(b_index);
   }
@@ -771,15 +771,15 @@ function setEffect(wayid, settype){
       });
     }
     else{
-      for(var b=0;b<parks.length;b++){
-        if(parks[b].wayid == wayid){
-          p_index = b;
+      for(var p=0;p<parks.length;p++){
+        if(parks[p].wayid == wayid){
+          p_index = p;
           break;
         }
       }
     }
     promoted[wayid].tiled = true;
-    parks[b].effect = settype;
+    parks[p_index].effect = settype;
     prepPark(p_index);
     writePark(p_index);
   }
