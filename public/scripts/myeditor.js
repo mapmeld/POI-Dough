@@ -504,7 +504,7 @@ function writePark(p){
   }
 
   var poly = promoted[ parks[p].wayid ].poly.getLatLngs().slice();
-  if(vertices.length == 0){
+  if(poly.length == 0){
     poly = promoted[ buildings[b].wayid ].poly._originalPoints.slice();
   }
   for(var i=0; i<poly.length; i++){
@@ -706,6 +706,7 @@ function menu_on_click(p, shard){
 function hideWay(wayid){
   map.removeLayer(promoted[ wayid ].poly);
   promoted[ wayid ] = null;
+  map.closePopup();
 }
 function setEffect(wayid, settype){
   if(promoted[wayid].drawnLayer){
@@ -745,6 +746,7 @@ function setEffect(wayid, settype){
       }
     }
     promoted[wayid].building = true;
+    buildings[b].effect = settype;
     prepBuilding(b_index);
     writeBuilding(b_index);
   }
@@ -777,6 +779,7 @@ function setEffect(wayid, settype){
       }
     }
     promoted[wayid].tiled = true;
+    parks[b].effect = settype;
     prepPark(p_index);
     writePark(p_index);
   }
