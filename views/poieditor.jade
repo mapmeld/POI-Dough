@@ -20,8 +20,6 @@ head
     .sidebar{
       padding:10px;
       border-right: 1px solid #000;
-      position:fixed;
-      left:0px;
     }
     #parkCanvas{
       display:none;
@@ -44,13 +42,13 @@ body
         form.navbar-search.pull-right
           input.search-query(type='text', placeholder='Find Maps')
 
-  div.container.book
+  div.container
     .row
       .span2.sidebar
-        a#importButton.btn.btn-info(href='#', onclick='importOSM()') Import OSM
+        a#importButton.btn.btn-primary(href='#', onclick='importOSM()') Import OSM
         br
         br
-        a.btn.btn-info(href='#', onclick='exportPOI()') Save Map
+        a.btn.btn-primary(href='#', onclick='exportPOI()') Save Map
         br
         hr
         br
