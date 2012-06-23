@@ -20,6 +20,8 @@ head
     .sidebar{
       padding:10px;
       border-right: 1px solid #000;
+      position:fixed;
+      left:0px;
     }
     #parkCanvas{
       display:none;
@@ -56,7 +58,7 @@ body
       br
       p Changing the shape of a building or park in this editor creates a copy of its new shape on POI Dough. You'll have the geometry you want, and keep a data link to OpenStreetMap.
 
-    .span10
+    .span12
       #map
 
   canvas#parkCanvas(width="300", height="300")
