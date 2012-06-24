@@ -208,163 +208,155 @@ var init = exports.init = function (config) {
     var poi_id = req.query["id"].split("_")[0];
     var effect = req.query["id"].split("_")[1];
     if(effect.indexOf("3D") > -1){
-      var building;
-      if(poi_id.indexOf("poi:") == 0){
-        building = getCustomGeo( poi_id, "build", null );
-      }
-      else{
-        building = getShape( poi_id, "build", null );
-      }
-      
-      var color = "#ff0000";
-      var roofcolor = "#cccccc";
-      // determine boundaries, center of all building sections
-      var latmax = -1000;
-      var latmin = 1000;
-      var lngmax = -1000;
-      var lngmin = 1000;
-      for(var s=0; s<building.sections.length; s++){
-        for(var v=0; v<building.sections[s].vertices.length; v++){
-          var pt = building.sections[s].vertices[v];
-          latmax = Math.max(latmax, pt[0]);
-          latmin = Math.min(latmin, pt[0]);
-          lngmax = Math.max(lngmax, pt[1]);
-          lngmin = Math.min(lngmin, pt[1]);
+      var drawBuilding = function(building){
+        var color = "#ff0000";
+        var roofcolor = "#cccccc";
+        // determine boundaries, center of all building sections
+        var latmax = -1000;
+        var latmin = 1000;
+        var lngmax = -1000;
+        var lngmin = 1000;
+        for(var s=0; s<building.sections.length; s++){
+          for(var v=0; v<building.sections[s].vertices.length; v++){
+            var pt = building.sections[s].vertices[v];
+            latmax = Math.max(latmax, pt[0]);
+            latmin = Math.min(latmin, pt[0]);
+            lngmax = Math.max(lngmax, pt[1]);
+            lngmin = Math.min(lngmin, pt[1]);
+          }
         }
-      }
-      var ctrlat = (latmax + latmin) / 2;
-      var ctrlng = (lngmax + lngmin) / 2;
-      var center = [ctrlat, ctrlng];
-      var latspan = latmax - latmin;
-      var lngspan = lngmax - lngmin;
-      var levelmax = 0;
-      /* if(latspan > lngspan){
-  	    canv.height = parseInt( latspan / lngspan * 300 );
-  	    canv.width = 300;
-      }
-      else{
-        canv.height = 300;
-  	    canv.width = parseInt( lngspan / latspan * 300 );
-      } */
+        var ctrlat = (latmax + latmin) / 2;
+        var ctrlng = (lngmax + lngmin) / 2;
+        var center = [ctrlat, ctrlng];
+        var latspan = latmax - latmin;
+        var lngspan = lngmax - lngmin;
+        var levelmax = 0;
 
-      for(var s=0; s<building.sections.length; s++){
-        // draw the footprint onto the canvas
-        // fetch the canvas context and set color styles
-        var pix_x_offset = canv.width * 1 / 2;
-        var pix_y_offset = canv.height * 1 / 2;
-        levelmax = Math.max(levelmax, building.sections[s].levels);
+        for(var s=0; s<building.sections.length; s++){
+          // draw the footprint onto the canvas
+          // fetch the canvas context and set color styles
+          var pix_x_offset = canv.width * 1 / 2;
+          var pix_y_offset = canv.height * 1 / 2;
+          levelmax = Math.max(levelmax, building.sections[s].levels);
     
-        // set scale in pixels per degree
-        var scale = Math.min( ( (canv.width * 1 / 2) - building.sections[s].levels * 8) / (lngmax - lngmin) * 2, (canv.height * 1 / 2 - building.sections[s].levels * 35) / (latmax - latmin) * 2);
+          // set scale in pixels per degree
+          var scale = Math.min( ( (canv.width * 1 / 2) - building.sections[s].levels * 8) / (lngmax - lngmin) * 2, (canv.height * 1 / 2 - building.sections[s].levels * 35) / (latmax - latmin) * 2);
 
-        // set a levels offset for this building, tuning based on scale
-        var factor = 1;
-        if(scale < 120000){
-          if(scale < 100000){
-            factor = 0.5;
+          // set a levels offset for this building, tuning based on scale
+          var factor = 1;
+          if(scale < 120000){
+            if(scale < 100000){
+              factor = 0.5;
+            }
+            else{
+              factor = 0.75;
+            }
           }
-          else{
-            factor = 0.75;
-          }
-        }
-        var levels_offset = building.sections[s].levels * 35 * factor;
-        var levels_offset_x = building.sections[s].levels * 8 * factor;
+          var levels_offset = building.sections[s].levels * 35 * factor;
+          var levels_offset_x = building.sections[s].levels * 8 * factor;
 
-        // set offset to [ center_pixel_x, center_pixel_y ] from upper left corner
-        var offset = [ (latmax - ctrlat) * scale, (ctrlng - lngmin) * scale ];
+          // set offset to [ center_pixel_x, center_pixel_y ] from upper left corner
+          var offset = [ (latmax - ctrlat) * scale, (ctrlng - lngmin) * scale ];
 
-        // then draw each foot-point, its corresponding ceiling point, and connections
-        // start from the northernmost point and work your way south
-        var sorted = building.sections[s].vertices.slice(0);
-        sorted.sort( function(pt1, pt2){ return pt2[0] - pt1[0] } );
+          // then draw each foot-point, its corresponding ceiling point, and connections
+          // start from the northernmost point and work your way south
+          var sorted = building.sections[s].vertices.slice(0);
+          sorted.sort( function(pt1, pt2){ return pt2[0] - pt1[0] } );
 
-        for(var v=0; v<sorted.length; v++){
-          var at_pt = toPixel( sorted[v], ctrlat, ctrlng, scale );
-          var last_pt, next_pt;
-          // find points which appeared before and after the current one in SERIES, not in NORTH -> SOUTH
-    	  for(var i=0; i<building.sections[s].vertices.length; i++){
-            if(building.sections[s].vertices[i][0] == sorted[v][0]){
-	    	  if(building.sections[s].vertices[i][1] == sorted[v][1]){
-	    	    if(i != 0){
-	    	      last_pt = building.sections[s].vertices[i-1];
-	    	    }
-		        else{
-                  last_pt = building.sections[s].vertices[building.sections[s].vertices.length - 1];
+          for(var v=0; v<sorted.length; v++){
+            var at_pt = toPixel( sorted[v], ctrlat, ctrlng, scale );
+            var last_pt, next_pt;
+            // find points which appeared before and after the current one in SERIES, not in NORTH -> SOUTH
+            for(var i=0; i<building.sections[s].vertices.length; i++){
+              if(building.sections[s].vertices[i][0] == sorted[v][0]){
+	    	    if(building.sections[s].vertices[i][1] == sorted[v][1]){
+	    	      if(i != 0){
+	    	        last_pt = building.sections[s].vertices[i-1];
+	    	      }
+		          else{
+                    last_pt = building.sections[s].vertices[building.sections[s].vertices.length - 1];
+		          }
+		          last_pt = toPixel( last_pt, ctrlat, ctrlng, scale );
+		          if(i != building.sections[s].vertices.length-1){
+    		        next_pt = building.sections[s].vertices[i+1];
+    		      }
+	    	      else{
+		            next_pt = building.sections[s].vertices[0];		    
+		          }
+		          next_pt = toPixel( next_pt, ctrlat, ctrlng, scale );
+		          break;
 		        }
-		        last_pt = toPixel( last_pt, ctrlat, ctrlng, scale );
-		        if(i != building.sections[s].vertices.length-1){
-    		      next_pt = building.sections[s].vertices[i+1];
-    		    }
-	    	    else{
-		          next_pt = building.sections[s].vertices[0];		    
-		        }
-		        next_pt = toPixel( next_pt, ctrlat, ctrlng, scale );
-		        break;
 		      }
-		    }
-	      }
+	        }
 
-    	  // set wall colors
+            // set wall colors
+            ctx.strokeStyle = "#000";
+            ctx.strokeWidth = 1;
+      
+            // if the wall is at > 45 degree angle, darken the wall color
+            wallSlope = ( at_pt[1] - last_pt[1] ) / ( at_pt[0] - last_pt[0] );
+            if(Math.abs( wallSlope ) > 1){
+              ctx.fillStyle = darken(color);
+            }
+            else{
+              ctx.fillStyle = color;
+            }
+            
+            // draw previous vertex to current vertex
+            ctx.moveTo( last_pt[0], last_pt[1] );
+            ctx.beginPath();
+            ctx.lineTo( last_pt[0] - levels_offset_x, last_pt[1] - levels_offset );
+            ctx.lineTo( at_pt[0] - levels_offset_x, at_pt[1] - levels_offset );
+            ctx.lineTo( at_pt[0], at_pt[1] );
+            ctx.closePath();
+            ctx.fill();
+      
+            // if the wall is at > 45 degree angle, darken the wall color
+            wallSlope = ( at_pt[1] - next_pt[1] ) / ( at_pt[0] - next_pt[0] );
+            if(Math.abs( wallSlope ) > 1){
+              ctx.fillStyle = darken(color);
+            }
+            else{
+              ctx.fillStyle = color;
+            }
+
+            // draw the wall from current vertex to next vertex
+            ctx.beginPath();
+            ctx.moveTo( at_pt[0], at_pt[1] );
+            ctx.lineTo( next_pt[0], next_pt[1] );
+            ctx.lineTo( next_pt[0] - levels_offset_x, next_pt[1] - levels_offset );
+            ctx.lineTo( at_pt[0] - levels_offset_x, at_pt[1] - levels_offset );
+            ctx.closePath();
+
+            // send drawing to canvas
+            ctx.fill();
+            ctx.stroke();
+          }
+    
+          // set roof colors
+          ctx.fillStyle = roofcolor;
           ctx.strokeStyle = "#000";
-          ctx.strokeWidth = 1;
-      
-          // if the wall is at > 45 degree angle, darken the wall color
-          wallSlope = ( at_pt[1] - last_pt[1] ) / ( at_pt[0] - last_pt[0] );
-          if(Math.abs( wallSlope ) > 1){
-             ctx.fillStyle = darken(color);
-          }
-          else{
-             ctx.fillStyle = color;
-          }
+          ctx.strokeWidth = 2;
 
-    	  // draw previous vertex to current vertex
-          ctx.moveTo( last_pt[0], last_pt[1] );
+          // draw a flat roof for 3D Block
+          // more complex roofs benefit by having all ceilings filled in event of failed drawing algorithm
+          var roof_start = toPixel( building.sections[s].vertices[0], ctrlat, ctrlng, scale );
+          ctx.moveTo( roof_start[0] - levels_offset_x, roof_start[1] - levels_offset );
           ctx.beginPath();
-          ctx.lineTo( last_pt[0] - levels_offset_x, last_pt[1] - levels_offset );
-          ctx.lineTo( at_pt[0] - levels_offset_x, at_pt[1] - levels_offset );
-          ctx.lineTo( at_pt[0], at_pt[1] );
-          ctx.closePath();
-          ctx.fill();
-      
-          // if the wall is at > 45 degree angle, darken the wall color
-          wallSlope = ( at_pt[1] - next_pt[1] ) / ( at_pt[0] - next_pt[0] );
-          if(Math.abs( wallSlope ) > 1){
-             ctx.fillStyle = darken(color);
+	      for(var i=1; i<building.sections[s].vertices.length; i++){
+            var roof_pt = toPixel( building.sections[s].vertices[i], ctrlat, ctrlng, scale );
+            ctx.lineTo( roof_pt[0] - levels_offset_x, roof_pt[1] - levels_offset );
           }
-          else{
-             ctx.fillStyle = color;
-          }
-
-          // draw the wall from current vertex to next vertex
-          ctx.beginPath();
-          ctx.moveTo( at_pt[0], at_pt[1] );
-          ctx.lineTo( next_pt[0], next_pt[1] );
-          ctx.lineTo( next_pt[0] - levels_offset_x, next_pt[1] - levels_offset );
-          ctx.lineTo( at_pt[0] - levels_offset_x, at_pt[1] - levels_offset );
           ctx.closePath();
-
-          // send drawing to canvas
           ctx.fill();
           ctx.stroke();
         }
-    
-        // set roof colors
-    	ctx.fillStyle = roofcolor;
-        ctx.strokeStyle = "#000";
-        ctx.strokeWidth = 2;
-
-        // draw a flat roof for 3D Block
-        // more complex roofs benefit by having all ceilings filled in event of failed drawing algorithm
-        var roof_start = toPixel( building.sections[s].vertices[0], ctrlat, ctrlng, scale );
-        ctx.moveTo( roof_start[0] - levels_offset_x, roof_start[1] - levels_offset );
-        ctx.beginPath();
-	    for(var i=1; i<building.sections[s].vertices.length; i++){
-          var roof_pt = toPixel( building.sections[s].vertices[i], ctrlat, ctrlng, scale );
-          ctx.lineTo( roof_pt[0] - levels_offset_x, roof_pt[1] - levels_offset );
-        }
-        ctx.closePath();
-        ctx.fill();
-        ctx.stroke();
+      };
+      if(poi_id.indexOf("poi:") == 0){
+        getCustomGeo( poi_id, "build", { send: drawBuilding } );
+      }
+      else{
+        getShape( poi_id, "build", { send: drawBuilding } );
       }
 	}
 	else if(effect.indexOf("2D") > -1){
@@ -428,20 +420,10 @@ var init = exports.init = function (config) {
         });
         alerts.onEndDocument(function(){
           if(format == "build"){
-            if(res){
-              res.send(isometric);
-            }
-            else{
-              return isometric;
-            }
+            res.send(isometric);
           }
           else{
-            if(res){
-              res.send(park);
-            }
-            else{
-              return park;
-            }
+            res.send(park);
           }
         });
       });
@@ -465,7 +447,7 @@ var init = exports.init = function (config) {
       }
       if(format == "build"){
         // isometrics request
-        return {
+        res.send({
           customgeoid: custompoly._id,
           wayid: custompoly.sourceid,
           sections: [
@@ -474,24 +456,15 @@ var init = exports.init = function (config) {
               levels: 1
             }
           ]
-        };
+        });
       }
       else{
         // textures or general shape request
-        if(res){
-          res.send({
-            customgeoid: custompoly._id,
-            wayid: custompoly.sourceid,
-            vertices: pts
-          });
-        }
-        else{
-          return {
-            customgeoid: custompoly._id,
-            wayid: custompoly.sourceid,
-            vertices: pts
-          };
-        }
+        res.send({
+          customgeoid: custompoly._id,
+          wayid: custompoly.sourceid,
+          vertices: pts
+        });
       }
     });
   };
