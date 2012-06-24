@@ -508,7 +508,7 @@ function writePark(p){
     };
     var s = document.createElement("script");
     s.type = "text/javascript";
-    s.src = "/canvrender?id=" + parks[p].wayid + "_2D" + promoted[ parks[p].wayid ].effect;
+    s.src = "/canvrender?id=" + parks[p].wayid + "_" + promoted[ parks[p].wayid ].effect;
     document.body.appendChild(s);
     return;
   }
