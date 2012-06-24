@@ -231,6 +231,14 @@ var init = exports.init = function (config) {
         var latspan = latmax - latmin;
         var lngspan = lngmax - lngmin;
         var levelmax = 0;
+        if(latspan > lngspan){
+  	      canv.height = parseInt( latspan / lngspan * 300 );
+  	      canv.width = 300;
+        }
+        else{
+          canv.height = 300;
+  	      canv.width = parseInt( lngspan / latspan * 300 );
+        }
 
         for(var s=0; s<building.sections.length; s++){
           // draw the footprint onto the canvas

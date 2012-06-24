@@ -184,6 +184,21 @@ function publishAt(wayid, imgsrc){
 }
 
 function writeBuilding(b){
+  // calculate scale, size, latlng<->pixel constants for this drawing
+  var ctrlat = buildings[b].center[0];
+  var ctrlng = buildings[b].center[1];
+  var latmin = buildings[b].latmin;
+  var latmax = buildings[b].latmax;
+  var lngmin = buildings[b].lngmin;
+  var lngmax = buildings[b].lngmax;
+  var latspan = latmax - latmin;
+  var lngspan = lngmax - lngmin;
+  var levelmax = 0;
+  for(var s=0;s<buildings[b].sections.length;s++){
+    levelmax = Math.max(levelmax, buildings[b].sections[s].levels);
+  }
+
+  // if serverdraws (or IE) then server renders this building
   if(gup("serverdraws") == "true"){
     serverDrawBuildings[ buildings[b].wayid ] = {
       id: buildings[b].wayid,
@@ -206,17 +221,7 @@ function writeBuilding(b){
   }
 
   var canvas = $('#parkCanvas')[0];
-
-  // calculate scale, size, latlng<->pixel constants for this drawing
-  var ctrlat = buildings[b].center[0];
-  var ctrlng = buildings[b].center[1];
-  var latmin = buildings[b].latmin;
-  var latmax = buildings[b].latmax;
-  var lngmin = buildings[b].lngmin;
-  var lngmax = buildings[b].lngmax;
-  var latspan = latmax - latmin;
-  var lngspan = lngmax - lngmin;
-  var levelmax = 0;
+  // experimental: adjust size of shape for extra wide or extra tall buildings
   if(latspan > lngspan){
   	canvas.height = parseInt( latspan / lngspan * 300 );
   	canvas.width = 300;
@@ -231,7 +236,6 @@ function writeBuilding(b){
     // fetch the canvas context and set color styles
     pix_x_offset = canvas.width * 1 / 2;
     pix_y_offset = canvas.height * 1 / 2;
-    levelmax = Math.max(levelmax, buildings[b].sections[s].levels);
     
     var ctx = canvas.getContext('2d');
 
