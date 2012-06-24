@@ -470,8 +470,8 @@ var init = exports.init = function (config) {
           vertices: pts
         };
       }
-    }
-  }
+    });
+  };
   
   app.get('/customgeo', function(req,res) {
     // store custom polygons
