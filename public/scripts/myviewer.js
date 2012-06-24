@@ -199,6 +199,9 @@ function writeBuilding(b){
   }
 
   // if serverdraws (or IE) then server renders this building
+  if(!buildings[b].effect){
+    buildings[b].effect = promoted[ buildings[b].wayid ].effect;
+  }
   if(gup("serverdraws") == "true"){
     serverDrawBuildings[ buildings[b].wayid ] = {
       id: buildings[b].wayid,
