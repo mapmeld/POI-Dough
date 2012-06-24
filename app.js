@@ -210,10 +210,10 @@ var init = exports.init = function (config) {
     if(effect.indexOf("3D") > -1){
       var building;
       if(poi_id.indexOf("poi:") == 0){
-        building = getCustomGeo( poi_id, "build" );
+        building = getCustomGeo( poi_id, "build", null );
       }
       else{
-        building = getShape( poi_id, "build" );
+        building = getShape( poi_id, "build", null );
       }
       
       var color = "#ff0000";
@@ -370,16 +370,16 @@ var init = exports.init = function (config) {
 	else if(effect.indexOf("2D") > -1){
       var park;
       if(poi_id.indexOf("poi:") == 0){
-        park = getCustomGeo( poi_id, "texture" );
+        park = getCustomGeo( poi_id, "texture", null );
       }
       else{
-        park = getShape( poi_id, "texture" );
+        park = getShape( poi_id, "texture", null );
       }
 	}
     res.send('publishAt("' + poi_id + '","' + canv.toDataURL() + '");');
   });
   
-  function getShape(wayid, format){
+  function getShape(wayid, format, res){
     var osmurl = 'http://www.openstreetmap.org/api/0.6/way/' + wayid + '/full'
 
     var requestOptions = {
@@ -428,10 +428,20 @@ var init = exports.init = function (config) {
         });
         alerts.onEndDocument(function(){
           if(format == "build"){
-            return isometric;
+            if(res){
+              res.send(isometric);
+            }
+            else{
+              return isometric;
+            }
           }
           else{
-            return park;
+            if(res){
+              res.send(park);
+            }
+            else{
+              return park;
+            }
           }
         });
       });
@@ -439,7 +449,7 @@ var init = exports.init = function (config) {
     });
   }
   
-  function getCustomGeo(poi_id, format){
+  function getCustomGeo(poi_id, format, res){
     poi_id = poi_id.replace("poi:","");
     customgeo.CustomGeo.findById(poi_id, function(err, custompoly){
       if(!custompoly.addedToMap){
@@ -468,11 +478,20 @@ var init = exports.init = function (config) {
       }
       else{
         // textures or general shape request
-        return {
-          customgeoid: custompoly._id,
-          wayid: custompoly.sourceid,
-          vertices: pts
-        };
+        if(res){
+          res.send({
+            customgeoid: custompoly._id,
+            wayid: custompoly.sourceid,
+            vertices: pts
+          });
+        }
+        else{
+          return {
+            customgeoid: custompoly._id,
+            wayid: custompoly.sourceid,
+            vertices: pts
+          };
+        }
       }
     });
   };
@@ -493,7 +512,7 @@ var init = exports.init = function (config) {
         }
         else{
           // requesting this polygon
-          res.send( getCustomGeo( poi_id, req.query["form"] ) );
+          getCustomGeo( poi_id, req.query["form"], res );
         }
       });
     }
@@ -581,7 +600,7 @@ var init = exports.init = function (config) {
 	  return;
 	}
 	
-	res.send( getShape( wayid, "build" ) );
+	getShape( wayid, "build", res);
   });
 
   app.get('/textures', function(req,res){
@@ -592,7 +611,7 @@ var init = exports.init = function (config) {
 	  res.redirect( '/customgeo?id=' + wayid );
 	}
 	
-	res.send( getShape( wayid, "texture" ) );
+	getShape( wayid, "texture", res );
   });
   
 /* Sample Document Creation Script
