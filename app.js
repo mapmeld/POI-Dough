@@ -425,7 +425,7 @@ var init = exports.init = function (config) {
         }
 
         // create a mask to hide (alpha=0) pixels outside the polygon
-        var poly = parks[p].vertices;
+        var poly = park.vertices;
         for(var i=0; i<poly.length; i++){
 	      var at_pt = poly[i];
 	      at_pt = toPixel( at_pt, ctrlat, ctrlng, scale );
