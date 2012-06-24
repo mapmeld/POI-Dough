@@ -443,7 +443,6 @@ var init = exports.init = function (config) {
         res.send('publishAt("' + poi_id + '","' + canv.toDataURL() + '");');
       };
       var icon = new canvas.Image;
-      icon.src = "/images/treeblot.png";
       icon.onload = function(){
         if(poi_id.indexOf("poi:") == 0){
           getCustomGeo( poi_id, "texture", { send: drawPark } );
@@ -455,6 +454,7 @@ var init = exports.init = function (config) {
       icon.onerror = function(err){
         throw err;
       };
+      icon.src = "/images/treeblot.png";
 	}
   });
   
