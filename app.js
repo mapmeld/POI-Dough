@@ -442,7 +442,11 @@ var init = exports.init = function (config) {
   function getCustomGeo(poi_id, format){
     poi_id = poi_id.replace("poi:","");
     customgeo.CustomGeo.findById(poi_id, function(err, custompoly){
-      // requesting this polygon
+      if(!custompoly.addedToMap){
+        // confirm this polygon is used, so it isn't purged
+        custompoly.addedToMap = "yes";
+        custompoly.save(function(err){});
+      }
       var pts = [ ];
       for(var p=0;p<custompoly.latlngs.length;p++){
         pts.push(custompoly.latlngs[p].split(","));
@@ -490,11 +494,6 @@ var init = exports.init = function (config) {
         else{
           // requesting this polygon
           res.send( getCustomGeo( poi_id, req.query["form"] ) );
-          if(!custompoly.addedToMap){
-            // confirm this polygon is used, so it isn't purged
-            custompoly.addedToMap = "yes";
-            custompoly.save(function(err){});
-          }
         }
       });
     }
