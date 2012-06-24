@@ -82,6 +82,14 @@ For more details, please see Steve's [blog post](http://blog.beyondfog.com/?p=22
 
 ## Deploy to Heroku
 
+    heroku create APP_NAME -s cedar
+    git push heroku master
+
 After you have created a new app on Heroku and pushed the code via git, you will need to use the Heroku Toolbelt from your command line to add the free MongoLab starter addon:
 
     heroku addons:add mongolab:starter --app [your_app_name]
+
+You will need to install <a href="https://github.com/gabrielfalcao/node-canvas-heroku">node-canvas-heroku</a> (included in node_modules directory) to render images in canvas on the server side. These steps install cairo (a dependency of node-canvas) before running npm
+
+    heroku config:add LD_PRELOAD='/app/node_modules/canvas/cairo/libcairo.so /app/node_modules/canvas/cairo/lib/libpixman-1.so.0 /app/node_modules/canvas/cairo/lib/libfreetype.so.6'
+    heroku config:add LD_LIBRARY_PATH=/app/node_modules/canvas/cairo
