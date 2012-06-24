@@ -489,11 +489,6 @@ function writeBuilding(b){
 }
 
 function writePark(p){
-  var canvas = $('#parkCanvas')[0];
-  canvas.width = 300;
-  canvas.height = 300;
-  var ctx = canvas.getContext('2d');
-
   var ctrlat = parks[p].center[0];
   var ctrlng = parks[p].center[1];
   var latmin = parks[p].latmin;
@@ -501,6 +496,27 @@ function writePark(p){
   var lngmin = parks[p].lngmin;
   var lngmax = parks[p].lngmax;
   var levels = 0;
+
+  // if serverdraws (or IE) then server renders this park
+  if(!parks[p].texture){
+    parks[p].texture = promoted[ parks[p].wayid ].tiled.replace("2D","");
+  }
+  if(gup("serverdraws") == "true"){
+    serverDrawBuildings[ parks[p].wayid ] = {
+      id: parks[p].wayid,
+      bounds: new L.LatLngBounds(new L.LatLng(latmin,lngmin), new L.LatLng(latmax,lngmax))
+    };
+    var s = document.createElement("script");
+    s.type = "text/javascript";
+    s.src = "/canvrender?id=" + parks[p].wayid + "_2D" + parks[p].texture;
+    document.body.appendChild(s);
+    return;
+  }
+
+  var canvas = $('#parkCanvas')[0];
+  canvas.width = 300;
+  canvas.height = 300;
+  var ctx = canvas.getContext('2d');
   
   // set scale in pixels per degree
   var scale = Math.min( ( (canvas.width * 1 / 2) - levels * 8) / (lngmax - lngmin) * 2, (canvas.height * 1 / 2 - levels * 35) / (latmax - latmin) * 2);
