@@ -359,6 +359,7 @@ var init = exports.init = function (config) {
           ctx.fill();
           ctx.stroke();
         }
+        res.send('publishAt("' + poi_id + '","' + canv.toDataURL() + '");');
       };
       if(poi_id.indexOf("poi:") == 0){
         getCustomGeo( poi_id, "build", { send: drawBuilding } );
@@ -368,15 +369,90 @@ var init = exports.init = function (config) {
       }
 	}
 	else if(effect.indexOf("2D") > -1){
-      var park;
-      if(poi_id.indexOf("poi:") == 0){
-        park = getCustomGeo( poi_id, "texture", null );
+      var ptInPoly = function(pt, polyCords){
+        var pointX = pt[0];
+        var pointY = pt[1];
+    	var i, j, c = 0;
+   	    for (i = 0, j = polyCords.length - 1; i < polyCords.length; j = i++){
+		  if (((polyCords[i][1] > pointY) != (polyCords[j][1] > pointY)) && (pointX < (polyCords[j][0] - polyCords[i][0]) * (pointY - polyCords[i][1]) / (polyCords[j][1] - polyCords[i][1]) + polyCords[i][0])){
+			c = !c;
+		  }
+	    }
+	    return c;
+      };
+      var drawPark = function(park){
+        // determine boundaries, center of park
+        var latmax = -1000;
+        var latmin = 1000;
+        var lngmax = -1000;
+        var lngmin = 1000;
+        for(var v=0; v<park.vertices.length; v++){
+          var pt = park.vertices[v];
+          latmax = Math.max(latmax, pt[0]);
+          latmin = Math.min(latmin, pt[0]);
+          lngmax = Math.max(lngmax, pt[1]);
+          lngmin = Math.min(lngmin, pt[1]);
+        }
+        var ctrlat = (latmax + latmin) / 2;
+        var ctrlng = (lngmax + lngmin) / 2;
+        var center = [ctrlat, ctrlng];
+        var levels = 0;
+  
+        // set scale in pixels per degree
+        var scale = Math.min( ( (canv.width * 1 / 2) - levels * 8) / (lngmax - lngmin) * 2, (canv.height * 1 / 2 - levels * 35) / (latmax - latmin) * 2);
+
+        // set a levels offset for this building, tuning based on scale
+        var factor = 1;
+        if(scale < 120000){
+          if(scale < 100000){
+            factor = 0.5;
+          }
+          else{
+            factor = 0.75;
+          }
+        }
+        var levels_offset = levels * 35 * factor;
+        var levels_offset_x = levels * 8 * factor;
+
+        // set offset to [ center_pixel_x, center_pixel_y ] from upper left corner
+        var offset = [ (latmax - ctrlat) * scale, (ctrlng - lngmin) * scale ];
+  
+        // draw a solid repeating background of the texture
+        for(var x=0; x<canv.width; x+=25){
+	      for(var y=0; y<canv.height; y+=25){
+	        ctx.drawImage(icon, x, y, 25, 25);
+	      }
+        }
+
+        // create a mask to hide (alpha=0) pixels outside the polygon
+        var poly = parks[p].vertices;
+        for(var i=0; i<poly.length; i++){
+	      var at_pt = poly[i];
+	      at_pt = toPixel( at_pt, ctrlat, ctrlng, scale );
+	      poly[i] = at_pt;  // [x, y]
+        }
+        imgData = ctx.getImageData(0, 0, canv.width, canv.height);
+        for(var x=0; x<canv.width; x++){
+	      for(var y=0; y<canv.height; y++){
+	        if(!ptInPoly([x,y], poly)){
+		      imgData.data[y*4*canv.width+x*4+3] = 0;
+	        }
+	      }
+        }
+        ctx.putImageData(imgData, 0, 0);
+        res.send('publishAt("' + poi_id + '","' + canv.toDataURL() + '");');
+      };
+      var icon = new Image();
+      icon.onload = function(){
+        if(poi_id.indexOf("poi:") == 0){
+          getCustomGeo( poi_id, "texture", { send: drawPark } );
+        }
+        else{
+          getShape( poi_id, "texture", { send: drawPark } );
+        }
       }
-      else{
-        park = getShape( poi_id, "texture", null );
-      }
+      icon.src = "/treeblot.png";
 	}
-    res.send('publishAt("' + poi_id + '","' + canv.toDataURL() + '");');
   });
   
   function getShape(wayid, format, res){
