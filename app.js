@@ -16,6 +16,7 @@ var auth = require('./auth')
     , xml = require('node-xml')
     , procedure = require('./procedure')
     , customgeo = require('./customgeo')
+    , canvas = require('canvas')
     ;
 
 var HOUR_IN_MILLISECONDS = 3600000;
@@ -155,6 +156,15 @@ var init = exports.init = function (config) {
         }
       });
     }
+  });
+  
+  app.get('/canvasrender', function(req,res){
+    var canv = new canvas(300,300);
+    var ctx = canv.getContext('2d');
+    ctx.font = '30px Arial';
+    ctx.rotate(0.1);
+    ctx.fillText("Hello World!", 50, 100);
+    res.send('<img src="' + canv.toDataURL() + '"/>');
   });
   
   app.get('/customgeo', function(req,res) {
