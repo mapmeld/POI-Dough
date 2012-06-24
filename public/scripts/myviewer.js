@@ -174,7 +174,37 @@ function darken(hexcolor){
 	return hexcolor;
 }
 
+var serverDrawBuildings = { };
+function publishAt(wayid, imgsrc){
+  var imageBounds = serverDrawBuildings[ wayid ].bounds;
+  var image = new L.ImageOverlay(imgsrc, imageBounds);
+  menu_on_click(image, promoted[ wayid ].osmdata);
+  map.addLayer(image);
+  promoted[wayid].drawnLayer = image;
+}
+
 function writeBuilding(b){
+  if(gup("serverdraws") == "true"){
+    serverDrawBuildings[ buildings[b].wayid ] = {
+      id: buildings[b].wayid,
+      bounds: new L.LatLngBounds(
+      	new L.LatLng(
+      		latmin-latspan/6*Math.pow(1.7,levelmax),
+      		lngmin-lngspan/6*Math.pow(1.7,levelmax)
+      	),
+      	new L.LatLng(
+      		latmax+latspan/6*Math.pow(1.7,levelmax),
+      		lngmax+lngspan/6*Math.pow(1.7,levelmax)
+      	)
+      )
+    };
+    var s = document.createElement("script");
+    s.type = "text/javascript";
+    s.src = " ";
+    document.body.appendChild(s);
+    return;
+  }
+
   var canvas = $('#parkCanvas')[0];
 
   // calculate scale, size, latlng<->pixel constants for this drawing
