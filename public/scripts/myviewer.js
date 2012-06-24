@@ -215,7 +215,7 @@ function writeBuilding(b){
     };
     var s = document.createElement("script");
     s.type = "text/javascript";
-    s.src = " ";
+    s.src = "/canvrender?id=" + buildings[b].wayid + "_" + buildings[b].effect;
     document.body.appendChild(s);
     return;
   }
