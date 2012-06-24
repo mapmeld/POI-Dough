@@ -499,7 +499,7 @@ function writePark(p){
 
   // if serverdraws (or IE) then server renders this park
   if(!parks[p].texture){
-    parks[p].texture = promoted[ parks[p].wayid ].tiled.replace("2D","");
+    parks[p].texture = promoted[ parks[p].wayid ].effect.replace("2D","");
   }
   if(gup("serverdraws") == "true"){
     serverDrawBuildings[ parks[p].wayid ] = {
@@ -508,7 +508,7 @@ function writePark(p){
     };
     var s = document.createElement("script");
     s.type = "text/javascript";
-    s.src = "/canvrender?id=" + parks[p].wayid + "_2D" + parks[p].texture;
+    s.src = "/canvrender?id=" + parks[p].wayid + "_2D" + promoted[ parks[p].wayid ].effect;
     document.body.appendChild(s);
     return;
   }
