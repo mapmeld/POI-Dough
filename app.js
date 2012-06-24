@@ -442,7 +442,7 @@ var init = exports.init = function (config) {
         ctx.putImageData(imgData, 0, 0);
         res.send('publishAt("' + poi_id + '","' + canv.toDataURL() + '");');
       };
-      var icon = new Image();
+      var icon = new canvas.Image();
       icon.onload = function(){
         if(poi_id.indexOf("poi:") == 0){
           getCustomGeo( poi_id, "texture", { send: drawPark } );
