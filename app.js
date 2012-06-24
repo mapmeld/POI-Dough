@@ -454,7 +454,7 @@ var init = exports.init = function (config) {
       icon.onerror = function(err){
         throw err;
       };
-      icon.src = "/images/treeblot.png";
+      icon.src = __dirname + "/public/images/treeblot.png";
 	}
   });
   
