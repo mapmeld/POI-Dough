@@ -66,7 +66,7 @@ For more details, please see Steve's [blog post](http://blog.beyondfog.com/?p=22
  
 1) Do a git clone:
 
-    git clone git://git@github.com:mapmeld/POI-Mark2.git
+    git clone git@github.com:mapmeld/POI-Mark2.git
     
 2) cd into the project directory and then install the necessary node modules:
 
