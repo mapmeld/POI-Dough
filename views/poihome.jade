@@ -4,28 +4,22 @@ head
   link(rel='stylesheet', href='http://fonts.googleapis.com/css?family=Open+Sans+Condensed:300', type='text/css')
   title POI Mark II: Home
 body(style='font-family:"Open Sans Condensed", sans-serif;')
-  div.container
-    .hero-unit
-      h1 POI Mark 2
+  div.container(style='padding-top:22px;')
+    .hero-unit(style='background:url("http://i.imgur.com/Bb9Ed.png");background-repeat:no-repeat;')
+      h1 POI Dough
       h3 It's Maptastic!
-      
-    .row
-      .span12
-        h2 Try it Now
-        h3
-          a(href='/editor') Create a Map
-        br
-        h3
+      ul(style="background-color:#000;color:#fff;margin:15px;")
+        li
+          a(href='/editor') Map Editor
+        li
           a(href='/openmap?id=4fc194483899700100000003') Map Viewer
-        br
-        h3
+        li
           a(href='/kansas?id=4fc578ff59e0840100000005') HTML5 Art Editor
-        br
 
     .row
       .span12
         h2 Highlight Buildings
-        img(src='http://i.imgur.com/Bb9Ed.png')
+        p Use client-side and server-side HTML5 Canvas to generate effects.
 
     .row
       .span12
