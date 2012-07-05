@@ -189,7 +189,9 @@ function publishAt(wayid, imgsrc){
 
 function isCanvasSupported(){
   var elem = document.createElement('canvas');
-  return !!(elem.getContext && elem.getContext('2d'));
+  var canvasSupport = !!(elem.getContext && elem.getContext('2d'));
+  canvasSupport = canvasSupport || (!!window.CanvasRenderingContext2D);
+  return canvasSupport;
 }
 
 function writeBuilding(b){
