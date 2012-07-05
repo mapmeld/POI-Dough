@@ -151,40 +151,42 @@ function darken(hexcolor){
 
 function changeTiles(){
   var tiles = $('#mapTiler').val();
-  if(extraMapLayer){
-	map.removeLayer(extraMapLayer);
-  }
+  var nMapLayer;
   if(tiles == "mapquest"){
     var tileURL = "http://otile1.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png";
     var attribution = "Map data &copy; 2012 OpenStreetMap contributors, Tiles by MapQuest";
-    extraMapLayer = new L.TileLayer(tileURL, {maxZoom: 18, attribution: attribution});
+    nMapLayer = new L.TileLayer(tileURL, {maxZoom: 18, attribution: attribution});
   }
   else if(tiles == "mapnik"){
     var tileURL = 'http://tile.openstreetmap.org/{z}/{x}/{y}.png';
     var attribution = 'Map data &copy; 2012 OpenStreetMap contributors',
-    extraMapLayer = new L.TileLayer(tileURL, {maxZoom: 18, attribution: attribution});
+    nMapLayer = new L.TileLayer(tileURL, {maxZoom: 18, attribution: attribution});
   }
   else if(tiles == "transit"){
     var tileURL = "http://{s}.tile2.opencyclemap.org/transport/{z}/{x}/{y}.png";
     var attribution = 'Map data &copy; 2012 OpenStreetMap contributors, Tiles by Andy Allan',
-    extraMapLayer = new L.TileLayer(tileURL, {maxZoom: 18, attribution: attribution});
+    nMapLayer = new L.TileLayer(tileURL, {maxZoom: 18, attribution: attribution});
   }
   else if(tiles == "terrain"){
     var tileURL = "http://{s}.tile.stamen.com/terrain/{z}/{x}/{y}.jpg";
     var attribution = "Map data &copy; 2012 OpenStreetMap contributors, Tiles by Stamen Design";
-    extraMapLayer = new L.TileLayer(tileURL, {maxZoom: 18, attribution: attribution});
+    nMapLayer = new L.TileLayer(tileURL, {maxZoom: 18, attribution: attribution});
   }
   else if(tiles == "watercolor"){
     var tileURL = "http://{s}.tile.stamen.com/watercolor/{z}/{x}/{y}.jpg";
     var attribution = "Map data &copy; 2012 OpenStreetMap contributors, Tiles by Stamen Design";
-    extraMapLayer = new L.TileLayer(tileURL, {maxZoom: 18, attribution: attribution});
+    nMapLayer = new L.TileLayer(tileURL, {maxZoom: 18, attribution: attribution});
   }
   else if(tiles == "mapbox"){
     var tileURL = "http://{s}.tiles.mapbox.com/v3/mapbox.mapbox-streets/{z}/{x}/{y}.png";
     var attribution = "Map data &copy; 2012 OpenStreetMap contributors, Tiles by MapBox";
-    extraMapLayer = new L.TileLayer(tileURL, {maxZoom: 17, attribution: attribution});
+    nMapLayer = new L.TileLayer(tileURL, {maxZoom: 17, attribution: attribution});
   }
-  map.addLayer(extraMapLayer);
+  map.addLayer(nMapLayer);
+  if(extraMapLayer){
+	map.removeLayer(extraMapLayer);
+  }
+  extraMapLayer = nMapLayer;
 }
 
 function writeBuilding(b){
@@ -621,10 +623,14 @@ function toggleEditing(){
   }
   for(shape in promoted){
     if(allowPolygonEditing){
-      promoted[shape].poly.editing.enable();
+      if(promoted[shape].poly){
+        promoted[shape].poly.editing.enable();
+      }
     }
     else{
-      promoted[shape].poly.editing.disable();    
+      if(promoted[shape].poly){
+        promoted[shape].poly.editing.disable();
+      }
     }
   }
 }
