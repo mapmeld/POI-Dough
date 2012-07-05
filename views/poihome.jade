@@ -6,21 +6,19 @@ head
 
 body(style='font-family:"Open Sans Condensed", sans-serif;')
   div.container(style='padding-top:22px;')
-    .hero-unit(style='text-align:right;background:url("http://i.imgur.com/jA2Mr.png");background-repeat:no-repeat;background-width:300px;')
+    .hero-unit(style='text-align:right;background:url("http://i.imgur.com/jA2Mr.png");background-repeat:no-repeat;border: 3px solid #000;background-size:70%;')
       h1 POI Dough
       h3 It's Maptastic!
       
     .row
       .span12
-        h2 Try it Now
-        h3
-          a(href='/editor') Create a Map
-        br
-        h3
-          a(href='/openmap?id=4fc194483899700100000003') Map Viewer
-        br
-        h3
-          a(href='/kansas?id=4fc578ff59e0840100000005') HTML5 Art Editor
+        ul
+          li(style='display:inline;margin:10px;')
+            a(href='/editor') Create a Map
+          li(style='display:inline;margin:10px;')
+            a(href='/openmap?id=4fc194483899700100000003') Map Viewer
+          li(style='display:inline;margin:10px;')
+            a(href='/kansas?id=4fc578ff59e0840100000005') HTML5 Art Editor
         br
 
     .row
