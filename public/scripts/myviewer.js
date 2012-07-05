@@ -4,6 +4,7 @@ var promoted = { };
 var bopon = [ ];
 var extraMapLayer;
 var pix_x_offset, pix_y_offset;
+var serverDraws = false;
 
 $(document).ready(function(){
   for(var b=0;b<buildids.length;b++){
@@ -64,6 +65,10 @@ function init(){
     iconAnchor: new L.Point(15, 18),
     popupAnchor: new L.Point(0, -12)
   });
+  
+  if( (gup("serverdraws") == "true") || (!isCanvasSupported()) ){
+    serverDraws = true;
+  }
 }
 
 tree = new Image();
@@ -183,6 +188,11 @@ function publishAt(wayid, imgsrc){
   promoted[wayid].drawnLayer = image;
 }
 
+function isCanvasSupported(){
+  var elem = document.createElement('canvas');
+  return !!(elem.getContext && elem.getContext('2d'));
+}
+
 function writeBuilding(b){
   // calculate scale, size, latlng<->pixel constants for this drawing
   var ctrlat = buildings[b].center[0];
@@ -202,7 +212,7 @@ function writeBuilding(b){
   if(!buildings[b].effect){
     buildings[b].effect = promoted[ buildings[b].wayid ].effect;
   }
-  if(gup("serverdraws") == "true"){
+  if(serverDraws){
     serverDrawBuildings[ buildings[b].wayid ] = {
       id: buildings[b].wayid,
       bounds: new L.LatLngBounds(
@@ -501,7 +511,7 @@ function writePark(p){
   if(!parks[p].texture){
     parks[p].texture = promoted[ parks[p].wayid ].effect.replace("2D","");
   }
-  if(gup("serverdraws") == "true"){
+  if(serverDraws){
     serverDrawBuildings[ parks[p].wayid ] = {
       id: parks[p].wayid,
       bounds: new L.LatLngBounds(new L.LatLng(latmin,lngmin), new L.LatLng(latmax,lngmax))
