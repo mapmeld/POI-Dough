@@ -622,13 +622,11 @@ function toggleEditing(){
     $("#editWand").html("Unfreeze Points");
   }
   for(shape in promoted){
-    if(allowPolygonEditing){
-      if(promoted[shape].poly){
+    if(promoted[shape] && promoted[shape].poly){
+      if(allowPolygonEditing){
         promoted[shape].poly.editing.enable();
       }
-    }
-    else{
-      if(promoted[shape].poly){
+      else{
         promoted[shape].poly.editing.disable();
       }
     }
