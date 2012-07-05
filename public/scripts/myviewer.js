@@ -190,7 +190,7 @@ function publishAt(wayid, imgsrc){
 function isCanvasSupported(){
   var elem = document.createElement('canvas');
   var canvasSupport = !!(elem.getContext && elem.getContext('2d'));
-  canvasSupport = canvasSupport || (!!window.CanvasRenderingContext2D);
+  canvasSupport = (canvasSupport && (navigator.userAgent.toLowerCase().indexOf("android") == -1));
   return canvasSupport;
 }
 
