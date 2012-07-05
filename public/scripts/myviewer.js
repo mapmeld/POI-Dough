@@ -7,6 +7,9 @@ var pix_x_offset, pix_y_offset;
 var serverDraws = false;
 
 $(document).ready(function(){
+  if( (gup("serverdraws") == "true") || (!isCanvasSupported()) ){
+    serverDraws = true;
+  }
   for(var b=0;b<buildids.length;b++){
     var buildid = buildids[b].split("_")[0];
     fetchBuilding(buildid, b);
@@ -65,10 +68,6 @@ function init(){
     iconAnchor: new L.Point(15, 18),
     popupAnchor: new L.Point(0, -12)
   });
-  
-  if( (gup("serverdraws") == "true") || (!isCanvasSupported()) ){
-    serverDraws = true;
-  }
 }
 
 tree = new Image();
