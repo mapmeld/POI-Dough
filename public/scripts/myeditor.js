@@ -13,7 +13,7 @@ function init(){
 
   map = new L.Map('map');
   cityll = new L.LatLng(32.836183, -83.631266);
-  map.setView(cityll, 18).addLayer(baseMapLayer);
+  map.setView(cityll, 17).addLayer(baseMapLayer);
   
   menuPopup = new L.Popup();
 
