@@ -22,7 +22,7 @@ function testCanvasCode(){
     return;
   }
   caja.load(undefined, undefined, function(frame){
-    frame.code(formulaUrl, 'application/javascript')
+    frame.code( (window.location+"").replace("/kansas","/kansas/js"), 'application/javascript')
     .run(function(f){
       // hasrun
       console.log(f);
