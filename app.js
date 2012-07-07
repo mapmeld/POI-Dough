@@ -699,13 +699,6 @@ var init = exports.init = function (config) {
 
   // Project Kansas: different procedural buildings / art effects
   // using HTML5 Canvas
-  app.get('/kansas/js', function(req, res){
-    if(req.query["id"]){
-      procedure.Procedure.findById(req.query["id"], function(err, canvProgram){
-        res.send(canvProgram.code);
-      });
-    }
-  });
   app.get('/kansas', function(req, res){
     if(req.query["id"]){
       procedure.Procedure.findById(req.query["id"], function(err, canvProgram){
