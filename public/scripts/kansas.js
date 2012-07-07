@@ -1,5 +1,11 @@
 var ctx;
 var shape = [ [ 10, 10 ], [ 150, 275 ], [ 228, 100 ], [ 10, 10 ] ];
+function init(){
+  caja.initialize({
+    cajaServer: 'http://poimark2.herokuapp.com/',
+    debug: true
+  });
+}
 function replaceAll(src, oldr, newr){
   while(src.indexOf(oldr) > -1){
     src = src.replace(oldr,newr);
@@ -15,7 +21,14 @@ function testCanvasCode(){
     alert("Access to document, script, eval, alert, or parent denied");
     return;
   }
-  eval( $("codedraft").value + " drawSample(ctx);" );
+  caja.load(undefined, undefined, function(frame){
+    frame.code(formulaUrl, 'application/javascript')
+    .run(function(f){
+      // hasrun
+      console.log(f);
+    });
+  });
+  //eval( $("codedraft").value + " drawSample(ctx);" );
 }
 function syntaxCheck(){
   switchToCode();
