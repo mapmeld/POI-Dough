@@ -889,6 +889,9 @@ function exportPOI(){
     }
   }
   var url = "/savemap?bld=" + allbuildings.join(",") + "&prk=" + allparks.join(",") + "&createdby=POI_Dough_Test&tiler=" + $("#mapTiler").val() + "&ctr=" + map.getCenter().lat.toFixed(6) + "," + map.getCenter().lng.toFixed(6) + "&z=" + map.getZoom();
+  if(gup("id")){
+    url += "&id=" + gup("id");
+  }
   window.location = url;
 }
 function gup(nm){nm=nm.replace(/[\[]/,"\\\[").replace(/[\]]/,"\\\]");var rxS="[\\?&]"+nm+"=([^&#]*)";var rx=new RegExp(rxS);var rs=rx.exec(window.location.href);if(!rs){return null;}else{return rs[1];}}
