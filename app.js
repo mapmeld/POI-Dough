@@ -674,28 +674,20 @@ var init = exports.init = function (config) {
 	getShape( wayid, "texture", res );
   });
   
-/* Sample Document Creation Script
-  app.get('/rand', function(req,res) {
-    try{
-      var randmap = new poimap.POIMap();
-      randmap.body = "sample";
-      randmap.date = new Date();
-      randmap.save(function (err) {
-        if (!err){
-          console.log('Success!');
-        }
-        else{
-          console.log('Fail! ' + err);
-        }
+  app.get('/reloadmap', function(req, res){
+    if(req.query["id"]){
+      poimap.POIMap.findById(req.query["id"], function(err, mymap){
+        res.send({
+          buildings: mymap.buildings,
+          parks: mymap.parks,
+          center: mymaps.center,
+          zoom: mymaps.zoom,
+          basemap: mymaps.basemap,
+          attribution: mymaps.attribution
+        });
       });
-      res.render('poieditor', { poimap: randmap });
     }
-    catch(e){
-    	return "Error " + e;
-    }
-    
-  }); */
-
+  });
 
   // Project Kansas: different procedural buildings / art effects
   // using HTML5 Canvas

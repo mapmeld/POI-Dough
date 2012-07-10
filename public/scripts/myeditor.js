@@ -60,7 +60,41 @@ function init(){
   watermelon = new Image();
   watermelon.src = "../images/watermelon.png";
   
-  //$('.book').turn();
+  if(gup("id")){
+    $.getJSON("/reloadmap?id=" + gup("id"), function(reloadmap){
+      for(var b=0;b<reloadmap.buildings.length;b++){
+        var buildid = reloadmap.buildings[b].split("_")[0];
+        fetchBuilding(buildid, b);
+      }
+      for(var p=0;p<reloadmap.parks.length;p++){
+        var parkid = reloadmap.parks[p].split("_")[0];
+        fetchPark(parkid, p);
+      }
+      var baseMapLayer = new L.TileLayer(reloadmap.basemap, {maxZoom: 18, attribution: reloadmap.attribution});
+      var cityll = new L.LatLng(reloadmap.center[0], reloadmap.center[1]);
+      map.setView(cityll, reloadmap.zoom).addLayer(baseMapLayer);
+    });
+  }
+}
+function fetchBuilding(buildid, index){
+  $.getJSON("/isometrics?wayid=" + buildid, function(data){
+    buildings.push(data);
+    prepBuilding(buildings.length-1);
+    if(buildids[index].indexOf("_") > -1){
+      buildings[buildings.length-1].effect = buildids[index].split("_")[1];
+    }
+    writeBuilding(buildings.length-1);
+  });
+}
+function fetchPark(parkid, index){
+  $.getJSON("/textures?wayid=" + parkid, function(data){
+    parks.push(data);
+    prepPark(parks.length-1);
+    if(parkids[index].indexOf("_") > -1){
+      parks[parks.length-1].texture = parkids[index].split("_")[1];
+    }
+    writePark(parks.length-1);
+  });
 }
 
 function prepBuilding(b){
