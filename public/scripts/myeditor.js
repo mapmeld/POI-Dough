@@ -66,6 +66,37 @@ function init(){
       var baseMapLayer = new L.TileLayer(reloadmap.basemap, {maxZoom: 18, attribution: reloadmap.attribution});
       var cityll = new L.LatLng(reloadmap.center[0], reloadmap.center[1]);
       map.setView(cityll, reloadmap.zoom).addLayer(baseMapLayer);
+
+      var tiles = "custom";
+      if(reloadmap.basemap == "http://otile1.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png"){
+        tiles = "mapquest";
+      }
+      else if(reloadmap.basemap == 'http://tile.openstreetmap.org/{z}/{x}/{y}.png'){
+        tiles = "mapnik";
+      }
+      else if(reloadmap.basemap == "http://{s}.tile2.opencyclemap.org/transport/{z}/{x}/{y}.png"){
+        tiles = "transit";
+      }
+      else if(reloadmap.basemap == "http://{s}.tile.stamen.com/terrain/{z}/{x}/{y}.jpg"){
+        tiles = "terrain";
+      }
+      else if(reloadmap.basemap == "http://{s}.tile.stamen.com/watercolor/{z}/{x}/{y}.jpg"){
+        tiles = "watercolor";
+      }
+      else if(reloadmap.basemap == "http://{s}.tiles.mapbox.com/v3/mapbox.mapbox-streets/{z}/{x}/{y}.png"){
+        tiles = "mapbox";
+      }
+      if(tiles == "custom"){
+        var customOpt = document.createElement("option");
+        customOpt.value = reloadmap.basemap;
+        customOpt.innerHTML = "Custom"
+        $("#mapTiler")[0].appendChild(customOpt);
+        $("#mapTiler").val( reloadmap.basemap );
+      }
+      else{
+        $("#mapTiler").val( tiles );
+      }
+
     });
   }
 }
@@ -107,7 +138,7 @@ function fetchBuilding(buildid, index){
     });
 
     promoted[ buildid ] = {
-      effect: "3Dblock",
+      effect: buildids[index].split("_")[1],
       poly: footprint,
       osmdata: data
     };
@@ -160,7 +191,7 @@ function fetchPark(parkid, index){
     });
 
     promoted[ parkid ] = {
-      effect: "2Dpark",
+      effect: "2D" + parkids[index].split("_")[1],
       poly: footprint,
       osmdata: data
     };
