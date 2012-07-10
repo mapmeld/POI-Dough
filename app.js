@@ -17,6 +17,9 @@ var auth = require('./auth')
     , procedure = require('./procedure')
     , customgeo = require('./customgeo')
     , canvas = require('canvas')
+    
+    , sys = require('sys')
+    , jefe = require('./jefe/jefe')
     ;
 
 var HOUR_IN_MILLISECONDS = 3600000;
@@ -687,6 +690,21 @@ var init = exports.init = function (config) {
         });
       });
     }
+  });
+  
+  app.get('/jefetest', function(req, res){
+    var canv = new canvas(300,300);
+    var ctx = canv.getContext('2d');
+
+    var canvboss = new jefe.Jefe();
+    canvboss.compile("canvdraw", "/* canvcode */ ctx.font = '30px Arial'; ctx.rotate(0.1); ctx.fillText('Hello World!', 50, 100);");
+    canvboss.run("canvdraw", { canv: canv, ctx: ctx }, function(error, sandboxIn, sandboxOut){
+      if(error){
+        throw new Error(error);
+      }
+      res.send( '<img src="' + sandboxOut.canv.toDataURL() + '"/>');
+      //process.exit(0);
+    });
   });
 
   // Project Kansas: different procedural buildings / art effects
