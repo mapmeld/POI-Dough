@@ -906,7 +906,7 @@ function setEffect(wayid, settype){
   }
   if(settype.indexOf("2D") > -1){
     var p_index = parks.length;
-    if(promoted[wayid].effect.indexOf("2D") == -1 || promoted[wayid].effect != settype){
+    if(promoted[wayid].effect.indexOf("2D") == -1){
       parks.push({
         wayid: wayid,
 	    /* vertices: promoted[wayid].osmdata.line.splice(0), */
