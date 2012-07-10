@@ -125,7 +125,7 @@ var init = exports.init = function (config) {
           myEditMap.save(function (err) {
             if (!err){
               console.log('Success!');
-              res.render('poieditor', { poimap: myEditMap });
+              res.redirect('/openmap?id=' + myEditMap._id);
             }
             else{
               console.log('Fail! ' + err);
