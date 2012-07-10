@@ -68,7 +68,18 @@ function fetchBuilding(buildid, index){
     buildings.push(data);
     var b = buildings.length - 1;
 
-    promoted[ buildid ] = { effect: "3Dblock" };
+    var wll = data.sections[0].vertices.slice(0);
+    for(var j=0;j<wll.length;j++){
+      wll[j] = new L.LatLng(wll[j][0], wll[j][1]);
+    }
+    var footprint = new L.Polygon( wll, { color: "#00f", fillOpacity: 0.3, opacity: 0.65 } );
+    highlight_on_hover(footprint);
+
+    promoted[ buildid ] = {
+      effect: "3Dblock",
+      poly: footprint,
+      osmdata: data
+    };
     buildings[b].color = "#ff0000";
     buildings[b].roofcolor = "#cccccc";
    
@@ -82,8 +93,19 @@ function fetchBuilding(buildid, index){
 function fetchPark(parkid, index){
   $.getJSON("/textures?wayid=" + parkid, function(data){
     parks.push(data);
-    
-    promoted[ parkid ] = { effect: "2Dpark" };
+
+    var wll = data.vertices.slice(0);
+    for(var j=0;j<wll.length;j++){
+      wll[j] = new L.LatLng(wll[j][0], wll[j][1]);
+    }
+    var footprint = new L.Polygon( wll, { color: "#00f", fillOpacity: 0.3, opacity: 0.65 } );
+    highlight_on_hover(footprint);
+
+    promoted[ parkid ] = {
+      effect: "2Dpark",
+      poly: footprint,
+      osmdata: data
+    };
     
     prepPark(parks.length-1);
     if(parkids[index].indexOf("_") > -1){
