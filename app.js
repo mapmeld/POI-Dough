@@ -680,10 +680,10 @@ var init = exports.init = function (config) {
         res.send({
           buildings: mymap.buildings,
           parks: mymap.parks,
-          center: mymaps.center,
-          zoom: mymaps.zoom,
-          basemap: mymaps.basemap,
-          attribution: mymaps.attribution
+          center: mymap.center,
+          zoom: mymap.zoom,
+          basemap: mymap.basemap,
+          attribution: mymap.attribution
         });
       });
     }
