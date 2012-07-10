@@ -66,7 +66,8 @@ function init(){
 function fetchBuilding(buildid, index){
   $.getJSON("/isometrics?wayid=" + buildid, function(data){
     buildings.push(data);
-   
+    var b = buildings.length - 1;
+
     promoted[ buildid ] = { effect: "3Dblock" };
     buildings[b].color = "#ff0000";
     buildings[b].roofcolor = "#cccccc";
