@@ -50,11 +50,17 @@ function init(){
       buildids = reloadmap.buildings;
       for(var b=0;b<reloadmap.buildings.length;b++){
         var buildid = reloadmap.buildings[b].split("_")[0];
+        if(buildid.length < 2){
+          continue;
+        }
         fetchBuilding(buildid, b);
       }
       parkids = reloadmap.parks;
       for(var p=0;p<reloadmap.parks.length;p++){
         var parkid = reloadmap.parks[p].split("_")[0];
+        if(parkid.length < 2){
+          continue;
+        }
         fetchPark(parkid, p);
       }
       var baseMapLayer = new L.TileLayer(reloadmap.basemap, {maxZoom: 18, attribution: reloadmap.attribution});
@@ -74,6 +80,7 @@ function fetchBuilding(buildid, index){
     }
     var footprint = new L.Polygon( wll, { color: "#00f", fillOpacity: 0.3, opacity: 0.65 } );
     highlight_on_hover(footprint);
+    menu_on_click(footprint, data);
     if(allowPolygonEditing){
       footprint.editing.enable();
     }
@@ -126,6 +133,7 @@ function fetchPark(parkid, index){
     }
     var footprint = new L.Polygon( wll, { color: "#00f", fillOpacity: 0.3, opacity: 0.65 } );
     highlight_on_hover(footprint);
+    menu_on_click(footprint, data);
     if(allowPolygonEditing){
       footprint.editing.enable();
     }
