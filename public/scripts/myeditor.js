@@ -924,6 +924,10 @@ function hasKey(item, key){
   return false;
 }
 function tableOfData(item){
+  if(!item.keys){
+    // has no data keys
+    return "";
+  }
   var table = "<table class='table-condensed table-striped'>";
   var attrs = { };
   for(var k=0;k<item.keys.length;k++){
