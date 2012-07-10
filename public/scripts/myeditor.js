@@ -5,6 +5,7 @@ var map, baseIcon, miniIcon, activeWay, menuPopup;
 var tree, corn, watermelon, coffee;
 var promoted = { };
 var allowPolygonEditing = true;
+var buildids, parkids;
 
 function init(){
   var tileURL = "http://otile1.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png";
@@ -34,23 +35,7 @@ function init(){
     iconAnchor: new L.Point(15, 18),
     popupAnchor: new L.Point(0, -12)
   });
-  
-  /*$("#colorPick").colorPicker();
-  $('#colorPick').on("change",
-	function(){
-	  if(activeWay){
-	    changeColor( activeWay )
-	  }
-	}
-  );
-  $("#roofPick").colorPicker();
-  $('#roofPick').on("change",
-	function(){
-	  if(activeWay){
-	    changeRoofColor( activeWay )
-	  }
-	}
-  );*/
+
   tree = new Image();
   tree.src = "../images/treeblot.png";
   corn = new Image();
@@ -62,10 +47,12 @@ function init(){
   
   if(gup("id")){
     $.getJSON("/reloadmap?id=" + gup("id"), function(reloadmap){
+      buildids = reloadmap.buildings;
       for(var b=0;b<reloadmap.buildings.length;b++){
         var buildid = reloadmap.buildings[b].split("_")[0];
         fetchBuilding(buildid, b);
       }
+      parkids = reloadmap.parks;
       for(var p=0;p<reloadmap.parks.length;p++){
         var parkid = reloadmap.parks[p].split("_")[0];
         fetchPark(parkid, p);
@@ -79,6 +66,11 @@ function init(){
 function fetchBuilding(buildid, index){
   $.getJSON("/isometrics?wayid=" + buildid, function(data){
     buildings.push(data);
+   
+    promoted[ buildid ] = { effect: "3Dblock" };
+    buildings[b].color = "#ff0000";
+    buildings[b].roofcolor = "#cccccc";
+   
     prepBuilding(buildings.length-1);
     if(buildids[index].indexOf("_") > -1){
       buildings[buildings.length-1].effect = buildids[index].split("_")[1];
@@ -89,6 +81,9 @@ function fetchBuilding(buildid, index){
 function fetchPark(parkid, index){
   $.getJSON("/textures?wayid=" + parkid, function(data){
     parks.push(data);
+    
+    promoted[ parkid ] = { effect: "2Dpark" };
+    
     prepPark(parks.length-1);
     if(parkids[index].indexOf("_") > -1){
       parks[parks.length-1].texture = parkids[index].split("_")[1];
