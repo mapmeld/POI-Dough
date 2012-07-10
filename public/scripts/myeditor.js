@@ -906,11 +906,11 @@ function setEffect(wayid, settype){
   }
   if(settype.indexOf("2D") > -1){
     var p_index = parks.length;
-    if(!promoted[wayid].tiled || promoted[wayid].tiled != settype.replace("2D","")){
+    if(!promoted[wayid].effect || promoted[wayid].effect != settype.replace("2D","")){
       parks.push({
         wayid: wayid,
 	    /* vertices: promoted[wayid].osmdata.line.splice(0), */
-	    effect: "park",
+	    effect: settype,
 	    texture: settype.replace("2D","")
       });
     }
