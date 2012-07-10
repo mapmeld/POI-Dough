@@ -906,7 +906,7 @@ function setEffect(wayid, settype){
   }
   if(settype.indexOf("2D") > -1){
     var p_index = parks.length;
-    if(promoted[wayid].effect.indexOf("2D") == -1){
+    if(!promoted[wayid].effect || promoted[wayid].effect.indexOf("2D") == -1){
       parks.push({
         wayid: wayid,
 	    /* vertices: promoted[wayid].osmdata.line.splice(0), */
@@ -922,8 +922,8 @@ function setEffect(wayid, settype){
         }
       }
     }
-    promoted[wayid].tiled = true;
     parks[p_index].effect = settype;
+    parks[p_index].texture = settype.replace("2D","");
     prepPark(p_index);
     writePark(p_index);
   }
