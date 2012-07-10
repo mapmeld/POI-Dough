@@ -17,8 +17,6 @@ var auth = require('./auth')
     , procedure = require('./procedure')
     , customgeo = require('./customgeo')
     , canvas = require('canvas')
-    
-    , sys = require('sys')
     , jefe = require('./jefe/jefe')
     ;
 
