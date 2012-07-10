@@ -74,6 +74,30 @@ function fetchBuilding(buildid, index){
     }
     var footprint = new L.Polygon( wll, { color: "#00f", fillOpacity: 0.3, opacity: 0.65 } );
     highlight_on_hover(footprint);
+    if(allowPolygonEditing){
+      footprint.editing.enable();
+    }
+    footprint.on('edit', function() {
+      for(shape in promoted){
+        if(promoted[shape] && promoted[shape].poly == this){
+          if(promoted[shape].customgeoid){
+            // update this shape's points
+            $.getJSON("/customgeo?id=" + promoted[shape].customgeoid + "&pts=" + llserial(promoted[shape].poly.getLatLngs()), function(resp){ });
+          }
+          else{
+            // make this shape into a custom object
+            $.getJSON("/customgeo?wayid=" + shape + "&pts=" + llserial(promoted[shape].poly.getLatLngs()), function(resp){
+              promoted[shape].customgeoid = resp.id;
+            });
+          }
+          // make sure edited polygon gets any existing 2D or 3D effect
+          if(promoted[shape].effect){
+            setEffect(shape, promoted[shape].effect);
+          }
+          break;
+        }
+      }
+    });
 
     promoted[ buildid ] = {
       effect: "3Dblock",
@@ -88,6 +112,8 @@ function fetchBuilding(buildid, index){
       buildings[buildings.length-1].effect = buildids[index].split("_")[1];
     }
     writeBuilding(buildings.length-1);
+    
+    map.addLayer(footprint);
   });
 }
 function fetchPark(parkid, index){
@@ -100,6 +126,30 @@ function fetchPark(parkid, index){
     }
     var footprint = new L.Polygon( wll, { color: "#00f", fillOpacity: 0.3, opacity: 0.65 } );
     highlight_on_hover(footprint);
+    if(allowPolygonEditing){
+      footprint.editing.enable();
+    }
+    footprint.on('edit', function() {
+      for(shape in promoted){
+        if(promoted[shape] && promoted[shape].poly == this){
+          if(promoted[shape].customgeoid){
+            // update this shape's points
+            $.getJSON("/customgeo?id=" + promoted[shape].customgeoid + "&pts=" + llserial(promoted[shape].poly.getLatLngs()), function(resp){ });
+          }
+          else{
+            // make this shape into a custom object
+            $.getJSON("/customgeo?wayid=" + shape + "&pts=" + llserial(promoted[shape].poly.getLatLngs()), function(resp){
+              promoted[shape].customgeoid = resp.id;
+            });
+          }
+          // make sure edited polygon gets any existing 2D or 3D effect
+          if(promoted[shape].effect){
+            setEffect(shape, promoted[shape].effect);
+          }
+          break;
+        }
+      }
+    });
 
     promoted[ parkid ] = {
       effect: "2Dpark",
@@ -112,6 +162,8 @@ function fetchPark(parkid, index){
       parks[parks.length-1].texture = parkids[index].split("_")[1];
     }
     writePark(parks.length-1);
+    
+    map.addLayer(footprint);
   });
 }
 
@@ -121,15 +173,6 @@ function prepBuilding(b){
   var latmin = 1000;
   var lngmax = -1000;
   var lngmin = 1000;
-  /*for(var s=0; s<buildings[b].sections.length; s++){
-    for(var v=0; v<buildings[b].sections[s].vertices.length; v++){
-      var pt = buildings[b].sections[s].vertices[v];
-      latmax = Math.max(latmax, pt[0]);
-      latmin = Math.min(latmin, pt[0]);
-      lngmax = Math.max(lngmax, pt[1]);
-      lngmin = Math.min(lngmin, pt[1]);
-    }
-  }*/
   var vertices = promoted[ buildings[b].wayid ].poly.getLatLngs();
   for(var v=0; v<vertices.length; v++){
     var pt = vertices[v];
