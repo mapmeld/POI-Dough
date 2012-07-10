@@ -1,6 +1,6 @@
 var
   common = require("./common"),
-  sys = require("sys"),
+  sys = require("util"),
   fs = require("fs"),
   memory = require("./memory");
 

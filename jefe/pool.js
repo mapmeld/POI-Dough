@@ -1,5 +1,5 @@
 var 
-  sys = require("sys"),
+  sys = require("util"),
   spawn = require("child_process").spawn,
   events = require("events");
 

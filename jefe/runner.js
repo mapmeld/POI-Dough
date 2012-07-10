@@ -1,7 +1,7 @@
 // Jefe: child process driver/worker.
 
 var   
-  sys = require("sys"),
+  sys = require("util"),
   common = require("./common"),
   Script = process.binding('evals').Script,
 
