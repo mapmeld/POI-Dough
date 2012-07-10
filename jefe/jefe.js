@@ -1,5 +1,5 @@
 var 
-  sys = require("sys"), 
+  sys = require("util"), 
   common = require("./common"),
   ChildHandler = require("./handler").ChildHandler,
   ChildPool = require("./pool").ChildPool,
