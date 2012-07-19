@@ -803,7 +803,7 @@ var init = exports.init = function (config) {
               latmin = shape.vertices[0][0];
               lngmax = shape.vertices[0][1];
               lngmin = shape.vertices[0][1];            
-              for(var pt=1;pt<shape.sections[0].vertices.length;pt++){
+              for(var pt=1;pt<shape.vertices.length;pt++){
                 latmax = Math.max(latmax, shape.vertices[pt][0]);
                 latmin = Math.min(latmin, shape.vertices[pt][0]);
                 lngmax = Math.max(lngmax, shape.vertices[pt][1]);
