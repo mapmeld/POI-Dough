@@ -778,22 +778,37 @@ var init = exports.init = function (config) {
       if(!err){
         // output the KML for this POI Map. Image overlays
         res.setHeader('Content-Type', 'application/kml');
-        var kmlintro = '<?xml version="1.0" encoding="UTF-8"?>\n<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:kml="http://www.opengis.net/kml/2.2" xmlns:atom="http://www.w3.org/2005/Atom">\n<Document>\n	<name>Macon Housing API</name>\n	<Style id="BasicStyle">\n		<IconStyle>\n			<scale>1.1</scale>\n			<Icon>\n				<href>http://maps.google.com/mapfiles/kml/paddle/red-blank_maps.png</href>\n			</Icon>\n			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>\n		</IconStyle>\n		<BalloonStyle>\n			<text>$[description]</text>\n		</BalloonStyle>\n	</Style>\n	<Folder id="KMLAPI">\n		<name>KML API Download</name>\n';
+        var kmlintro = '<?xml version="1.0" encoding="UTF-8"?>\n<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:kml="http://www.opengis.net/kml/2.2" xmlns:atom="http://www.w3.org/2005/Atom">\n<Document>\n	<name>POI Dough API</name>\n	<Folder id="KMLAPI">\n		<name>KML API Download</name>\n';
         var kmldocs = '';
         var kmlend = '	</Folder>\n</Document>\n</kml>';
 
         //res.send(kmlintro + kmldocs + kmlend);
         if(myViewMap.buildings.length > 0){
-          var loadNextBuilding = function(b, shape){
-            var latmax = shape.sections[0].vertices[0][0];
-            var latmin = shape.sections[0].vertices[0][0];
-            var lngmax = shape.sections[0].vertices[0][1];
-            var lngmin = shape.sections[0].vertices[0][1];            
-            for(var pt=1;pt<shape.sections[0].vertices.length;pt++){
-              latmax = Math.max(latmax, shape.sections[0].vertices[pt][0]);
-              latmin = Math.min(latmin, shape.sections[0].vertices[pt][0]);
-              lngmax = Math.max(lngmax, shape.sections[0].vertices[pt][1]);
-              lngmin = Math.min(lngmin, shape.sections[0].vertices[pt][1]);
+          var loadNextWay = function(category, b, shape){
+            var latmax, latmin, lngmax, lngmin;
+            if(category == "build"){
+              latmax = shape.sections[0].vertices[0][0];
+              latmin = shape.sections[0].vertices[0][0];
+              lngmax = shape.sections[0].vertices[0][1];
+              lngmin = shape.sections[0].vertices[0][1];            
+              for(var pt=1;pt<shape.sections[0].vertices.length;pt++){
+                latmax = Math.max(latmax, shape.sections[0].vertices[pt][0]);
+                latmin = Math.min(latmin, shape.sections[0].vertices[pt][0]);
+                lngmax = Math.max(lngmax, shape.sections[0].vertices[pt][1]);
+                lngmin = Math.min(lngmin, shape.sections[0].vertices[pt][1]);
+              }
+            }
+            else{
+              latmax = shape.vertices[0][0];
+              latmin = shape.vertices[0][0];
+              lngmax = shape.vertices[0][1];
+              lngmin = shape.vertices[0][1];            
+              for(var pt=1;pt<shape.sections[0].vertices.length;pt++){
+                latmax = Math.max(latmax, shape.vertices[pt][0]);
+                latmin = Math.min(latmin, shape.vertices[pt][0]);
+                lngmax = Math.max(lngmax, shape.vertices[pt][1]);
+                lngmin = Math.min(lngmin, shape.vertices[pt][1]);
+              }
             }
             kmldocs += '		<GroundOverlay id="' + myViewMap.buildings[b] + '">\n';
             kmldocs += '			<name>' + myViewMap.buildings[b] + '</name>\n';
@@ -814,8 +829,30 @@ var init = exports.init = function (config) {
             b++;
             if(myViewMap.buildings.length <= b){
               // ran out of buildings
-              // normally would go to parks, but now export what you've got
-              res.send(kmlintro + kmldocs + kmlend);
+              if(myViewMap.parks.length > 0){
+                // shift to parks
+                var wayid = myViewMap.parks[0];
+                var custom = false;
+                if(wayid.indexOf(":") > -1){
+                  wayid = wayid.split(":")[1];
+                  custom = true;
+                }
+                if(wayid.indexOf("_") > -1){
+                  wayid = wayid.split("_")[0];
+                }
+                if(!custom){
+                  // standard shape
+                  getShape(wayid, "park", { send: function(data){ loadNextWay("park",0,data); }});
+                }
+                else{
+                  // custom geo
+                  getCustomGeo(wayid, "park", { send: function(data){ loadNextWay("park",0,data); }});
+                }
+              }
+              else{
+                // no parks to add
+                res.send(kmlintro + kmldocs + kmlend);
+              }
             }
             else{
               var wayid = myViewMap.buildings[b];
@@ -829,11 +866,11 @@ var init = exports.init = function (config) {
               }
               if(!custom){
                 // standard shape
-                getShape(wayid, "build", { send: function(d){ loadNextBuilding(b,d); }});
+                getShape(wayid, "build", { send: function(d){ loadNextWay("build",b,d); }});
               }
               else{
                 // custom geo
-                getCustomGeo(wayid, "build", { send: function(d){ loadNextBuilding(b,d); }});
+                getCustomGeo(wayid, "build", { send: function(d){ loadNextWay("build",b,d); }});
               }
             }
           };
@@ -848,15 +885,33 @@ var init = exports.init = function (config) {
           }
           if(!custom){
             // standard shape
-            getShape(wayid, "build", { send: function(data){ loadNextBuilding(0,data); }});
+            getShape(wayid, "build", { send: function(data){ loadNextWay("build",0,data); }});
           }
           else{
             // custom geo
-            getCustomGeo(wayid, "build", { send: function(data){ loadNextBuilding(0,data); }});
+            getCustomGeo(wayid, "build", { send: function(data){ loadNextWay("build",0,data); }});
           }
         }
-        
-        // now look at parks?
+        else if(myViewMap.parks.length > 0){
+          // no buildings, just parks
+          var wayid = myViewMap.parks[0];
+          var custom = false;
+          if(wayid.indexOf(":") > -1){
+            wayid = wayid.split(":")[1];
+            custom = true;
+          }
+          if(wayid.indexOf("_") > -1){
+            wayid = wayid.split("_")[0];
+          }
+          if(!custom){
+            // standard shape
+            getShape(wayid, "park", { send: function(data){ loadNextWay("park",0,data); }});
+          }
+          else{
+            // custom geo
+            getCustomGeo(wayid, "park", { send: function(data){ loadNextWay("park",0,data); }});
+          }
+        }
       }
     });
   });
