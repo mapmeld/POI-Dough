@@ -158,7 +158,7 @@ var init = exports.init = function (config) {
     }
   });
   
-  app.get('/canvrender', function(req,res){
+  app.get('/canvrender*', function(req,res){
     var canv = new canvas(300,300);
     var ctx = canv.getContext('2d');
     var toPixel = function(latlng, ctrlat, ctrlng, scale){
@@ -359,7 +359,14 @@ var init = exports.init = function (config) {
           ctx.fill();
           ctx.stroke();
         }
-        res.send('publishAt("' + poi_id + '","' + canv.toDataURL() + '");');
+        if(req.url.indexOf(".png") == -1){
+          // JavaScript call
+          res.send('publishAt("' + poi_id + '","' + canv.toDataURL() + '");');
+        }
+        else{
+          // output PNG image
+          res.send( canv.toDataURL() );
+        }
       };
       if(poi_id.indexOf("poi:") == 0){
         getCustomGeo( poi_id, "build", { send: drawBuilding } );
@@ -440,7 +447,14 @@ var init = exports.init = function (config) {
 	      }
         }
         ctx.putImageData(imgData, 0, 0);
-        res.send('publishAt("' + poi_id + '","' + canv.toDataURL() + '");');
+        if(req.url.indexOf(".png") == -1){
+          // JavaScript call
+          res.send('publishAt("' + poi_id + '","' + canv.toDataURL() + '");');
+        }
+        else{
+          // output a PNG
+          res.send( canv.toDataURL() );
+        }
       };
       var icon = new canvas.Image;
       icon.onload = function(){
@@ -753,6 +767,87 @@ var init = exports.init = function (config) {
       });
     }
   });
+  
+  // Export KML with image overlays
+  app.get('/export_*.kml', function(req,res){
+    var poi_id = req.url.substring( req.url.indexOf("export_") + 7, req.url.indexOf(".kml") );
+    poimap.POIMap.findById(poi_id, function(err, myViewMap){
+      if(!err){
+        // output the KML for this POI Map. Image overlays
+        res.setHeader('Content-Type', 'application/kml');
+        var kmlintro = '<?xml version="1.0" encoding="UTF-8"?>\n<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:kml="http://www.opengis.net/kml/2.2" xmlns:atom="http://www.w3.org/2005/Atom">\n<Document>\n	<name>Macon Housing API</name>\n	<Style id="BasicStyle">\n		<IconStyle>\n			<scale>1.1</scale>\n			<Icon>\n				<href>http://maps.google.com/mapfiles/kml/paddle/red-blank_maps.png</href>\n			</Icon>\n			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>\n		</IconStyle>\n		<BalloonStyle>\n			<text>$[description]</text>\n		</BalloonStyle>\n	</Style>\n	<Folder id="KMLAPI">\n		<name>KML API Download</name>\n';
+        var kmldocs = '';
+        var kmlend = '	</Folder>\n</Document>\n</kml>';
+
+        //res.send(kmlintro + kmldocs + kmlend);
+        if(myViewMap.buildings.length > 0){
+          var loadNextBuilding = function(b){
+            kmldocs += '		<GroundOverlay id="' + myViewMap.buildings[b]. + '">\n';
+            kmldocs += '			<name>' + myViewMap.buildings[b] + '</name>\n';
+            kmldocs += '			<visibility>1</visibility>\n';
+            kmldocs += '			<color>9effffff</color>\n';
+            kmldocs += '			<Icon>\n';
+            kmldocs += '				<href>http://poimark2.herokuapp.com/canvrender.png?id=' + myViewMap.buildings[b] + '</href>\n';
+            kmldocs += '				<viewBoundScale>0.75</viewBoundScale>\n';
+            kmldocs += '			</Icon>\n';
+            kmldocs += '			<LatLonBox>\n';
+            kmldocs += '				<north>' + myViewMap.buildings[b].latmax + '</north>\n';
+            kmldocs += '				<south>' + myViewMap.buildings[b].latmin + '</south>\n';
+            kmldocs += '				<east>' + myViewMap.buildings[b].lngmax + '</east>\n';
+            kmldocs += '				<west>' + myViewMap.buildings[b].lngmin + '</west>\n';
+            kmldocs += '			</LatLonBox>\n';
+            kmldocs += '		</GroundOverlay>\n';
+            // determine what happens next
+            b++;
+            if(myViewMap.buildings.length <= b){
+              // ran out of buildings
+              // normally would go to parks, but now export what you've got
+              res.send(kmlintro + kmldocs + kmlend);
+            }
+            else{
+              var wayid = myViewMap.buildings[0];
+              var custom = false;
+              if(wayid.indexOf(":") > -1){
+                wayid = wayid.split(":")[1];
+                custom = true;
+              }
+              if(wayid.indexOf("_") > -1){
+                wayid = wayid.split("_")[0];
+              }
+              if(custom){
+                // standard shape
+                getShape(wayid, "build", { send: function(data){ loadNextBuilding(b,data); }});
+              }
+              else{
+                // custom geo
+                getCustomGeo(wayid, "build", { send: function(data){ loadNextBuilding(b,data); }});
+              }
+            }
+          };
+          //loadNextBuilding(0);
+          var wayid = myViewMap.buildings[0];
+          var custom = false;
+          if(wayid.indexOf(":") > -1){
+            wayid = wayid.split(":")[1];
+            custom = true;
+          }
+          if(wayid.indexOf("_") > -1){
+            wayid = wayid.split("_")[0];
+          }
+          if(custom){
+            // standard shape
+            getShape(wayid, "build", { send: function(data){ loadNextBuilding(0,data); }});
+          }
+          else{
+            // custom geo
+            getCustomGeo(wayid, "build", { send: function(data){ loadNextBuilding(0,data); }});
+          }
+        }
+        
+        // now look at parks?
+      }
+    });
+  }
 
   app.get('/', function(req,res) {
     res.render('poihome', { title: "My Title", app_name: "Test App", comments: [ ] });
