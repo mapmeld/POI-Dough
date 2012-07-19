@@ -799,7 +799,7 @@ var init = exports.init = function (config) {
             }
           }
           else{
-            shape_id = myViewMap.parks[b];
+            shape_id = myViewMap.parks[b].replace('_','_2D');
             latmax = shape.vertices[0][0];
             latmin = shape.vertices[0][0];
             lngmax = shape.vertices[0][1];
