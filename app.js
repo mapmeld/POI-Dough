@@ -538,7 +538,6 @@ var init = exports.init = function (config) {
     poi_id = poi_id.replace("poi:","");
     
     customgeo.CustomGeo.findById(poi_id, function(err, custompoly){
-      throw err;
       if(!custompoly.addedToMap){
         // confirm this polygon is used, so it isn't purged
         custompoly.addedToMap = "yes";
@@ -848,6 +847,7 @@ var init = exports.init = function (config) {
           if(wayid.indexOf("_") > -1){
             wayid = wayid.split("_")[0];
           }
+          res.send(wayid);
           if(custom){
             // standard shape
             getShape(wayid, "build", { send: function(data){ loadNextBuilding(0,data); }});
