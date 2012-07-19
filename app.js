@@ -365,7 +365,7 @@ var init = exports.init = function (config) {
         }
         else{
           // output PNG image
-          //res.setHeader('Content-Type', 'image/png');
+          res.setHeader('Content-Type', 'image/png');
           res.send( canv.toDataURL() );
         }
       };
@@ -454,7 +454,7 @@ var init = exports.init = function (config) {
         }
         else{
           // output PNG image
-          //res.setHeader('Content-Type', 'image/png');
+          res.setHeader('Content-Type', 'image/png');
           res.send( canv.toDataURL() );
         }
       };
@@ -827,7 +827,7 @@ var init = exports.init = function (config) {
               if(wayid.indexOf("_") > -1){
                 wayid = wayid.split("_")[0];
               }
-              if(custom){
+              if(!custom){
                 // standard shape
                 getShape(wayid, "build", { send: function(data){ loadNextBuilding(b,data); }});
               }
@@ -847,9 +847,7 @@ var init = exports.init = function (config) {
           if(wayid.indexOf("_") > -1){
             wayid = wayid.split("_")[0];
           }
-          res.send(wayid);
-          return;
-          if(custom){
+          if(!custom){
             // standard shape
             getShape(wayid, "build", { send: function(data){ loadNextBuilding(0,data); }});
           }
