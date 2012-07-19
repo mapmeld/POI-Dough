@@ -783,92 +783,58 @@ var init = exports.init = function (config) {
         var kmlend = '	</Folder>\n</Document>\n</kml>';
 
         //res.send(kmlintro + kmldocs + kmlend);
-        if(myViewMap.buildings.length > 0){
-          var loadNextWay = function(category, b, shape){
-            var latmax, latmin, lngmax, lngmin;
-            if(category == "build"){
-              latmax = shape.sections[0].vertices[0][0];
-              latmin = shape.sections[0].vertices[0][0];
-              lngmax = shape.sections[0].vertices[0][1];
-              lngmin = shape.sections[0].vertices[0][1];            
-              for(var pt=1;pt<shape.sections[0].vertices.length;pt++){
-                latmax = Math.max(latmax, shape.sections[0].vertices[pt][0]);
-                latmin = Math.min(latmin, shape.sections[0].vertices[pt][0]);
-                lngmax = Math.max(lngmax, shape.sections[0].vertices[pt][1]);
-                lngmin = Math.min(lngmin, shape.sections[0].vertices[pt][1]);
-              }
+        var loadNextWay = function(category, b, shape){
+          var latmax, latmin, lngmax, lngmin, shape_id;
+          if(category == "build"){
+            shape_id = myViewMap.buildings[b];
+            latmax = shape.sections[0].vertices[0][0];
+            latmin = shape.sections[0].vertices[0][0];
+            lngmax = shape.sections[0].vertices[0][1];
+            lngmin = shape.sections[0].vertices[0][1];            
+            for(var pt=1;pt<shape.sections[0].vertices.length;pt++){
+              latmax = Math.max(latmax, shape.sections[0].vertices[pt][0]);
+              latmin = Math.min(latmin, shape.sections[0].vertices[pt][0]);
+              lngmax = Math.max(lngmax, shape.sections[0].vertices[pt][1]);
+              lngmin = Math.min(lngmin, shape.sections[0].vertices[pt][1]);
             }
-            else{
-              latmax = shape.vertices[0][0];
-              latmin = shape.vertices[0][0];
-              lngmax = shape.vertices[0][1];
-              lngmin = shape.vertices[0][1];            
-              for(var pt=1;pt<shape.vertices.length;pt++){
-                latmax = Math.max(latmax, shape.vertices[pt][0]);
-                latmin = Math.min(latmin, shape.vertices[pt][0]);
-                lngmax = Math.max(lngmax, shape.vertices[pt][1]);
-                lngmin = Math.min(lngmin, shape.vertices[pt][1]);
-              }
+          }
+          else{
+            shape_id = myViewMap.parks[b];
+            latmax = shape.vertices[0][0];
+            latmin = shape.vertices[0][0];
+            lngmax = shape.vertices[0][1];
+            lngmin = shape.vertices[0][1];            
+            for(var pt=1;pt<shape.vertices.length;pt++){
+              latmax = Math.max(latmax, shape.vertices[pt][0]);
+              latmin = Math.min(latmin, shape.vertices[pt][0]);
+              lngmax = Math.max(lngmax, shape.vertices[pt][1]);
+              lngmin = Math.min(lngmin, shape.vertices[pt][1]);
             }
-            kmldocs += '		<GroundOverlay id="' + myViewMap.buildings[b] + '">\n';
-            kmldocs += '			<name>' + myViewMap.buildings[b] + '</name>\n';
-            kmldocs += '			<visibility>1</visibility>\n';
-            kmldocs += '			<color>9effffff</color>\n';
-            kmldocs += '			<Icon>\n';
-            kmldocs += '				<href>http://poimark2.herokuapp.com/canvrender.png?id=' + myViewMap.buildings[b] + '</href>\n';
-            kmldocs += '				<viewBoundScale>0.75</viewBoundScale>\n';
-            kmldocs += '			</Icon>\n';
-            kmldocs += '			<LatLonBox>\n';
-            kmldocs += '				<north>' + latmax + '</north>\n';
-            kmldocs += '				<south>' + latmin + '</south>\n';
-            kmldocs += '				<east>' + lngmax + '</east>\n';
-            kmldocs += '				<west>' + lngmin + '</west>\n';
-            kmldocs += '			</LatLonBox>\n';
-            kmldocs += '		</GroundOverlay>\n';
-            // determine what happens next
-            b++;
-            if(category == "build" && myViewMap.buildings.length <= b){
-              // ran out of buildings
-              if(myViewMap.parks.length > 0){
-                // shift to parks
-                var wayid = myViewMap.parks[0];
-                var custom = false;
-                if(wayid.indexOf(":") > -1){
-                  wayid = wayid.split(":")[1];
-                  custom = true;
-                }
-                if(wayid.indexOf("_") > -1){
-                  wayid = wayid.split("_")[0];
-                }
-                if(!custom){
-                  // standard shape
-                  getShape(wayid, "park", { send: function(data){ loadNextWay("park",0,data); }});
-                }
-                else{
-                  // custom geo
-                  getCustomGeo(wayid, "park", { send: function(data){ loadNextWay("park",0,data); }});
-                }
-              }
-              else{
-                // no parks to add
-                res.send(kmlintro + kmldocs + kmlend);
-              }
-            }
-            else if(category == "park" && myViewMap.parks.length <= b){
-              // ran out of parks
-              res.send(kmlintro + kmldocs + kmlend);
-            }
-            else{
-              var wayid;
-              if(category == "build"){
-                wayid = myViewMap.buildings[b];
-              }
-              else if(category == "park"){
-                wayid = myViewMap.parks[b];
-              }
+          }
+          kmldocs += '		<GroundOverlay id="' + shape_id + '">\n';
+          kmldocs += '			<name>' + shape_id + '</name>\n';
+          kmldocs += '			<visibility>1</visibility>\n';
+          kmldocs += '			<color>9effffff</color>\n';
+          kmldocs += '			<Icon>\n';
+          kmldocs += '				<href>http://poimark2.herokuapp.com/canvrender.png?id=' + shape_id + '</href>\n';
+          kmldocs += '				<viewBoundScale>0.75</viewBoundScale>\n';
+          kmldocs += '			</Icon>\n';
+          kmldocs += '			<LatLonBox>\n';
+          kmldocs += '				<north>' + latmax + '</north>\n';
+          kmldocs += '				<south>' + latmin + '</south>\n';
+          kmldocs += '				<east>' + lngmax + '</east>\n';
+          kmldocs += '				<west>' + lngmin + '</west>\n';
+          kmldocs += '			</LatLonBox>\n';
+          kmldocs += '		</GroundOverlay>\n';
+          // determine what happens next
+          b++;
+          if(category == "build" && myViewMap.buildings.length <= b){
+            // ran out of buildings
+            if(myViewMap.parks.length > 0){
+              // shift to parks
+              var wayid = myViewMap.parks[0];
               var custom = false;
               if(wayid.indexOf(":") > -1){
-                wayid = wayid.split(":")[1];
                 custom = true;
               }
               if(wayid.indexOf("_") > -1){
@@ -876,18 +842,51 @@ var init = exports.init = function (config) {
               }
               if(!custom){
                 // standard shape
-                getShape(wayid, "build", { send: function(d){ loadNextWay(category,b,d); }});
+                getShape(wayid, "park", { send: function(data){ loadNextWay("park",0,data); }});
               }
               else{
                 // custom geo
-                getCustomGeo(wayid, "build", { send: function(d){ loadNextWay(category,b,d); }});
+                getCustomGeo(wayid, "park", { send: function(data){ loadNextWay("park",0,data); }});
               }
             }
-          };
+            else{
+              // no parks to add
+              res.send(kmlintro + kmldocs + kmlend);
+            }
+          }
+          else if(category == "park" && myViewMap.parks.length <= b){
+            // ran out of parks
+            res.send(kmlintro + kmldocs + kmlend);
+          }
+          else{
+            var wayid;
+            if(category == "build"){
+              wayid = myViewMap.buildings[b];
+            }
+            else if(category == "park"){
+              wayid = myViewMap.parks[b];
+            }
+            var custom = false;
+            if(wayid.indexOf(":") > -1){
+              custom = true;
+            }
+            if(wayid.indexOf("_") > -1){
+              wayid = wayid.split("_")[0];
+            }
+            if(!custom){
+              // standard shape
+              getShape(wayid, "build", { send: function(d){ loadNextWay(category,b,d); }});
+            }
+            else{
+              // custom geo
+              getCustomGeo(wayid, "build", { send: function(d){ loadNextWay(category,b,d); }});
+            }
+          }
+        };
+        if(myViewMap.buildings.length > 0){
           var wayid = myViewMap.buildings[0];
           var custom = false;
           if(wayid.indexOf(":") > -1){
-            wayid = wayid.split(":")[1];
             custom = true;
           }
           if(wayid.indexOf("_") > -1){
@@ -907,7 +906,6 @@ var init = exports.init = function (config) {
           var wayid = myViewMap.parks[0];
           var custom = false;
           if(wayid.indexOf(":") > -1){
-            wayid = wayid.split(":")[1];
             custom = true;
           }
           if(wayid.indexOf("_") > -1){
