@@ -782,7 +782,7 @@ var init = exports.init = function (config) {
         //res.send(kmlintro + kmldocs + kmlend);
         if(myViewMap.buildings.length > 0){
           var loadNextBuilding = function(b){
-            kmldocs += '		<GroundOverlay id="' + myViewMap.buildings[b]. + '">\n';
+            kmldocs += '		<GroundOverlay id="' + myViewMap.buildings[b] + '">\n';
             kmldocs += '			<name>' + myViewMap.buildings[b] + '</name>\n';
             kmldocs += '			<visibility>1</visibility>\n';
             kmldocs += '			<color>9effffff</color>\n';
