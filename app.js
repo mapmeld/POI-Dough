@@ -875,11 +875,11 @@ var init = exports.init = function (config) {
             }
             if(!custom){
               // standard shape
-              getShape(wayid, "build", { send: function(d){ loadNextWay(category,b,d); }});
+              getShape(wayid, category, { send: function(d){ loadNextWay(category,b,d); }});
             }
             else{
               // custom geo
-              getCustomGeo(wayid, "build", { send: function(d){ loadNextWay(category,b,d); }});
+              getCustomGeo(wayid, category, { send: function(d){ loadNextWay(category,b,d); }});
             }
           }
         };
