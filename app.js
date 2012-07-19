@@ -848,6 +848,7 @@ var init = exports.init = function (config) {
             wayid = wayid.split("_")[0];
           }
           res.send(wayid);
+          return;
           if(custom){
             // standard shape
             getShape(wayid, "build", { send: function(data){ loadNextBuilding(0,data); }});
