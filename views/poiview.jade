@@ -68,6 +68,11 @@ body
       br
       br
       a.btn.btn-primary(href="/editor?id=#{poimap._id}") Edit Map
+      br
+      br
+      a.btn.btn-primary(href="/export_#{poimap._id}.kml")
+        img(src='/images/Download-icon.png')
+        span Download KML
     .span12
       #map
 
