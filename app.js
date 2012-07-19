@@ -847,7 +847,7 @@ var init = exports.init = function (config) {
         // now look at parks?
       }
     });
-  }
+  });
 
   app.get('/', function(req,res) {
     res.render('poihome', { title: "My Title", app_name: "Test App", comments: [ ] });
