@@ -366,7 +366,7 @@ var init = exports.init = function (config) {
         else{
           // output PNG image
           res.setHeader('Content-Type', 'image/png');
-          res.send( canv.toDataURL() );
+          res.send( canv.toDataURL().split(',')[1] );
         }
       };
       if(poi_id.indexOf("poi:") == 0){
@@ -455,7 +455,7 @@ var init = exports.init = function (config) {
         else{
           // output PNG image
           res.setHeader('Content-Type', 'image/png');
-          res.send( canv.toDataURL() );
+          res.send( canv.toDataURL().split(',')[1] );
         }
       };
       var icon = new canvas.Image;
@@ -818,7 +818,7 @@ var init = exports.init = function (config) {
               res.send(kmlintro + kmldocs + kmlend);
             }
             else{
-              var wayid = myViewMap.buildings[0];
+              var wayid = myViewMap.buildings[b];
               var custom = false;
               if(wayid.indexOf(":") > -1){
                 wayid = wayid.split(":")[1];
@@ -829,15 +829,14 @@ var init = exports.init = function (config) {
               }
               if(!custom){
                 // standard shape
-                getShape(wayid, "build", { send: function(data){ loadNextBuilding(b,data); }});
+                getShape(wayid, "build", { send: function(d){ loadNextBuilding(b,d); }});
               }
               else{
                 // custom geo
-                getCustomGeo(wayid, "build", { send: function(data){ loadNextBuilding(b,data); }});
+                getCustomGeo(wayid, "build", { send: function(d){ loadNextBuilding(b,d); }});
               }
             }
           };
-          //loadNextBuilding(0);
           var wayid = myViewMap.buildings[0];
           var custom = false;
           if(wayid.indexOf(":") > -1){
