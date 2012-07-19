@@ -365,6 +365,7 @@ var init = exports.init = function (config) {
         }
         else{
           // output PNG image
+          res.setHeader('Content-Type', 'image/png');
           res.send( canv.toDataURL() );
         }
       };
@@ -453,6 +454,7 @@ var init = exports.init = function (config) {
         }
         else{
           // output a PNG
+          res.setHeader('Content-Type', 'image/png');
           res.send( canv.toDataURL() );
         }
       };
@@ -781,7 +783,17 @@ var init = exports.init = function (config) {
 
         //res.send(kmlintro + kmldocs + kmlend);
         if(myViewMap.buildings.length > 0){
-          var loadNextBuilding = function(b){
+          var loadNextBuilding = function(b, shape){
+            var latmax = shape.sections[0].vertices[0][0];
+            var latmin = shape.sections[0].vertices[0][0];
+            var lngmax = shape.sections[0].vertices[0][1];
+            var lngmin = shape.sections[0].vertices[0][1];            
+            for(var pt=1;pt<shape.sections[0].vertices.length;pt++){
+              latmax = Math.max(latmax, shape.sections[0].vertices[pt][0]);
+              latmin = Math.min(latmin, shape.sections[0].vertices[pt][0]);
+              lngmax = Math.max(lngmax, shape.sections[0].vertices[pt][1]);
+              lngmin = Math.min(lngmin, shape.sections[0].vertices[pt][1]);
+            }
             kmldocs += '		<GroundOverlay id="' + myViewMap.buildings[b] + '">\n';
             kmldocs += '			<name>' + myViewMap.buildings[b] + '</name>\n';
             kmldocs += '			<visibility>1</visibility>\n';
@@ -791,10 +803,10 @@ var init = exports.init = function (config) {
             kmldocs += '				<viewBoundScale>0.75</viewBoundScale>\n';
             kmldocs += '			</Icon>\n';
             kmldocs += '			<LatLonBox>\n';
-            kmldocs += '				<north>' + myViewMap.buildings[b].latmax + '</north>\n';
-            kmldocs += '				<south>' + myViewMap.buildings[b].latmin + '</south>\n';
-            kmldocs += '				<east>' + myViewMap.buildings[b].lngmax + '</east>\n';
-            kmldocs += '				<west>' + myViewMap.buildings[b].lngmin + '</west>\n';
+            kmldocs += '				<north>' + latmax + '</north>\n';
+            kmldocs += '				<south>' + latmin + '</south>\n';
+            kmldocs += '				<east>' + lngmax + '</east>\n';
+            kmldocs += '				<west>' + lngmin + '</west>\n';
             kmldocs += '			</LatLonBox>\n';
             kmldocs += '		</GroundOverlay>\n';
             // determine what happens next
