@@ -366,7 +366,9 @@ var init = exports.init = function (config) {
         else{
           // output PNG image
           res.setHeader('Content-Type', 'image/png');
-          res.send( canv.toDataURL().split(',')[1] );
+          canv.toDataURL('image/png', function(err, str){
+            res.send(str);
+          });
         }
       };
       if(poi_id.indexOf("poi:") == 0){
@@ -455,7 +457,9 @@ var init = exports.init = function (config) {
         else{
           // output PNG image
           res.setHeader('Content-Type', 'image/png');
-          res.send( canv.toDataURL().split(',')[1] );
+          canv.toDataURL('image/png', function(err, str){
+            res.send(str);
+          });
         }
       };
       var icon = new canvas.Image;
