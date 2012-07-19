@@ -365,7 +365,7 @@ var init = exports.init = function (config) {
         }
         else{
           // output PNG image
-          res.setHeader('Content-Type', 'image/png');
+          //res.setHeader('Content-Type', 'image/png');
           res.send( canv.toDataURL() );
         }
       };
@@ -453,8 +453,8 @@ var init = exports.init = function (config) {
           res.send('publishAt("' + poi_id + '","' + canv.toDataURL() + '");');
         }
         else{
-          // output a PNG
-          res.setHeader('Content-Type', 'image/png');
+          // output PNG image
+          //res.setHeader('Content-Type', 'image/png');
           res.send( canv.toDataURL() );
         }
       };
@@ -536,7 +536,9 @@ var init = exports.init = function (config) {
   
   function getCustomGeo(poi_id, format, res){
     poi_id = poi_id.replace("poi:","");
+    
     customgeo.CustomGeo.findById(poi_id, function(err, custompoly){
+      throw err;
       if(!custompoly.addedToMap){
         // confirm this polygon is used, so it isn't purged
         custompoly.addedToMap = "yes";
