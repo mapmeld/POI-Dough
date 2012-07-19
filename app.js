@@ -827,7 +827,7 @@ var init = exports.init = function (config) {
             kmldocs += '		</GroundOverlay>\n';
             // determine what happens next
             b++;
-            if(myViewMap.buildings.length <= b){
+            if(category == "build" && myViewMap.buildings.length <= b){
               // ran out of buildings
               if(myViewMap.parks.length > 0){
                 // shift to parks
@@ -854,8 +854,18 @@ var init = exports.init = function (config) {
                 res.send(kmlintro + kmldocs + kmlend);
               }
             }
+            else if(category == "park" && myViewMap.parks.length <= b){
+              // ran out of parks
+              res.send(kmlintro + kmldocs + kmlend);
+            }
             else{
-              var wayid = myViewMap.buildings[b];
+              var wayid;
+              if(category == "build"){
+                wayid = myViewMap.buildings[b];
+              }
+              else if(category == "park"){
+                wayid = myViewMap.parks[b];
+              }
               var custom = false;
               if(wayid.indexOf(":") > -1){
                 wayid = wayid.split(":")[1];
@@ -866,11 +876,11 @@ var init = exports.init = function (config) {
               }
               if(!custom){
                 // standard shape
-                getShape(wayid, "build", { send: function(d){ loadNextWay("build",b,d); }});
+                getShape(wayid, "build", { send: function(d){ loadNextWay(category,b,d); }});
               }
               else{
                 // custom geo
-                getCustomGeo(wayid, "build", { send: function(d){ loadNextWay("build",b,d); }});
+                getCustomGeo(wayid, "build", { send: function(d){ loadNextWay(category,b,d); }});
               }
             }
           };
