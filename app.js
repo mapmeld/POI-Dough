@@ -941,6 +941,7 @@ var init = exports.init = function (config) {
       "top": b * -256 * y + maxExtent["top"],
       "bottom": b * -256 * (y+1) + maxExtent["top"]
     };
+    res.write('about to send a tile');
     var bbox = tileExtent["left"].toFixed(6) + "," + tileExtent["bottom"].toFixed(6) + "," + tileExtent["right"].toFixed(6) + "," + tileExtent["top"].toFixed(6);
     var osmurl = 'http://api.openstreetmap.org/api/0.6/map?bbox=' + bbox;
     var requestOptions = {
