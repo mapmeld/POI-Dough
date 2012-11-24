@@ -926,23 +926,29 @@ var init = exports.init = function (config) {
   });
   
   app.get('/crayontile', function(req, res){
-    var x = req.query.x * 1;
-    var y = req.query.y * 1;
-    var z = req.query.z * 1;
-    var maxExtent = {
-      "left": -180,
-      "right": 180,
-      "top": 180,
-      "bottom": -180
-    };
-    var b = 0.70312501193 / Math.pow( 2, (z - 1) );
-    var tileExtent = {
-      "left": b * 256 * x + maxExtent["left"],
-      "right": b * 256 * (x+1) + maxExtent["left"],
-      "top": b * -256 * y + maxExtent["top"],
-      "bottom": b * -256 * (y+1) + maxExtent["top"]
-    };
-    var bbox = tileExtent["left"].toFixed(6) + "," + tileExtent["bottom"].toFixed(6) + "," + tileExtent["right"].toFixed(6) + "," + tileExtent["top"].toFixed(6);
+  	var tileExtent, bbox;
+  	if( !req.query['west'] ){
+	    var x = req.query.x * 1;
+	    var y = req.query.y * 1;
+	    var z = req.query.z * 1;
+	    var maxExtent = {
+	      "left": -180,
+	      "right": 180,
+	      "top": 180,
+	      "bottom": -180
+	    };
+	    var b = 0.70312501193 / Math.pow( 2, (z - 1) );
+		tileExtent = {
+    	  "left": b * 256 * x + maxExtent["left"],
+    	  "right": b * 256 * (x+1) + maxExtent["left"],
+    	  "top": b * -256 * y + maxExtent["top"],
+    	  "bottom": b * -256 * (y+1) + maxExtent["top"]
+    	};
+    	bbox = tileExtent["left"].toFixed(6) + "," + tileExtent["bottom"].toFixed(6) + "," + tileExtent["right"].toFixed(6) + "," + tileExtent["top"].toFixed(6);
+    }
+    else{
+    	bbox = req.query["west"] + "," + req.query['south'] + "," + req.query['east'] + "," + req.query['north'];    
+    }
     var osmurl = 'http://api.openstreetmap.org/api/0.6/map?bbox=' + bbox;
     var requestOptions = {
       'uri': osmurl,
