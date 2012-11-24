@@ -1022,6 +1022,7 @@ var init = exports.init = function (config) {
 
     var canv = new canvas(256,256);
     var linectx = canv.getContext('2d');
+    var shapectx = canv.getContext('2d');
 
 	for(var p=0;p<myWays.length;p++){
 		// exclude some types of ways
