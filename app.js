@@ -924,10 +924,10 @@ var init = exports.init = function (config) {
     });
   });
   
-  app.get('/crayontile/:z:/:x/:y', function(req, res){
-    var x = req.params.x * 1;
-    var y = req.params.y * 1;
-    var z = req.params.z * 1;
+  app.get('/crayontile', function(req, res){
+    var x = req.query.x * 1;
+    var y = req.query.y * 1;
+    var z = req.query.z * 1;
     var maxExtent = {
       "left": -180,
       "right": 180,
