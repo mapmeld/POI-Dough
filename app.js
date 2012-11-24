@@ -17,6 +17,7 @@ var auth = require('./auth')
     , procedure = require('./procedure')
     , customgeo = require('./customgeo')
     , canvas = require('canvas')
+    , crayon = require('./crayoncanvas')
     ;
 
 var HOUR_IN_MILLISECONDS = 3600000;
@@ -994,7 +995,111 @@ var init = exports.init = function (config) {
               nodesandways.nodes.splice(n,1);
             }
           }
-          res.send( nodesandways );
+          //res.send( nodesandways );
+    var myWays = nodesandways.ways;
+    var wayKey = function(way, key){
+    	for(var k=0;k<way.keys.length;k++){
+    		if(way.keys[k].key[0] == key){
+    			return way.keys[k].key[1];
+    		}
+    	}
+    	return null;
+    };
+    var lltoxy = function(latlng){
+		// convert a lat/lng to the canvas's x/y format
+		var lat = latlng[0];
+		var lng = latlng[1];
+		return [ Math.round(1040 * (lng - tileExtent["left"]) / (tileExtent["right"] - tileExtent["left"])), Math.round(500 * (tileExtent["top"] - lat) / (tileExtent["top"] - tileExtent["bottom"])) ];
+	};
+	var xyify = function(gpsline){
+		// convert a whole array of lat/lngs to the canvas's x/y format
+		var drawline = [];
+		for(var pt=0;pt<gpsline.length;pt++){
+			drawline.push(lltoxy(gpsline[pt]));
+		}
+		return drawline;
+	};
+	for(var p=0;p<myWays.length;p++){
+		// exclude some types of ways
+		if(wayKey( myWays[p], "power") == "line"){
+			continue;
+		}
+		if(wayKey( myWays[p], "landuse") == "commercial"){
+			continue;
+		}
+		// shading of different types of shapes
+		if(wayKey( myWays[p], "building"){
+			// promote building to linectx layer
+			drawShape(linectx, xyify(myWays[p].line),"#A52A2A","#A52A2A");
+			continue;
+		}
+		if(wayKey( myWays[p], "amenity") == "parking"){
+			drawShape(shapectx, xyify(myWays[p].line),"#444","#444");
+			continue;
+		}
+		if(wayKey( myWays[p], "waterway") && wayKey(myWays[p], "waterway") != "stream" && wayKey( myWays[p], "waterway") != "river"){
+			drawShape(shapectx, xyify(myWays[p].line),"#00f","#33f");
+			continue;
+		}
+		if(wayKey( myWays[p], "natural") == "water"){
+			drawShape(shapectx, xyify(myWays[p].line),"#00f","#33f");
+			continue;
+		}
+		if(wayKey( myWays[p], "natural") || wayKey( myWays[p], "landuse") == "conservation" || wayKey( myWays[p], "leisure") == "park"){
+			drawShape(shapectx, xyify(myWays[p].line),"#050","#050");
+			continue;
+		}
+		if(wayKey( myWays[p], "leisure") == "recreation_ground" || wayKey(myWays[p], "amenity") == "school"){
+			drawShape(shapectx, xyify(myWays[p].line),"#6f6","#6f6");
+			continue;
+		}
+		if(wayKey( myWays[p], "landuse") == "farmland" || wayKey( myWays[p], "landuse") == "farm"){
+			drawShape(shapectx, xyify(myWays[p].line),"#050","#050");
+			continue;
+		}
+		if(wayKey( myWays[p], "leisure") == "pitch"){
+			drawShape(shapectx, xyify(myWays[p].line),"#f5f","#f5f");
+			continue;
+		}
+		if(wayKey( myWays[p], "landuse") == "residential"){
+			drawShape(shapectx, xyify(myWays[p].line),"#777","#777");
+			continue;
+		}
+		// continue for all lines
+		for(var pt=1;pt<myWays[p].line.length;pt++){
+			var firstpt = lltoxy(myWays[p].line[pt-1]);
+			var nextpt = lltoxy(myWays[p].line[pt]);
+			// draw tracks and cycleways and footways as orange
+			if(wayKey( myWays[p], "highway") == "track" || wayKey( myWays[p], "highway") == "cycleway" || wayKey( myWays[p], "highway") == "footway"){
+				drawLine(linectx, firstpt[0], firstpt[1], nextpt[0], nextpt[1], "#fa0", "#fa0", null);
+			}
+			// draw highways in "big"
+			else if(wayKey( myWays[p], "highway") == "motorway"){
+				drawLine(linectx, firstpt[0], firstpt[1], nextpt[0], nextpt[1], "#f00", "#f33", "big");
+			}
+			// draw railways in "dashed"
+			else if(wayKey( myWays[p], "railway")){
+				drawLine(linectx, firstpt[0], firstpt[1], nextpt[0], nextpt[1], "#666", "#999", "dashed");
+			}
+			// draw streams in blue
+			else if(wayKey( myWays[p], "waterway" )){
+				drawLine(linectx, firstpt[0], firstpt[1], nextpt[0], nextpt[1], "#00f", "#33f", null);
+			}
+			// draw barriers / fences / walls as sharp black lines
+			else if(wayKey( myWays[p], "barrier" )){
+				linectx.strokeStyle = "#000";
+				linectx.moveTo(firstpt[0], firstpt[1]);
+				linectx.lineTo(nextpt[0], nextpt[1]);
+				linectx.stroke();
+			}
+			// draw everything else in red crayon
+			else{
+				drawLine(linectx, firstpt[0], firstpt[1], nextpt[0], nextpt[1], "#f00", "#f33", null);
+			}
+		}
+	}
+
+
         });
       });
       parser.parseString(body);
