@@ -934,7 +934,7 @@ var init = exports.init = function (config) {
       "top": 180,
       "bottom": -180
     };
-    var b = 0.70312501193 / ( 2 ** (z - 1) );
+    var b = 0.70312501193 / Math.pow( 2, (z - 1) );
     var tileExtent = {
       "left": b * 256 * x + maxExtent["left"],
       "right": b * 256 * (x+1) + maxExtent["left"],
