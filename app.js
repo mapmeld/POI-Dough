@@ -923,6 +923,84 @@ var init = exports.init = function (config) {
       }
     });
   });
+  
+  app.get('/crayontile/:z:/:x/:y', function(req, res){
+    var x = req.params.x * 1;
+    var y = req.params.y * 1;
+    var z = req.params.z * 1;
+    var maxExtent = {
+      "left": -180,
+      "right": 180,
+      "top": 180,
+      "bottom": -180
+    };
+    var b = 0.70312501193 / ( 2 ** (z - 1) );
+    var tileExtent = {
+      "left": b * 256 * x + maxExtent["left"],
+      "right": b * 256 * (x+1) + maxExtent["left"],
+      "top": b * -256 * y + maxExtent["top"],
+      "bottom": b * -256 * (y+1) + maxExtent["top"]
+    };
+    var bbox = tileExtent["left"].toFixed(6) + "," + tileExtent["bottom"].toFixed(6) + "," + tileExtent["right"].toFixed(6) + "," + tileExtent["top"].toFixed(6);
+    var osmurl = 'http://api.openstreetmap.org/api/0.6/map?bbox=' + bbox;
+    var requestOptions = {
+      'uri': osmurl,
+      'User-Agent': 'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.0)'
+    };
+    request(requestOptions, function (err, response, body) {
+      //res.send(body);
+      var nodesandways = { nodes:[ ], ways: [ ] };
+      var lastObject = null;
+      var parser = new xml.SaxParser(function(alerts){
+        alerts.onStartElementNS(function(elem, attarray, prefix, uri, namespaces){
+          var attrs = { };
+          for(var a=0;a<attarray.length;a++){
+            attrs[ attarray[a][0] ] = attarray[a][1];
+          }
+          if(elem == "node"){
+            nodesandways.nodes.push( { id: attrs["id"], user: attrs["user"] + "-pt", latlng: [ attrs["lat"], attrs["lon"] ], keys: [ ] } );
+            lastObject = nodesandways.nodes[ nodesandways.nodes.length-1 ];
+          }
+          else if(elem == "way"){
+            nodesandways.ways.push( { wayid: attrs["id"], user: attrs["user"], line: [ ], keys: [ ] } );
+            lastObject = nodesandways.ways[ nodesandways.ways.length-1 ];
+          }
+          else if((elem == "tag") && ( lastObject )){
+            if(lastObject.id){
+              // it's a node, and it should be sent to the user
+              if(lastObject.user.indexOf("-pt") > -1){
+                lastObject.user = lastObject.user.replace("-pt","");
+              }
+              lastObject.keys.push({ key: [attrs.k, attrs.v] });
+            }
+            else if(lastObject.wayid){
+              // it's a way!
+              lastObject.keys.push({ key: [attrs.k, attrs.v] });
+            }
+          }
+          else if((elem == "nd") && ( lastObject ) && ( lastObject.wayid )){
+            for(var n=0;n<nodesandways.nodes.length;n++){
+              if(nodesandways.nodes[n].id == attrs["ref"]){
+                lastObject.line.push( nodesandways.nodes[n].latlng );
+                break;
+              }
+            }
+          }
+        });
+        alerts.onEndDocument(function(){
+          for(var n=nodesandways.nodes.length-1;n>=0;n--){
+            if(nodesandways.nodes[n].user.lastIndexOf("-pt") == nodesandways.nodes[n].user.length - 3){
+              // point without its own tags
+              nodesandways.nodes.splice(n,1);
+            }
+          }
+          res.send( nodesandways );
+        });
+      });
+      parser.parseString(body);
+    });
+  });
+
 
   app.get('/', function(req,res) {
     res.render('poihome', { title: "My Title", app_name: "Test App", comments: [ ] });
