@@ -1013,12 +1013,16 @@ var init = exports.init = function (config) {
 	};
 	var xyify = function(gpsline){
 		// convert a whole array of lat/lngs to the canvas's x/y format
-		var drawline = [];
+		var myline = [];
 		for(var pt=0;pt<gpsline.length;pt++){
-			drawline.push(lltoxy(gpsline[pt]));
+			myline.push(lltoxy(gpsline[pt]));
 		}
-		return drawline;
+		return myline;
 	};
+
+    var canv = new canvas(256,256);
+    var linectx = canv.getContext('2d');
+
 	for(var p=0;p<myWays.length;p++){
 		// exclude some types of ways
 		if(wayKey( myWays[p], "power") == "line"){
@@ -1028,41 +1032,41 @@ var init = exports.init = function (config) {
 			continue;
 		}
 		// shading of different types of shapes
-		if(wayKey( myWays[p], "building"){
+		if(wayKey( myWays[p], "building" ) ){
 			// promote building to linectx layer
-			drawShape(linectx, xyify(myWays[p].line),"#A52A2A","#A52A2A");
+			crayon.drawShape(linectx, xyify(myWays[p].line),"#A52A2A","#A52A2A");
 			continue;
 		}
 		if(wayKey( myWays[p], "amenity") == "parking"){
-			drawShape(shapectx, xyify(myWays[p].line),"#444","#444");
+			crayon.drawShape(shapectx, xyify(myWays[p].line),"#444","#444");
 			continue;
 		}
 		if(wayKey( myWays[p], "waterway") && wayKey(myWays[p], "waterway") != "stream" && wayKey( myWays[p], "waterway") != "river"){
-			drawShape(shapectx, xyify(myWays[p].line),"#00f","#33f");
+			crayon.drawShape(shapectx, xyify(myWays[p].line),"#00f","#33f");
 			continue;
 		}
 		if(wayKey( myWays[p], "natural") == "water"){
-			drawShape(shapectx, xyify(myWays[p].line),"#00f","#33f");
+			crayon.drawShape(shapectx, xyify(myWays[p].line),"#00f","#33f");
 			continue;
 		}
 		if(wayKey( myWays[p], "natural") || wayKey( myWays[p], "landuse") == "conservation" || wayKey( myWays[p], "leisure") == "park"){
-			drawShape(shapectx, xyify(myWays[p].line),"#050","#050");
+			crayon.drawShape(shapectx, xyify(myWays[p].line),"#050","#050");
 			continue;
 		}
 		if(wayKey( myWays[p], "leisure") == "recreation_ground" || wayKey(myWays[p], "amenity") == "school"){
-			drawShape(shapectx, xyify(myWays[p].line),"#6f6","#6f6");
+			crayon.drawShape(shapectx, xyify(myWays[p].line),"#6f6","#6f6");
 			continue;
 		}
 		if(wayKey( myWays[p], "landuse") == "farmland" || wayKey( myWays[p], "landuse") == "farm"){
-			drawShape(shapectx, xyify(myWays[p].line),"#050","#050");
+			crayon.drawShape(shapectx, xyify(myWays[p].line),"#050","#050");
 			continue;
 		}
 		if(wayKey( myWays[p], "leisure") == "pitch"){
-			drawShape(shapectx, xyify(myWays[p].line),"#f5f","#f5f");
+			crayon.drawShape(shapectx, xyify(myWays[p].line),"#f5f","#f5f");
 			continue;
 		}
 		if(wayKey( myWays[p], "landuse") == "residential"){
-			drawShape(shapectx, xyify(myWays[p].line),"#777","#777");
+			crayon.drawShape(shapectx, xyify(myWays[p].line),"#777","#777");
 			continue;
 		}
 		// continue for all lines
@@ -1071,19 +1075,19 @@ var init = exports.init = function (config) {
 			var nextpt = lltoxy(myWays[p].line[pt]);
 			// draw tracks and cycleways and footways as orange
 			if(wayKey( myWays[p], "highway") == "track" || wayKey( myWays[p], "highway") == "cycleway" || wayKey( myWays[p], "highway") == "footway"){
-				drawLine(linectx, firstpt[0], firstpt[1], nextpt[0], nextpt[1], "#fa0", "#fa0", null);
+				crayon.drawLine(linectx, firstpt[0], firstpt[1], nextpt[0], nextpt[1], "#fa0", "#fa0", null);
 			}
 			// draw highways in "big"
 			else if(wayKey( myWays[p], "highway") == "motorway"){
-				drawLine(linectx, firstpt[0], firstpt[1], nextpt[0], nextpt[1], "#f00", "#f33", "big");
+				crayon.drawLine(linectx, firstpt[0], firstpt[1], nextpt[0], nextpt[1], "#f00", "#f33", "big");
 			}
 			// draw railways in "dashed"
 			else if(wayKey( myWays[p], "railway")){
-				drawLine(linectx, firstpt[0], firstpt[1], nextpt[0], nextpt[1], "#666", "#999", "dashed");
+				crayon.drawLine(linectx, firstpt[0], firstpt[1], nextpt[0], nextpt[1], "#666", "#999", "dashed");
 			}
 			// draw streams in blue
 			else if(wayKey( myWays[p], "waterway" )){
-				drawLine(linectx, firstpt[0], firstpt[1], nextpt[0], nextpt[1], "#00f", "#33f", null);
+				crayon.drawLine(linectx, firstpt[0], firstpt[1], nextpt[0], nextpt[1], "#00f", "#33f", null);
 			}
 			// draw barriers / fences / walls as sharp black lines
 			else if(wayKey( myWays[p], "barrier" )){
@@ -1094,11 +1098,13 @@ var init = exports.init = function (config) {
 			}
 			// draw everything else in red crayon
 			else{
-				drawLine(linectx, firstpt[0], firstpt[1], nextpt[0], nextpt[1], "#f00", "#f33", null);
+				crayon.drawLine(linectx, firstpt[0], firstpt[1], nextpt[0], nextpt[1], "#f00", "#f33", null);
 			}
 		}
 	}
 
+          res.setHeader('Content-Type', 'image/png');
+          res.send( canv.toBuffer() );
 
         });
       });
