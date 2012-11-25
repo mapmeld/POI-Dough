@@ -948,6 +948,12 @@ var init = exports.init = function (config) {
     }
     else{
     	bbox = req.query["west"] + "," + req.query['south'] + "," + req.query['east'] + "," + req.query['north'];    
+    	tileExtent = {
+    		"left": req.query["west"],
+    		"right": req.query["east"],
+    		"top": req.query["north"],
+    		"bottom": req.query["south"]
+    	};
     }
     var osmurl = 'http://api.openstreetmap.org/api/0.6/map?bbox=' + bbox;
     var requestOptions = {
@@ -1026,7 +1032,7 @@ var init = exports.init = function (config) {
 		return myline;
 	};
 
-    var canv = new canvas(256,256);
+    var canv = new canvas(512,256);
     var linectx = canv.getContext('2d');
     var shapectx = canv.getContext('2d');
 
