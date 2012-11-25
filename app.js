@@ -961,6 +961,9 @@ var init = exports.init = function (config) {
       'User-Agent': 'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.0)'
     };
     request(requestOptions, function (err, response, body) {
+      if(req.query["which"] == "json"){
+      	return res.send(body);
+      }
       //res.send(body);
       var nodesandways = { nodes:[ ], ways: [ ] };
       var lastObject = null;
