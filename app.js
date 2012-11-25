@@ -1034,7 +1034,13 @@ var init = exports.init = function (config) {
 
     var canv = new canvas(512,256);
     var linectx = canv.getContext('2d');
-    var shapectx = canv.getContext('2d');
+    linectx.fillStyle = "#fffacd";
+    linectx.rect(0, 0, 512, 256);
+    
+    var shapecanv = new canvas(512,256);
+    var shapectx = shapecanv.getContext('2d');
+    shapectx.fillStyle = "#fffacd";
+    shapectx.rect(0, 0, 512, 256);
 
 	for(var p=0;p<myWays.length;p++){
 		// exclude some types of ways
@@ -1117,7 +1123,12 @@ var init = exports.init = function (config) {
 	}
 
           res.setHeader('Content-Type', 'image/png');
-          res.send( canv.toBuffer() );
+		  if(req.query['which'] == "shape"){
+	          res.send( shapecanv.toBuffer() );
+	      }
+	      else{
+	          res.send( canv.toBuffer() );	      
+	      }
 
         });
       });
