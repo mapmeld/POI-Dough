@@ -377,39 +377,39 @@ function processOSM(nodesandways){
 		// shading of different types of shapes
 		if(wayKey( myWays[p], "building" ) ){
 			// promote building to linectx layer
-			crayon.drawShape(shapectx, xyify(myWays[p].line),"#A52A2A","#A52A2A");
+			drawShape(shapectx, xyify(myWays[p].line),"#A52A2A","#A52A2A");
 			continue;
 		}
 		if(wayKey( myWays[p], "amenity") == "parking"){
-			crayon.drawShape(shapectx, xyify(myWays[p].line),"#444","#444");
+			drawShape(shapectx, xyify(myWays[p].line),"#444","#444");
 			continue;
 		}
 		if(wayKey( myWays[p], "waterway") && wayKey(myWays[p], "waterway") != "stream" && wayKey( myWays[p], "waterway") != "river"){
-			crayon.drawShape(shapectx, xyify(myWays[p].line),"#00f","#33f");
+			drawShape(shapectx, xyify(myWays[p].line),"#00f","#33f");
 			continue;
 		}
 		if(wayKey( myWays[p], "natural") == "water"){
-			crayon.drawShape(shapectx, xyify(myWays[p].line),"#00f","#33f");
+			drawShape(shapectx, xyify(myWays[p].line),"#00f","#33f");
 			continue;
 		}
 		if(wayKey( myWays[p], "natural") || wayKey( myWays[p], "landuse") == "conservation" || wayKey( myWays[p], "leisure") == "park"){
-			crayon.drawShape(shapectx, xyify(myWays[p].line),"#050","#050");
+			drawShape(shapectx, xyify(myWays[p].line),"#050","#050");
 			continue;
 		}
 		if(wayKey( myWays[p], "leisure") == "recreation_ground" || wayKey(myWays[p], "amenity") == "school"){
-			crayon.drawShape(shapectx, xyify(myWays[p].line),"#6f6","#6f6");
+			drawShape(shapectx, xyify(myWays[p].line),"#6f6","#6f6");
 			continue;
 		}
 		if(wayKey( myWays[p], "landuse") == "farmland" || wayKey( myWays[p], "landuse") == "farm"){
-			crayon.drawShape(shapectx, xyify(myWays[p].line),"#050","#050");
+			drawShape(shapectx, xyify(myWays[p].line),"#050","#050");
 			continue;
 		}
 		if(wayKey( myWays[p], "leisure") == "pitch"){
-			crayon.drawShape(shapectx, xyify(myWays[p].line),"#f5f","#f5f");
+			drawShape(shapectx, xyify(myWays[p].line),"#f5f","#f5f");
 			continue;
 		}
 		if(wayKey( myWays[p], "landuse") == "residential"){
-			crayon.drawShape(shapectx, xyify(myWays[p].line),"#777","#777");
+			drawShape(shapectx, xyify(myWays[p].line),"#777","#777");
 			continue;
 		}
 		// continue for all lines
@@ -418,19 +418,19 @@ function processOSM(nodesandways){
 			var nextpt = lltoxy(myWays[p].line[pt]);
 			// draw tracks and cycleways and footways as orange
 			if(wayKey( myWays[p], "highway") == "track" || wayKey( myWays[p], "highway") == "cycleway" || wayKey( myWays[p], "highway") == "footway"){
-				crayon.drawLine(linectx, firstpt[0], firstpt[1], nextpt[0], nextpt[1], "#fa0", "#fa0", null);
+				drawLine(linectx, firstpt[0], firstpt[1], nextpt[0], nextpt[1], "#fa0", "#fa0", null);
 			}
 			// draw highways in "big"
 			else if(wayKey( myWays[p], "highway") == "motorway"){
-				crayon.drawLine(linectx, firstpt[0], firstpt[1], nextpt[0], nextpt[1], "#f00", "#f33", "big");
+				drawLine(linectx, firstpt[0], firstpt[1], nextpt[0], nextpt[1], "#f00", "#f33", "big");
 			}
 			// draw railways in "dashed"
 			else if(wayKey( myWays[p], "railway")){
-				crayon.drawLine(linectx, firstpt[0], firstpt[1], nextpt[0], nextpt[1], "#666", "#999", "dashed");
+				drawLine(linectx, firstpt[0], firstpt[1], nextpt[0], nextpt[1], "#666", "#999", "dashed");
 			}
 			// draw streams in blue
 			else if(wayKey( myWays[p], "waterway" )){
-				crayon.drawLine(linectx, firstpt[0], firstpt[1], nextpt[0], nextpt[1], "#00f", "#33f", null);
+				drawLine(linectx, firstpt[0], firstpt[1], nextpt[0], nextpt[1], "#00f", "#33f", null);
 			}
 			// draw barriers / fences / walls as sharp black lines
 			else if(wayKey( myWays[p], "barrier" )){
@@ -441,7 +441,7 @@ function processOSM(nodesandways){
 			}
 			// draw everything else in red crayon
 			else{
-				crayon.drawLine(linectx, firstpt[0], firstpt[1], nextpt[0], nextpt[1], "#f00", "#f33", null);
+				drawLine(linectx, firstpt[0], firstpt[1], nextpt[0], nextpt[1], "#f00", "#f33", null);
 			}
 		}
 	}
