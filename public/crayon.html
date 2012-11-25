@@ -363,8 +363,9 @@ function wayKey(way, key){
     }
     return null;
 };
-
 function processOSM(nodesandways){
+	var linectx = document.getElementById("canv2").getContext('2d');
+	var shapectx = document.getElementById("canv").getContext('2d');
 	var myWays = nodesandways.ways;
 	for(var p=0;p<myWays.length;p++){
 		// exclude some types of ways
