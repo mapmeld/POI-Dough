@@ -49,7 +49,7 @@ function setCanvasLL(lat,lng){
 	}
 	byId("inexp").value = expanse;
 	try{
-		window.history.pushState({state:lat+","+lng},"","sketchmapper.html?lat=" + byId("inlat").value + "&lng=" + byId("inlng").value + "&expanse=" + expanse);
+		window.history.pushState({state:lat+","+lng},"","crayon.html?lat=" + byId("inlat").value + "&lng=" + byId("inlng").value + "&expanse=" + expanse);
 	}catch(e){}
 	north = lat + 0.00231887793 * expanse;
 	south = lat - 0.00231887793 * expanse;
