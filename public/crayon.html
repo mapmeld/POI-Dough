@@ -64,7 +64,7 @@ function setCanvasLL(lat,lng){
 	
 	$.getJSON("/crayontile?which=json&west=" + west + "&south=" + south + "&east=" + east + "&north=" + north, processOSM);
 }
-function drawLine(setx1,sety1,setx2,sety2,lineColor,shadeColor,specialOrders){
+function drawLine(ctx,setx1,sety1,setx2,sety2,lineColor,shadeColor,specialOrders){
 	var x1,x2,y1,y2;
 	if(setx1 <= setx2){
 		x1 = Math.round(setx1);
@@ -232,7 +232,7 @@ function drawShape(points,lineColor,shadeColor){
 	}
 	ctx = ctxline;
 }
-function drawTopShape(points,lineColor,shadeColor){
+function drawTopShape(ctxline,points,lineColor,shadeColor){
 	ctx = ctxline;
 	var firstpt = points[0];
 	ctx.fillStyle = "#fffacd";
