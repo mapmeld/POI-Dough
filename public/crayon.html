@@ -161,10 +161,10 @@ function drawShape(ctxshape,points,lineColor,shadeColor){
 	for(var pt=0;pt<points.length;pt++){
 		if(pt == points.length - 1){
 			// last point goes back to the first point
-			drawLine(points[pt][0],points[pt][1],points[0][0],points[0][1],lineColor,shadeColor,null);
+			drawLine(ctx,points[pt][0],points[pt][1],points[0][0],points[0][1],lineColor,shadeColor,null);
 		}
 		else{
-			drawLine(points[pt][0],points[pt][1],points[pt+1][0],points[pt+1][1],lineColor,shadeColor,null);
+			drawLine(ctx,points[pt][0],points[pt][1],points[pt+1][0],points[pt+1][1],lineColor,shadeColor,null);
 		}
 		minx = Math.min(points[pt][0],minx);
 		miny = Math.min(points[pt][1],miny);
@@ -218,15 +218,15 @@ function drawShape(ctxshape,points,lineColor,shadeColor){
 		}
 		// draw the shader line for this y-level
 		if(startdraw && enddraw){
-			drawLine(startdraw, drawy, enddraw, drawy + 6 * zoomfactor, shadeColor, shadeColor, null);
+			drawLine(ctx, startdraw, drawy, enddraw, drawy + 6 * zoomfactor, shadeColor, shadeColor, null);
 			if(maxy > drawy + 12 * zoomfactor){
-				drawLine(enddraw, drawy + 6 * zoomfactor, startdraw, drawy + 12 * zoomfactor, shadeColor, shadeColor, null);		
+				drawLine(ctx, enddraw, drawy + 6 * zoomfactor, startdraw, drawy + 12 * zoomfactor, shadeColor, shadeColor, null);		
 			}
 		}
 		if(startright && endright){
-			drawLine(startright, drawy, endright, drawy + 6 * zoomfactor, shadeColor, shadeColor, null);
+			drawLine(ctx, startright, drawy, endright, drawy + 6 * zoomfactor, shadeColor, shadeColor, null);
 			if(maxy > drawy + 12 * zoomfactor){
-				drawLine(endright, drawy + 6 * zoomfactor, startright, drawy + 12 * zoomfactor, shadeColor, shadeColor, null);		
+				drawLine(ctx, endright, drawy + 6 * zoomfactor, startright, drawy + 12 * zoomfactor, shadeColor, shadeColor, null);		
 			}
 		}
 	}
@@ -255,10 +255,10 @@ function drawTopShape(ctxline,points,lineColor,shadeColor){
 	for(var pt=0;pt<points.length;pt++){
 		if(pt == points.length - 1){
 			// last point goes back to the first point
-			drawLine(points[pt][0],points[pt][1],points[0][0],points[0][1],lineColor,shadeColor,null);
+			drawLine(ctx, points[pt][0],points[pt][1],points[0][0],points[0][1],lineColor,shadeColor,null);
 		}
 		else{
-			drawLine(points[pt][0],points[pt][1],points[pt+1][0],points[pt+1][1],lineColor,shadeColor,null);
+			drawLine(ctx, points[pt][0],points[pt][1],points[pt+1][0],points[pt+1][1],lineColor,shadeColor,null);
 		}
 		minx = Math.min(points[pt][0],minx);
 		miny = Math.min(points[pt][1],miny);
@@ -312,15 +312,15 @@ function drawTopShape(ctxline,points,lineColor,shadeColor){
 		}
 		// draw the shader line for this y-level
 		if(startdraw && enddraw){
-			drawLine(startdraw, drawy, enddraw, drawy + 6 * zoomfactor, shadeColor, shadeColor, null);
+			drawLine(ctx, startdraw, drawy, enddraw, drawy + 6 * zoomfactor, shadeColor, shadeColor, null);
 			if(maxy > drawy + 12 * zoomfactor){
-				drawLine(enddraw, drawy + 6 * zoomfactor, startdraw, drawy + 12 * zoomfactor, shadeColor, shadeColor, null);		
+				drawLine(ctx, enddraw, drawy + 6 * zoomfactor, startdraw, drawy + 12 * zoomfactor, shadeColor, shadeColor, null);		
 			}
 		}
 		if(startright && endright){
-			drawLine(startright, drawy, endright, drawy + 6 * zoomfactor, shadeColor, shadeColor, null);
+			drawLine(ctx, startright, drawy, endright, drawy + 6 * zoomfactor, shadeColor, shadeColor, null);
 			if(maxy > drawy + 12 * zoomfactor){
-				drawLine(endright, drawy + 6 * zoomfactor, startright, drawy + 12 * zoomfactor, shadeColor, shadeColor, null);		
+				drawLine(ctx, endright, drawy + 6 * zoomfactor, startright, drawy + 12 * zoomfactor, shadeColor, shadeColor, null);		
 			}
 		}
 	}
