@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>HTML5 Sketch Mapper</title>
+		<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+		<script type="text/javascript">
+var ctx, ctxline, ctxshape, north, south, east, west, expanse, ctrlat, ctrlng;
+function init(){
+	var lat = 34.057271;
+	var lng = -117.195679;
+	if(readURL("lat")){
+		lat = readURL("lat") * 1.0;
+	}
+	if(readURL("lng")){
+		lng = readURL("lng") * 1.0;
+	}
+	if(readURL("expanse")){
+		expanse = readURL("expanse") * 1.0;
+	}
+	else{
+		expanse = 1.0;
+	}
+	ctxline = byId("canv2").getContext('2d');
+	ctx = ctxline;
+	ctxshape = byId("canv").getContext('2d');
+	setCanvasLL(lat, lng);
+}
+function redraw(){
+	var lat = byId("inlat").value * 1.0;
+	var lng = byId("inlng").value * 1.0;
+	expanse = byId("inexp").value * 1.0;
+	setCanvasLL(lat,lng);
+}
+function moveMap(xdir,ydir){
+	setCanvasLL(ctrlat+ydir*0.00231887793*1.8*expanse,ctrlng+xdir*0.00520348549*1.8*expanse);
+}
+function setCanvasLL(lat,lng){
+	byId("canv").width = byId("canv").width;
+	byId("canv2").width = byId("canv2").width;
+	ctrlat = lat;
+	ctrlng = lng;
+	byId("inlat").value = lat;
+	byId("inlng").value = lng;
+	if(byId("inlat").value.length > 11){
+		byId("inlat").value = byId("inlat").value.substring(0,11);
+	}
+	if(byId("inlng").value.length > 11){
+		byId("inlng").value = byId("inlng").value.substring(0,11);
+	}
+	byId("inexp").value = expanse;
+	try{
+		window.history.pushState({state:lat+","+lng},"","sketchmapper.html?lat=" + byId("inlat").value + "&lng=" + byId("inlng").value + "&expanse=" + expanse);
+	}catch(e){}
+	north = lat + 0.00231887793 * expanse;
+	south = lat - 0.00231887793 * expanse;
+	east = lng + 0.00520348549 * expanse;
+	west = lng - 0.00520348549 * expanse;
+	/* var mapSite = 'http://mapmeld.appspot.com/osmapi?bbox=' + west + ',' +  south + ',' + east + ',' + north + '&special=lines';
+	var s = document.createElement('script');
+	s.src = mapSite;
+	s.type = "text/javascript";
+	document.body.appendChild(s);
+	byId("viewme").href = "http://www.openstreetmap.org/?lat=" + lat + "&lon=" + lng + "&zoom=16"; */
+	
+	$.getJSON("/crayontile?which=json&west=" + west + "&south=" + south + "&east=" + east + "&north=" + north, processOSM);
+}
+function drawLine(setx1,sety1,setx2,sety2,lineColor,shadeColor,specialOrders){
+	var x1,x2,y1,y2;
+	if(setx1 <= setx2){
+		x1 = Math.round(setx1);
+		y1 = Math.round(sety1);
+		x2 = Math.round(setx2);
+		y2 = Math.round(sety2);
+	}
+	else{
+		x1 = Math.round(setx2)
+		y1 = Math.round(sety2);
+		x2 = Math.round(setx1);
+		y2 = Math.round(sety1);
+	}
+	var ymax = Math.max(y1, y2);
+	var ymin = Math.min(y1, y2);
+	var progy = y1;
+	var endprogy;
+	var dashed = 5;
+	for(var progx = x1; progx < x2 + 5; progx += 5){
+		endprogy = Math.min(Math.round((y2-y1)/(x2-x1)*(progx-x1) + y1 + 3 - 5 * Math.random()), ymax);
+		endprogy = Math.max(ymin, endprogy);
+		engprogx = Math.min(progx + 5, x2 + 2);
+		if(specialOrders == "dashed"){
+			dashed--;
+			if(dashed <= 0){
+				ctx.closePath();
+				if(dashed < -2){
+					dashed = 5;
+				}
+				ctx.strokeStyle = "#fffacd"; 
+			}
+		}
+		// draw central thread
+		var randomizer = Math.random();
+		if(randomizer < 0.95){
+			ctx.beginPath();
+			if(dashed > 0){
+				ctx.strokeStyle = lineColor;
+			}
+			if(specialOrders == "big"){
+				ctx.lineWidth = 8;
+			}
+			else{
+				ctx.lineWidth = 1;
+			}
+			ctx.moveTo(progx, progy);
+			ctx.lineTo(engprogx, endprogy);
+			ctx.stroke();
+		}
+		//draw above and below
+		ctx.beginPath();
+		if(dashed > 0){
+			ctx.strokeStyle = shadeColor;
+		}
+		if(randomizer > 0.2){
+			ctx.lineWidth = 2;
+		}
+		else{
+			ctx.lineWidth = 1;		
+		}
+		if(randomizer < 0.85){
+			ctx.moveTo(progx-Math.round(Math.random()*2)+1, progy+2);
+			ctx.lineTo(engprogx-Math.round(Math.random()*2)+1, endprogy+2);
+			ctx.stroke();
+		}
+		if(randomizer > 0.1){
+			ctx.moveTo(progx-Math.round(Math.random()*2)+1, progy-2);
+			ctx.lineTo(engprogx-Math.round(Math.random()*2)+1, endprogy-2);
+			ctx.stroke();
+		}
+		progy = endprogy;
+	}
+}
+function drawShape(points,lineColor,shadeColor){
+	ctx = ctxshape;
+	var firstpt = points[0];
+	ctx.fillStyle = "#fffacd";
+	ctx.beginPath();
+	ctx.moveTo(firstpt[0], firstpt[1]);
+	for(var pt=0;pt<points.length-1;pt++){
+		var firstpt = points[pt];
+		var nextpt = points[pt+1];
+		//ctx.moveTo(firstpt[0], firstpt[1]);
+		ctx.lineTo(nextpt[0], nextpt[1]);
+	}
+	ctx.closePath();
+	ctx.fill();
+	var minx,maxx,miny,maxy;
+	minx = points[0][0];
+	maxx = points[0][0];
+	miny = points[0][1];
+	maxy = points[0][1];
+	// draw border
+	for(var pt=0;pt<points.length;pt++){
+		if(pt == points.length - 1){
+			// last point goes back to the first point
+			drawLine(points[pt][0],points[pt][1],points[0][0],points[0][1],lineColor,shadeColor,null);
+		}
+		else{
+			drawLine(points[pt][0],points[pt][1],points[pt+1][0],points[pt+1][1],lineColor,shadeColor,null);
+		}
+		minx = Math.min(points[pt][0],minx);
+		miny = Math.min(points[pt][1],miny);
+		maxx = Math.max(points[pt][0],maxx);
+		maxy = Math.max(points[pt][1],maxy);		
+	}
+	//draw inner shading
+	var zoomfactor = 1;
+	if(maxy - miny < 80){
+		zoomfactor = 0.5;
+	}
+	for(var drawy = miny; drawy < maxy; drawy += 14 * zoomfactor){
+		if(drawy < -10 || drawy > 510){
+			// offscreen
+			continue;
+		}
+		var startdraw = null;
+		var enddraw = null;
+		var startright = null;
+		var endright = null;
+		// prep a horizontal shader line
+		for(var drawx=minx; drawx<maxx; drawx+=5){
+			if(!startdraw){
+				if(shapeHoldsPt(points, [drawx, drawy])){
+					startdraw = drawx;
+				}
+			}
+			else if(!enddraw){
+				if(!shapeHoldsPt(points, [drawx, drawy])){
+					enddraw = drawx;
+					break;
+				}
+			}
+		}
+		// draw from the right, too, to fill in the shapes
+		for(var drawx=maxx; drawx>minx; drawx-=5){
+			if(enddraw && drawx < enddraw){
+				break;
+			}
+			if(!startright){
+				if(shapeHoldsPt(points, [drawx, drawy])){
+					startright = drawx;
+				}
+			}
+			else if(!endright){
+				if(!shapeHoldsPt(points, [drawx, drawy])){
+					endright = drawx;
+					break;
+				}
+			}
+		}
+		// draw the shader line for this y-level
+		if(startdraw && enddraw){
+			drawLine(startdraw, drawy, enddraw, drawy + 6 * zoomfactor, shadeColor, shadeColor, null);
+			if(maxy > drawy + 12 * zoomfactor){
+				drawLine(enddraw, drawy + 6 * zoomfactor, startdraw, drawy + 12 * zoomfactor, shadeColor, shadeColor, null);		
+			}
+		}
+		if(startright && endright){
+			drawLine(startright, drawy, endright, drawy + 6 * zoomfactor, shadeColor, shadeColor, null);
+			if(maxy > drawy + 12 * zoomfactor){
+				drawLine(endright, drawy + 6 * zoomfactor, startright, drawy + 12 * zoomfactor, shadeColor, shadeColor, null);		
+			}
+		}
+	}
+	ctx = ctxline;
+}
+function drawTopShape(points,lineColor,shadeColor){
+	ctx = ctxline;
+	var firstpt = points[0];
+	ctx.fillStyle = "#fffacd";
+	ctx.beginPath();
+	ctx.moveTo(firstpt[0], firstpt[1]);
+	for(var pt=0;pt<points.length-1;pt++){
+		var firstpt = points[pt];
+		var nextpt = points[pt+1];
+		//ctx.moveTo(firstpt[0], firstpt[1]);
+		ctx.lineTo(nextpt[0], nextpt[1]);
+	}
+	ctx.closePath();
+	ctx.fill();
+	var minx,maxx,miny,maxy;
+	minx = points[0][0];
+	maxx = points[0][0];
+	miny = points[0][1];
+	maxy = points[0][1];
+	// draw border
+	for(var pt=0;pt<points.length;pt++){
+		if(pt == points.length - 1){
+			// last point goes back to the first point
+			drawLine(points[pt][0],points[pt][1],points[0][0],points[0][1],lineColor,shadeColor,null);
+		}
+		else{
+			drawLine(points[pt][0],points[pt][1],points[pt+1][0],points[pt+1][1],lineColor,shadeColor,null);
+		}
+		minx = Math.min(points[pt][0],minx);
+		miny = Math.min(points[pt][1],miny);
+		maxx = Math.max(points[pt][0],maxx);
+		maxy = Math.max(points[pt][1],maxy);		
+	}
+	//draw inner shading
+	var zoomfactor = 1;
+	if(maxy - miny < 80){
+		zoomfactor = 0.5;
+	}
+	for(var drawy = miny; drawy < maxy; drawy += 14 * zoomfactor){
+		if(drawy < -10 || drawy > 510){
+			// offscreen
+			continue;
+		}
+		var startdraw = null;
+		var enddraw = null;
+		var startright = null;
+		var endright = null;
+		// prep a horizontal shader line
+		for(var drawx=minx; drawx<maxx; drawx+=5){
+			if(!startdraw){
+				if(shapeHoldsPt(points, [drawx, drawy])){
+					startdraw = drawx;
+				}
+			}
+			else if(!enddraw){
+				if(!shapeHoldsPt(points, [drawx, drawy])){
+					enddraw = drawx;
+					break;
+				}
+			}
+		}
+		// draw from the right, too, to fill in the shapes
+		for(var drawx=maxx; drawx>minx; drawx-=5){
+			if(enddraw && drawx < enddraw){
+				break;
+			}
+			if(!startright){
+				if(shapeHoldsPt(points, [drawx, drawy])){
+					startright = drawx;
+				}
+			}
+			else if(!endright){
+				if(!shapeHoldsPt(points, [drawx, drawy])){
+					endright = drawx;
+					break;
+				}
+			}
+		}
+		// draw the shader line for this y-level
+		if(startdraw && enddraw){
+			drawLine(startdraw, drawy, enddraw, drawy + 6 * zoomfactor, shadeColor, shadeColor, null);
+			if(maxy > drawy + 12 * zoomfactor){
+				drawLine(enddraw, drawy + 6 * zoomfactor, startdraw, drawy + 12 * zoomfactor, shadeColor, shadeColor, null);		
+			}
+		}
+		if(startright && endright){
+			drawLine(startright, drawy, endright, drawy + 6 * zoomfactor, shadeColor, shadeColor, null);
+			if(maxy > drawy + 12 * zoomfactor){
+				drawLine(endright, drawy + 6 * zoomfactor, startright, drawy + 12 * zoomfactor, shadeColor, shadeColor, null);		
+			}
+		}
+	}
+	ctx = ctxline;
+}
+function drawLL(lat, lng){
+	ctx.fillStyle = "#000";
+	var pt = lltoxy([lat,lng]);
+	ctx.fillRect(pt[0]-5, pt[1]-5, 10, 10);
+}
+function printLL(lat, lng, label){
+	//ctx.fillStyle = "#f0f";
+	//var pt = lltoxy([lat,lng]);
+	//ctx.fillText(label, pt[0] - 30, pt[1] - 10);
+}
+function lltoxy(latlng){
+	var lat = latlng[0];
+	var lng = latlng[1];
+	return [ Math.round(1040 * (lng - west) / (east - west)), Math.round(500 * (north - lat) / (north - south)) ];
+}
+function xyify(gpsline){
+	var drawline = [];
+	for(var pt=0;pt<gpsline.length;pt++){
+		drawline.push(lltoxy(gpsline[pt]));
+	}
+	return drawline;
+}
+function shapeHoldsPt(poly, pt){
+	for(var c = false, i = -1, l = poly.length, j = l - 1; ++i < l; j = i)
+		((poly[i][1] <= pt[1] && pt[1] < poly[j][1]) || (poly[j][1] <= pt[1] && pt[1] < poly[i][1]))
+		&& (pt[0] < (poly[j][0] - poly[i][0]) * (pt[1] - poly[i][1]) / (poly[j][1] - poly[i][1]) + poly[i][0])
+		&& (c = !c);
+	return c;
+}
+function wayKey(way, key){
+    for(var k=0;k<way.keys.length;k++){
+    	if(way.keys[k].key[0] == key){
+    		return way.keys[k].key[1];
+    	}
+    }
+    return null;
+};
+
+function processOSM(nodesandways){
+	var myWays = nodesandways.ways;
+	for(var p=0;p<myWays.length;p++){
+		// exclude some types of ways
+		if(wayKey( myWays[p], "power") == "line"){
+			continue;
+		}
+		if(wayKey( myWays[p], "landuse") == "commercial"){
+			continue;
+		}
+		// shading of different types of shapes
+		if(wayKey( myWays[p], "building" ) ){
+			// promote building to linectx layer
+			crayon.drawShape(shapectx, xyify(myWays[p].line),"#A52A2A","#A52A2A");
+			continue;
+		}
+		if(wayKey( myWays[p], "amenity") == "parking"){
+			crayon.drawShape(shapectx, xyify(myWays[p].line),"#444","#444");
+			continue;
+		}
+		if(wayKey( myWays[p], "waterway") && wayKey(myWays[p], "waterway") != "stream" && wayKey( myWays[p], "waterway") != "river"){
+			crayon.drawShape(shapectx, xyify(myWays[p].line),"#00f","#33f");
+			continue;
+		}
+		if(wayKey( myWays[p], "natural") == "water"){
+			crayon.drawShape(shapectx, xyify(myWays[p].line),"#00f","#33f");
+			continue;
+		}
+		if(wayKey( myWays[p], "natural") || wayKey( myWays[p], "landuse") == "conservation" || wayKey( myWays[p], "leisure") == "park"){
+			crayon.drawShape(shapectx, xyify(myWays[p].line),"#050","#050");
+			continue;
+		}
+		if(wayKey( myWays[p], "leisure") == "recreation_ground" || wayKey(myWays[p], "amenity") == "school"){
+			crayon.drawShape(shapectx, xyify(myWays[p].line),"#6f6","#6f6");
+			continue;
+		}
+		if(wayKey( myWays[p], "landuse") == "farmland" || wayKey( myWays[p], "landuse") == "farm"){
+			crayon.drawShape(shapectx, xyify(myWays[p].line),"#050","#050");
+			continue;
+		}
+		if(wayKey( myWays[p], "leisure") == "pitch"){
+			crayon.drawShape(shapectx, xyify(myWays[p].line),"#f5f","#f5f");
+			continue;
+		}
+		if(wayKey( myWays[p], "landuse") == "residential"){
+			crayon.drawShape(shapectx, xyify(myWays[p].line),"#777","#777");
+			continue;
+		}
+		// continue for all lines
+		for(var pt=1;pt<myWays[p].line.length;pt++){
+			var firstpt = lltoxy(myWays[p].line[pt-1]);
+			var nextpt = lltoxy(myWays[p].line[pt]);
+			// draw tracks and cycleways and footways as orange
+			if(wayKey( myWays[p], "highway") == "track" || wayKey( myWays[p], "highway") == "cycleway" || wayKey( myWays[p], "highway") == "footway"){
+				crayon.drawLine(linectx, firstpt[0], firstpt[1], nextpt[0], nextpt[1], "#fa0", "#fa0", null);
+			}
+			// draw highways in "big"
+			else if(wayKey( myWays[p], "highway") == "motorway"){
+				crayon.drawLine(linectx, firstpt[0], firstpt[1], nextpt[0], nextpt[1], "#f00", "#f33", "big");
+			}
+			// draw railways in "dashed"
+			else if(wayKey( myWays[p], "railway")){
+				crayon.drawLine(linectx, firstpt[0], firstpt[1], nextpt[0], nextpt[1], "#666", "#999", "dashed");
+			}
+			// draw streams in blue
+			else if(wayKey( myWays[p], "waterway" )){
+				crayon.drawLine(linectx, firstpt[0], firstpt[1], nextpt[0], nextpt[1], "#00f", "#33f", null);
+			}
+			// draw barriers / fences / walls as sharp black lines
+			else if(wayKey( myWays[p], "barrier" )){
+				linectx.strokeStyle = "#000";
+				linectx.moveTo(firstpt[0], firstpt[1]);
+				linectx.lineTo(nextpt[0], nextpt[1]);
+				linectx.stroke();
+			}
+			// draw everything else in red crayon
+			else{
+				crayon.drawLine(linectx, firstpt[0], firstpt[1], nextpt[0], nextpt[1], "#f00", "#f33", null);
+			}
+		}
+	}
+}
+function readURL(nm){nm=nm.replace(/[\[]/,"\\\[").replace(/[\]]/,"\\\]");var rxS="[\\?&]"+nm+"=([^&#]*)";var rx=new RegExp(rxS);var rs=rx.exec(window.location.href);if(!rs){return null;}else{return rs[1];}}
+		</script>
+		<style type="text/css">
+body{
+	font-family: arial;
+	background-color:black;
+	color:white;
+}
+input.o{
+	background-color:#fffacd;
+	color:black;
+	font-size:15pt;
+	padding:5px;
+}
+		</style>
+	</head>
+	<body onload="init()">
+		<table><tr>
+			<td width="200">
+				<h3>Crayon Map</h3>
+				<hr/>
+				<input type="button" value="&larr;" onclick="moveMap(-1,0)"/>
+				<input type="button" value="&rarr;" onclick="moveMap(1,0)"/>
+				<input type="button" value="&uarr;" onclick="moveMap(0,1)"/>
+				<input type="button" value="&darr;" onclick="moveMap(0,-1)"/>	
+				<br/>
+				<hr/>
+				Latitude
+				<input id="inlat" class="o" type="text" value=""/>
+				Longitude
+				<input id="inlng" class="o" type="text" value=""/>
+				Expanse (scale from 0.4 to 2.1)
+				<input id="inexp" class="o" type="text" value="1"/>
+				<br/>
+				<input type="button" value="Draw" onclick="redraw()"/>			
+			</td>
+			<td>
+				<canvas id="canv" width="1040" height="500" style="position:absolute;left:250px;top:0px;background-color:#fffacd;"></canvas>
+				<canvas id="canv2" width="1040" height="500" style="position:absolute;left:250px;top:0px;"></canvas>
+				<br/>
+				<div style="position:absolute;left:250px;top:550px;">
+					Data from OpenStreetMap and contributors<br/>
+					<a id="viewme" href="" target="_blank">Compare to OpenStreetMap</a>
+				</div>
+			</td>
+		</tr></table>
+	</body>
+</html>
