@@ -1053,7 +1053,7 @@ var init = exports.init = function (config) {
 		// shading of different types of shapes
 		if(wayKey( myWays[p], "building" ) ){
 			// promote building to linectx layer
-			crayon.drawShape(linectx, xyify(myWays[p].line),"#A52A2A","#A52A2A");
+			crayon.drawShape(shapectx, xyify(myWays[p].line),"#A52A2A","#A52A2A");
 			continue;
 		}
 		if(wayKey( myWays[p], "amenity") == "parking"){
