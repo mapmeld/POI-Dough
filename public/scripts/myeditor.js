@@ -1013,7 +1013,7 @@ function setEffect(wayid, settype){
       }
     }
   }
-  if(settype.indexOf("2D") > -1){
+  if((settype.indexOf("2D") > -1) || (promoted[wayid].effect.indexOf("kansas:") > -1)){
     var p_index = parks.length;
     if(!promoted[wayid].effect || promoted[wayid].effect.indexOf("2D") == -1){
       parks.push({
@@ -1036,11 +1036,11 @@ function setEffect(wayid, settype){
     prepPark(p_index);
     writePark(p_index);
   }
-  else if(( promoted[wayid].effect.indexOf("2D") > -1) || (promoted[wayid].effect.indexOf("kansas:") > -1)){
+  else if(promoted[wayid].effect.indexOf("2D") > -1){
     // need to remove listing from park index
     promoted[wayid].tiled = false;
     for(var b=0;b<parks.length;b++){
-      if(parks[b].wayid == activeWay){
+      if( getPromotedId( parks[b] ) == activeWay){
         parks.splice(b,1);
         break;
       }
