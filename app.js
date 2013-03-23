@@ -104,25 +104,25 @@ var init = exports.init = function (config) {
     }
   };
 
-  app.get('/savemap', function(req,res) {
-    if(req.query["id"]){
-      poimap.POIMap.findById(req.query["id"], function(err, myEditMap){
+  app.post('/savemap', function(req, res) {
+    if(req.body.id){
+      poimap.POIMap.findById(req.body.id, function(err, myEditMap){
         if(!err){
-          if(req.query["bld"]){
-            myEditMap.buildings = req.query["bld"].split(",");
+          if(req.body.bld){
+            myEditMap.buildings = req.body.bld.split(",");
           }
-          if(req.query["prk"]){
-            myEditMap.parks = req.query["prk"].split(",");
+          if(req.body.prk){
+            myEditMap.parks = req.body.prk.split(",");
           }
-          if(req.query["tiler"]){
-            myEditMap.basemap = basemapProviders[ req.query["tiler"] ].url;
-            myEditMap.attribution = basemapProviders[ req.query["tiler"] ].credit;
+          if(req.body.tiler){
+            myEditMap.basemap = basemapProviders[ req.body.tiler ].url;
+            myEditMap.attribution = basemapProviders[ req.body.tiler ].credit;
           }
-          if(req.query["ctr"]){
-            myEditMap.center = req.query["ctr"].split(',');
+          if(req.body.ctr){
+            myEditMap.center = req.body.ctr.split(',');
           }
-          if(req.query["z"]){
-            myEditMap.zoom = req.query["z"];
+          if(req.body.z){
+            myEditMap.zoom = req.body.z;
           }
           myEditMap.updated = new Date();
           myEditMap.save(function (err) {
@@ -139,23 +139,21 @@ var init = exports.init = function (config) {
     }
     else{
       var myNewMap = new poimap.POIMap({
-        buildings : req.query["bld"].split(","),
-        parks : req.query["prk"].split(","),
-        basemap : basemapProviders[ req.query["tiler"] ].url,
+        buildings : req.body.bld.split(","),
+        parks : req.body.prk.split(","),
+        basemap : basemapProviders[ req.body.tiler ].url,
         createdby : "POI Dough Test",
-        attribution : basemapProviders[ req.query["tiler"] ].credit,
+        attribution : basemapProviders[ req.body.tiler ].credit,
         updated : new Date(),
-        center: req.query["ctr"].split(','),
-        zoom: req.query["z"]
+        center: req.body.ctr.split(','),
+        zoom: req.body.z
       });
       myNewMap.save(function (err) {
         if (!err){
-          console.log('Success!');
-          res.redirect('/openmap?id=' + myNewMap._id);
+          res.json({ id: myNewMap._id });
         }
         else{
-          console.log('Fail! ' + err);
-          res.send('Did not save');
+          res.send({});
         }
       });
     }

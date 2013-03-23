@@ -1094,11 +1094,23 @@ function exportPOI(){
       allparks.push( parks[p].wayid + "_" + parks[p].texture );
     }
   }
-  var url = "/savemap?bld=" + allbuildings.join(",") + "&prk=" + allparks.join(",") + "&createdby=POI_Dough_Test&tiler=" + $("#mapTiler").val() + "&ctr=" + map.getCenter().lat.toFixed(6) + "," + map.getCenter().lng.toFixed(6) + "&z=" + map.getZoom();
+  /*var url = "/savemap?bld=" + allbuildings.join(",") + "&prk=" + allparks.join(",") + "&createdby=POI_Dough_Test&tiler=" + $("#mapTiler").val() + "&ctr=" + map.getCenter().lat.toFixed(6) + "," + map.getCenter().lng.toFixed(6) + "&z=" + map.getZoom();
   if(gup("id")){
     url += "&id=" + gup("id");
   }
-  window.location = url;
+  window.location = url;*/
+  $.post("/savemap", {
+    id: gup("id"),
+    bld: allbuildings.join(","),
+    prk: allparks.join(","),
+    createdby: "POI_Dough_Test",
+    tiler: $("#mapTiler").val(),
+    ctr: map.getCenter().lat.toFixed(6) + "," + map.getCenter().lng.toFixed(6),
+    z: map.getZoom()
+  }, function(data){
+    console.log(data);
+    window.location = "/view?id=" + data.id;  
+  });
 }
 
 function changeBrush(){
