@@ -778,7 +778,7 @@ function highlight_on_hover(p){
     }
   });
   p.on("mouseout", function(e){
-    p.setStyle({ fillOpacity: 0.3, opacity: 0.65 color: "#00f" });
+    p.setStyle({ fillOpacity: 0.3, opacity: 0.65, color: "#00f" });
   });
 }
 
