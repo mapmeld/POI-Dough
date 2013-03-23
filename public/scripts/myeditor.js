@@ -1046,7 +1046,7 @@ function changeBrush(){
     if(!brushes[ hoverbrush ]){
       // this brush has not been loaded before
       $.getJSON("/kansasexport?id=" + hoverbrush, function(program){
-        brushes[ hoverbrush ] = eval( "return " + program.code );
+        brushes[ hoverbrush ] = eval( program.code );
       });
     }
   }
