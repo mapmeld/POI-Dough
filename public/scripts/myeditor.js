@@ -761,6 +761,7 @@ function highlight_on_hover(p){
       canvas.width = 300;
       canvas.height = 300;
       var scale = Math.min( ( canvas.width / 2 - 8) / (lngmax - lngmin) * 2, (canvas.height / 2 - 35) / (latmax - latmin) * 2);
+      scale *= 1.3;
 
       var poly = p.getLatLngs().slice();
       for(var i=0; i<poly.length; i++){
@@ -777,6 +778,16 @@ function highlight_on_hover(p){
       var lngspan = latspan;
       var imageBounds = new L.LatLngBounds(new L.LatLng(latmin,lngmin), new L.LatLng(latmax,lngmax));
       brushimage = new L.ImageOverlay(canvas.toDataURL(), imageBounds);
+      $(brushimage._image).on('click', function(e){
+        console.log('clicked brushimage');
+        for(shape in promoted){
+          if(promoted[shape].poly == brushpoly){
+            promoted[shape].effect = "kansas:" + hoverbrush;
+            brushimage = null;
+            break;
+          }
+        }
+      });
       brushpoly = p;
       map.addLayer(brushimage);
     }
