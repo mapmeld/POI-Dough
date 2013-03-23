@@ -828,7 +828,7 @@ function highlight_on_hover(p){
       $(brushimage._image).on('click', function(e){
         console.log('clicked brushimage');
         for(shape in promoted){
-          if(promoted[shape].poly == brushpoly){
+          if(promoted[shape] && promoted[shape].poly == brushpoly){
             promoted[shape].effect = "kansas:" + hoverbrush;
             promoted[shape].drawnLayer = brushimage;
             brushimage = null;
