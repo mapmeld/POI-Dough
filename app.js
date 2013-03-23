@@ -127,11 +127,10 @@ var init = exports.init = function (config) {
           myEditMap.updated = new Date();
           myEditMap.save(function (err) {
             if (!err){
-              console.log('Success!');
-              res.redirect('/openmap?id=' + myEditMap._id);
+              res.json({ id: myEditMap._id });
             }
             else{
-              console.log('Fail! ' + err);
+              res.json({ fail: err });
             }
           });
         }
@@ -153,7 +152,7 @@ var init = exports.init = function (config) {
           res.json({ id: myNewMap._id });
         }
         else{
-          res.send({});
+          res.json({ fail: err });
         }
       });
     }

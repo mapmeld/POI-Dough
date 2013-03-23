@@ -1109,7 +1109,7 @@ function exportPOI(){
     z: map.getZoom()
   }, function(data){
     console.log(data);
-    window.location = "/view?id=" + data.id;  
+    //window.location = "/view?id=" + data.id;  
   });
 }
 
