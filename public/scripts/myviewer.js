@@ -5,6 +5,7 @@ var bopon = [ ];
 var extraMapLayer;
 var pix_x_offset, pix_y_offset;
 var serverDraws = false;
+var brushes = { };
 
 $(document).ready(function(){
   if( (gup("serverdraws") == "true") || (!isCanvasSupported()) ){
