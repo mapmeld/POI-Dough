@@ -57,7 +57,7 @@ var init = exports.init = function (config) {
   
   // POI Dough Mark 2
   app.get('/editor', function(req,res) {
-    procedure.Procedure.find({}, function(err, sketchlist){
+    procedure.Procedure.find({}, 'name', function(err, sketchlist){
       if(!err){
         res.render('poieditor', { sketches: sketchlist });
       }
@@ -719,6 +719,14 @@ var init = exports.init = function (config) {
     }
     else{
       res.render('kansasedit', { program: { name: "" } });
+    }
+  });
+  
+  app.get('/kansasexport', function(req, res){
+    if(req.query["id"]){
+      procedure.Procedure.findById(req.query["id"], function(err, canvProgram){
+        res.json(canvProgram);
+      });
     }
   });
 

@@ -34,7 +34,7 @@ body
         a.brand(href='/')
           span POI Dough
         
-        span.navbar-search(style="color:#fff;") &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Map Tiles:
+        span.navbar-search(style="color:#fff;") &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Map Tiles:&nbsp;&nbsp;
         select#mapTiler.navbar-search(onchange='changeTiles()')
           option(value="mapquest", selected="selected") MapQuest Open
           option(value="mapbox") MapBox Streets
@@ -43,8 +43,8 @@ body
           option(value="terrain") Stamen Terrain
           option(value="watercolor") Stamen Watercolor
         
-        span.navbar-search(style="color:#fff;") &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Brush Mode:
-        select.navbar-search(onchange="changeBrush()")
+        span.navbar-search(style="color:#fff;") &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Brush Mode:&nbsp;&nbsp;
+        select#mapBrush.navbar-search(onchange="changeBrush()")
           option(value="0") None
           - for sketch in sketches
             option(value="#{sketch._id}") #{sketch.name}

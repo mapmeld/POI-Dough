@@ -6,6 +6,8 @@ var tree, corn, watermelon, coffee;
 var promoted = { };
 var allowPolygonEditing = true;
 var buildids, parkids;
+var hoverbrush = null;
+var brushes = { };
 
 function init(){
   var tileURL = "http://otile1.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png";
@@ -998,6 +1000,19 @@ function exportPOI(){
   }
   window.location = url;
 }
+
+function changeBrush(){
+  hoverbrush = $("#mapBrush").val();
+  if(hoverbrush != "0"){
+    if(!brushes[ hoverbrush ]){
+      // this brush has not been loaded before
+      $.getJSON("/kansasexport?id=" + hoverbrush, function(program){
+        brushes[ hoverbrush ] = eval( program.code );
+      });
+    }
+  }
+}
+
 function gup(nm){nm=nm.replace(/[\[]/,"\\\[").replace(/[\]]/,"\\\]");var rxS="[\\?&]"+nm+"=([^&#]*)";var rx=new RegExp(rxS);var rs=rx.exec(window.location.href);if(!rs){return null;}else{return rs[1];}}
 
 $(document).ready(init);
