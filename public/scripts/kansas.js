@@ -7,8 +7,6 @@ function replaceAll(src, oldr, newr){
   return src;
 }
 function testCanvasCode(){
-  $("parkCanvas").width = $("parkCanvas").width;
-  ctx = $("parkCanvas").getContext('2d');
   var codescan = $("codedraft").value;
   codescan = replaceAll(replaceAll(codescan.toLowerCase()," ",""),"\n","");
   if((codescan.indexOf("document") > -1) || (codescan.indexOf("script") > -1) || (codescan.indexOf("eval") > -1) || (codescan.indexOf("parent") > -1) || (codescan.indexOf("$") > -1) || (codescan.indexOf("jquery") > -1) || (codescan.indexOf("alert") > -1)){
@@ -16,7 +14,10 @@ function testCanvasCode(){
     return;
   }
   var code = eval( $("codedraft").value );
-  code( ctx2, shape, "#2A2AA5", "#2A2AA5" );
+
+  $("parkCanvas").width = $("parkCanvas").width;
+  ctx = $("parkCanvas").getContext('2d');
+  code( ctx, shape, "#2A2AA5", "#2A2AA5" );
 }
 function syntaxCheck(){
   switchToCode();
