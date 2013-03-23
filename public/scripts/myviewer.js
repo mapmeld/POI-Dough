@@ -10,13 +10,13 @@ $(document).ready(function(){
   if( (gup("serverdraws") == "true") || (!isCanvasSupported()) ){
     serverDraws = true;
   }
-  for(var b=0;b<buildids.length;b++){
-    var buildid = buildids[b].split("_")[0];
-    fetchBuilding(buildid, b);
-  }
   for(var p=0;p<parkids.length;p++){
     var parkid = parkids[p].split("_")[0];
     fetchPark(parkid, p);
+  }
+  for(var b=0;b<buildids.length;b++){
+    var buildid = buildids[b].split("_")[0];
+    fetchBuilding(buildid, b);
   }
   init();
 });

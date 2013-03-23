@@ -47,14 +47,6 @@ function init(){
   
   if(gup("id")){
     $.getJSON("/reloadmap?id=" + gup("id"), function(reloadmap){
-      buildids = reloadmap.buildings;
-      for(var b=0;b<reloadmap.buildings.length;b++){
-        var buildid = reloadmap.buildings[b].split("_")[0];
-        if(buildid.length < 2){
-          continue;
-        }
-        fetchBuilding(buildid, b);
-      }
       parkids = reloadmap.parks;
       for(var p=0;p<reloadmap.parks.length;p++){
         var parkid = reloadmap.parks[p].split("_")[0];
@@ -62,6 +54,14 @@ function init(){
           continue;
         }
         fetchPark(parkid, p);
+      }
+      buildids = reloadmap.buildings;
+      for(var b=0;b<reloadmap.buildings.length;b++){
+        var buildid = reloadmap.buildings[b].split("_")[0];
+        if(buildid.length < 2){
+          continue;
+        }
+        fetchBuilding(buildid, b);
       }
       var baseMapLayer = new L.TileLayer(reloadmap.basemap, {maxZoom: 18, attribution: reloadmap.attribution});
       var cityll = new L.LatLng(reloadmap.center[0], reloadmap.center[1]);
