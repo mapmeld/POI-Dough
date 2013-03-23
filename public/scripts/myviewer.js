@@ -80,7 +80,7 @@ watermelon = new Image();
 watermelon.src = "../images/watermelon.png";
 
 function prepBuilding(b){
-  promoted[ buildings[b].wayid ] = { effect: "3Dblock" };
+  promoted[ getPromotedId(buildings[b]) ] = { effect: "3Dblock" };
   buildings[b].color = "#ff0000";
   buildings[b].roofcolor = "#cccccc";
 
@@ -116,7 +116,7 @@ function prepBuilding(b){
 }
 
 function prepPark(p){
-  promoted[ parks[p].wayid ] = { effect: "2Dpark" };
+  promoted[ getPromotedId( parks[p] ) ] = { effect: "2Dpark" };
   
   // add a highlightable footprint
   var wll = parks[p].vertices.slice(0);
@@ -211,7 +211,7 @@ function writeBuilding(b){
 
   // if serverdraws (or IE) then server renders this building
   if(!buildings[b].effect){
-    buildings[b].effect = promoted[ buildings[b].wayid ].effect;
+    buildings[b].effect = promoted[ getPromotedId( buildings[b] ) ].effect;
   }
   if(serverDraws){
     serverDrawBuildings[ buildings[b].wayid ] = {
@@ -494,9 +494,23 @@ function writeBuilding(b){
   // add to map as image overlay
   var imageBounds = new L.LatLngBounds(new L.LatLng(latmin-latspan/6*Math.pow(1.7,levelmax),lngmin-lngspan/6*Math.pow(1.7,levelmax)), new L.LatLng(latmax+latspan/6*Math.pow(1.7,levelmax),lngmax+lngspan/6*Math.pow(1.7,levelmax)));
   var image = new L.ImageOverlay(canvas.toDataURL(), imageBounds);
-  menu_on_click(image, promoted[ buildings[b].wayid ].osmdata);
+  menu_on_click(image, promoted[ getPromotedId( buildings[b] ) ].osmdata);
   map.addLayer(image);
-  promoted[buildings[b].wayid].drawnLayer = image;
+  promoted[ getPromotedId( buildings[b] ) ].drawnLayer = image;
+}
+
+function getPromotedId(parkorbuild){
+  if(parkorbuild.customgeoid){
+    if(promoted["poi:" + parkorbuild.customgeoid]){
+      return "poi:" + parkorbuild.customgeoid;
+    }
+    else{
+      return parkorbuild.customgeoid;
+    }
+  }
+  else{
+    return parkorbuild.wayid;
+  }
 }
 
 function writePark(p){
@@ -510,7 +524,7 @@ function writePark(p){
 
   // if serverdraws (or IE) then server renders this park
   if(!parks[p].texture){
-    parks[p].texture = promoted[ parks[p].wayid ].effect.replace("2D","");
+    parks[p].texture = promoted[ getPromotedId( parks[p] ) ].effect.replace("2D","");
   }
   if(serverDraws){
     serverDrawBuildings[ parks[p].wayid ] = {
@@ -519,7 +533,7 @@ function writePark(p){
     };
     var s = document.createElement("script");
     s.type = "text/javascript";
-    s.src = "/canvrender?id=" + parks[p].wayid + "_" + promoted[ parks[p].wayid ].effect;
+    s.src = "/canvrender?id=" + parks[p].wayid + "_" + promoted[ getPromotedId( parks[p] ) ].effect;
     document.body.appendChild(s);
     return;
   }
@@ -547,25 +561,6 @@ function writePark(p){
 
   // set offset to [ center_pixel_x, center_pixel_y ] from upper left corner
   var offset = [ (latmax - ctrlat) * scale, (ctrlng - lngmin) * scale ];
-  
-  // set icon for 2D texturing
-  var icon = tree;
-  if(parks[p].texture == "corn"){
-  	icon = corn;
-  }
-  else if(parks[p].texture == "coffee"){
-  	icon = coffee;  
-  }
-  else if(parks[p].texture == "watermelon"){
-  	icon = watermelon;
-  }
-  
-  // draw a solid repeating background of the texture
-  for(var x=0; x<canvas.width; x+=25){
-	for(var y=0; y<canvas.height; y+=25){
-	    ctx.drawImage(icon, x, y, 25, 25);
-	}
-  }
 
   // create a mask to hide (alpha=0) pixels outside the polygon
   var poly = parks[p].vertices;
@@ -574,15 +569,51 @@ function writePark(p){
 	at_pt = toPixel( at_pt, ctrlat, ctrlng, scale );
 	poly[i] = at_pt;  // [x, y]
   }
-  imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-  for(var x=0; x<canvas.width; x++){
-	for(var y=0; y<canvas.height; y++){
-	  if(!ptInPoly([x,y], poly)){
-		imgData.data[y*4*canvas.width+x*4+3] = 0;
-	  }
-	}
+  
+  if(promoted[ getPromotedId( parks[p] ) ].effect.indexOf("kansas") > -1){
+    // split off to do kansas rendering
+    var brush = promoted[ getPromotedId( parks[p] ) ].effect.split(":")[1];
+    if(brushes[brush]){
+      brushes[brush]( ctx, poly, "#2A2AA5", "#2A2AA5" );
+    }
+    else{
+      $.getJSON("/kansasexport?id=" + brush, function(data){
+        brushes[brush] = eval( data.code );
+        brushes[brush]( ctx, poly, "#2A2AA5", "#2A2AA5" );
+      });
+    }
   }
-  ctx.putImageData(imgData, 0, 0);
+  else{
+    // conventional 2D textures  
+
+    // set icon for 2D texturing
+    var icon = tree;
+    if(parks[p].texture == "corn"){
+    	icon = corn;
+    }
+    else if(parks[p].texture == "coffee"){
+    	icon = coffee;  
+    }
+    else if(parks[p].texture == "watermelon"){
+    	icon = watermelon;
+    }
+  
+    // draw a solid repeating background of the texture
+    for(var x=0; x<canvas.width; x+=25){
+      for(var y=0; y<canvas.height; y+=25){
+	    ctx.drawImage(icon, x, y, 25, 25);
+	  }
+    }
+    imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    for(var x=0; x<canvas.width; x++){
+	  for(var y=0; y<canvas.height; y++){
+	    if(!ptInPoly([x,y], poly)){
+		  imgData.data[y*4*canvas.width+x*4+3] = 0;
+	    }
+	  }
+    }
+    ctx.putImageData(imgData, 0, 0);
+  }
   
   // map the texture with an ImageOverlay
   var latspan = latmax - latmin;
@@ -592,10 +623,10 @@ function writePark(p){
   var imageBounds = new L.LatLngBounds(new L.LatLng(latmin,lngmin), new L.LatLng(latmax,lngmax));
   var image = new L.ImageOverlay(canvas.toDataURL(), imageBounds);
   map.addLayer(image);
-  promoted[parks[p].wayid].drawnLayer = image;
+  promoted[ getPromotedId( parks[p] ) ].drawnLayer = image;
   
   // experimental (currently not working) make clicking on the ImageOverlay open the info window
-  menu_on_click(image, promoted[ parks[p].wayid ].osmdata);
+  menu_on_click(image, promoted[ getPromotedId( parks[p] ) ].osmdata);
 }
 function ptInPoly(pt, polyCords){
     var pointX = pt[0];
@@ -725,14 +756,14 @@ function setEffect(wayid, settype){
       }
     }
   }
-  if(settype.indexOf("2D") > -1){
+  if( (settype.indexOf("2D") > -1) || (promoted[wayid].effect.indexOf("kansas:") > -1) ){
     var p_index = parks.length;
     if(!promoted[wayid].tiled || promoted[wayid].tiled != settype.replace("2D","")){
       // create a listing in the park index
       parks.push({
         wayid: wayid,
 	    vertices: promoted[wayid].osmdata.line.slice(0),
-	    effect: "park",
+	    effect: promoted[wayid].effect || "park",
 	    texture: settype.replace("2D","")
       });
       prepPark(parks.length-1);
