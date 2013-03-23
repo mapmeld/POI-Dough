@@ -748,10 +748,10 @@ function highlight_on_hover(p){
       }
       var ctrlat = (latmax + latmin) / 2;
       var ctrlng = (lngmax + lngmin) / 2;
-
-      $("#parkCanvas")[0].width = 300;
-      $("#parkCanvas")[0].height = 300;
-      var scale = Math.min( ( 300 / 2 - 8) / (lngmax - lngmin) * 2, (300 / 2 - 35) / (latmax - latmin) * 2);
+      var canvas = $("#parkCanvas")[0];
+      canvas.width = 300;
+      canvas.height = 300;
+      var scale = Math.min( ( canvas.width / 2 - 8) / (lngmax - lngmin) * 2, (canvas.height / 2 - 35) / (latmax - latmin) * 2);
 
       var poly = p.getLatLngs().slice();
       for(var i=0; i<poly.length; i++){
@@ -760,7 +760,7 @@ function highlight_on_hover(p){
 	    poly[i] = at_pt;  // [x, y]
       }
       
-      drawShape( $("#parkCanvas")[0].getContext('2d'), poly, "#2A2AA5", "#2A2AA5");
+      drawShape( canvas.getContext('2d'), poly, "#2A2AA5", "#2A2AA5");
   
       var latspan = latmax - latmin;
       var lngspan = lngmax - lngmin;
