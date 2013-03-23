@@ -778,6 +778,8 @@ function highlight_on_hover(p){
       var lngspan = latspan;
       var imageBounds = new L.LatLngBounds(new L.LatLng(latmin,lngmin), new L.LatLng(latmax,lngmax));
       brushimage = new L.ImageOverlay(canvas.toDataURL(), imageBounds);
+      brushpoly = p;
+      map.addLayer(brushimage);
       $(brushimage._image).on('click', function(e){
         console.log('clicked brushimage');
         for(shape in promoted){
@@ -788,8 +790,6 @@ function highlight_on_hover(p){
           }
         }
       });
-      brushpoly = p;
-      map.addLayer(brushimage);
     }
   });
   p.on("mouseout", function(e){
