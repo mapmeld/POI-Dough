@@ -570,9 +570,9 @@ function writePark(p){
 	poly[i] = at_pt;  // [x, y]
   }
   
-  if(promoted[ getPromotedId( parks[p] ) ].effect.indexOf("kansas") > -1){
+  if(parks[p].texture.indexOf("kansas") > -1){
     // split off to do kansas rendering
-    var brush = promoted[ getPromotedId( parks[p] ) ].effect.split(":")[1];
+    var brush = parks[p].texture.split(":")[1];
     if(brushes[brush]){
       brushes[brush]( ctx, poly, "#2A2AA5", "#2A2AA5" );
     }
