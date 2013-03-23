@@ -113,7 +113,7 @@ function fetchBuilding(buildid, index){
     for(var j=0;j<wll.length;j++){
       wll[j] = new L.LatLng(wll[j][0], wll[j][1]);
     }
-    var footprint = new L.Polygon( wll, { color: "#00f", fillOpacity: 0.3, opacity: 0.65 } );
+    var footprint = new L.Polygon( wll, { color: "#00f", fillOpacity: 0, opacity: 0.65 } );
     highlight_on_hover(footprint);
     menu_on_click(footprint, data);
     if(allowPolygonEditing){
@@ -166,7 +166,7 @@ function fetchPark(parkid, index){
     for(var j=0;j<wll.length;j++){
       wll[j] = new L.LatLng(wll[j][0], wll[j][1]);
     }
-    var footprint = new L.Polygon( wll, { color: "#00f", fillOpacity: 0.3, opacity: 0.65 } );
+    var footprint = new L.Polygon( wll, { color: "#00f", fillOpacity: 0, opacity: 0.65 } );
     highlight_on_hover(footprint);
     menu_on_click(footprint, data);
     if(allowPolygonEditing){
@@ -227,18 +227,7 @@ function prepBuilding(b){
   var latmin = 1000;
   var lngmax = -1000;
   var lngmin = 1000;
-  var vertices;
-  if(buildings[b].customgeoid){
-    if(promoted[ buildings[b].customgeoid ]){
-      vertices = promoted[ buildings[b].customgeoid ].poly.getLatLngs();
-    }
-    else{
-      vertices = promoted[ "poi:" + buildings[b].customgeoid ].poly.getLatLngs();
-    }
-  }
-  else{
-    vertices = promoted[ buildings[b].wayid ].poly.getLatLngs();
-  }
+  var vertices = promoted[ getPromotedId( buildings[b] ) ].poly.getLatLngs();
   for(var v=0; v<vertices.length; v++){
     var pt = vertices[v];
     latmax = Math.max(latmax, pt.lat);
@@ -261,18 +250,7 @@ function prepPark(p){
   var latmin = 1000;
   var lngmax = -1000;
   var lngmin = 1000;
-  var vertices; // = promoted[ (parks[p].customgeoid || ("poi:" + parks[p].customgeoid) || parks[p].wayid) ].poly.getLatLngs();
-  if(parks[p].customgeoid){
-    if(promoted[ parks[p].customgeoid ]){
-      vertices = promoted[ parks[p].customgeoid ].poly.getLatLngs();
-    }
-    else{
-      vertices = promoted[ "poi:" + parks[p].customgeoid ].poly.getLatLngs();
-    }
-  }
-  else{
-    vertices = promoted[ parks[p].wayid ].poly.getLatLngs();
-  }
+  var vertices = promoted[ getPromotedId( parks[p] ) ].poly.getLatLngs();
   for(var v=0; v<vertices.length; v++){
     var pt = vertices[v];
     latmax = Math.max(latmax, pt.lat);
@@ -638,9 +616,9 @@ function writeBuilding(b){
   
   var imageBounds = new L.LatLngBounds(new L.LatLng(latmin-latspan/6*Math.pow(1.7,levelmax),lngmin-lngspan/6*Math.pow(1.7,levelmax)), new L.LatLng(latmax+latspan/6*Math.pow(1.7,levelmax),lngmax+lngspan/6*Math.pow(1.7,levelmax)));
   var image = new L.ImageOverlay(canvas.toDataURL(), imageBounds);
-  menu_on_click(image, promoted[ buildings[b].wayid ].osmdata);
+  menu_on_click(image, promoted[ getPromotedId( buildings[b] ) ].osmdata);
   map.addLayer(image);
-  promoted[buildings[b].wayid].drawnLayer = image;
+  promoted[ getPromotedId( buildings[b] ) ].drawnLayer = image;
 }
 
 function writePark(p){
@@ -736,8 +714,8 @@ function writePark(p){
   var imageBounds = new L.LatLngBounds(new L.LatLng(latmin,lngmin), new L.LatLng(latmax,lngmax));
   var image = new L.ImageOverlay(canvas.toDataURL(), imageBounds);
   map.addLayer(image);
-  promoted[parks[p].wayid].drawnLayer = image;
-  menu_on_click(image, promoted[ parks[p].wayid ].osmdata);
+  promoted[ getPromotedId( parks[p] ) ].drawnLayer = image;
+  menu_on_click(image, promoted[ getPromotedId( parks[p] ) ].osmdata);
 }
 function ptInPoly(pt, polyCords){
     var pointX = pt[0];
