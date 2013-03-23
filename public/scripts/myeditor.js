@@ -8,6 +8,7 @@ var allowPolygonEditing = true;
 var buildids, parkids;
 var hoverbrush = null;
 var brushes = { };
+var brushimage = null;
 
 function init(){
   var tileURL = "http://otile1.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png";
@@ -729,6 +730,9 @@ function bop(icon, frame){
 
 function highlight_on_hover(p){
   p.on("mouseover", function(e){
+    if(brushimage){
+      map.removeLayer(brushimage);
+    }
     if(!hoverbrush || hoverbrush == "0" || !brushes[hoverbrush]){
       p.setStyle( { color: "#f00" } );
     }
@@ -767,15 +771,13 @@ function highlight_on_hover(p){
       var latspan = Math.max(latspan, lngspan);
       var lngspan = latspan;
       var imageBounds = new L.LatLngBounds(new L.LatLng(latmin,lngmin), new L.LatLng(latmax,lngmax));
-      p.image = new L.ImageOverlay(canvas.toDataURL(), imageBounds);
-      map.addLayer(p.image);
+      brushimage = new L.ImageOverlay(canvas.toDataURL(), imageBounds);
+      map.addLayer(brushimage);
       p.setStyle({ fillOpacity: 0 });
     }
   });
   p.on("mouseout", function(e){
     p.setStyle({ fillOpacity: 0.3, color: "#00f" });
-    map.removeLayer( p.image );
-    p.image = null;
   });
 }
 
@@ -1046,6 +1048,10 @@ function exportPOI(){
 
 function changeBrush(){
   hoverbrush = $("#mapBrush").val();
+  if(brushimage){
+    map.removeLayer(brushimage);
+    brushimage = null;
+  }
   if(hoverbrush != "0"){
     if(!brushes[ hoverbrush ]){
       // this brush has not been loaded before
