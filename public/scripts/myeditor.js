@@ -674,7 +674,17 @@ function writePark(p){
       $.getJSON("/kansasexport?id=" + brush, function(data){
         brushes[brush] = eval( data.code );
         brushes[brush]( ctx, poly, "#2A2AA5", "#2A2AA5" );
+        // map the texture with an ImageOverlay
+        var latspan = latmax - latmin;
+        var lngspan = lngmax - lngmin;
+        var latspan = Math.max(latspan, lngspan);
+        var lngspan = latspan;
+        var imageBounds = new L.LatLngBounds(new L.LatLng(latmin,lngmin), new L.LatLng(latmax,lngmax));
+        var image = new L.ImageOverlay(canvas.toDataURL(), imageBounds);
+        map.addLayer(image);
+        promoted[ getPromotedId( parks[p] ) ].drawnLayer = image;
       });
+      return;
     }
   }
   else{
