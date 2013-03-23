@@ -15,7 +15,8 @@ function testCanvasCode(){
     alert("Access to document, script, eval, alert, or parent denied");
     return;
   }
-  eval( $("codedraft").value + " drawSample(ctx);" );
+  var code = eval( $("codedraft").value );
+  code( ctx2, shape, "#2A2AA5", "#2A2AA5" );
 }
 function syntaxCheck(){
   switchToCode();

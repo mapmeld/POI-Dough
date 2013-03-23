@@ -770,7 +770,8 @@ function highlight_on_hover(p){
 	    poly[i] = at_pt;  // [x, y]
       }
       
-      drawShape( canvas.getContext('2d'), poly, "#2A2AA5", "#2A2AA5");
+      // send arguments to brush functions
+      (brushes[ hoverbrush ])( canvas.getContext('2d'), poly, "#2A2AA5", "#2A2AA5");
   
       var latspan = latmax - latmin;
       var lngspan = lngmax - lngmin;
