@@ -52,7 +52,7 @@ function init(){
   menuPopup = new L.Popup();
 
   miniIcon = L.Icon.extend({
-    iconUrl: "/images/marker.png",
+    iconUrl: "/images/marker-icon.png",
     shadowUrl: "/images/marker-shadow.png",
     iconSize: new L.Point(20, 36),
     shadowSize: new L.Point(25, 30),
@@ -61,7 +61,7 @@ function init(){
   });
 
   baseIcon = L.Icon.extend({
-    iconUrl: "/images/marker.png",
+    iconUrl: "/images/marker-icon.png",
     shadowUrl: "/images/marker-shadow.png",
     iconSize: new L.Point(30, 36),
     shadowSize: new L.Point(42, 30),

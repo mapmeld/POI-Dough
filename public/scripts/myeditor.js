@@ -13,13 +13,13 @@ function init(){
   var baseMapLayer = new L.TileLayer(tileURL, {maxZoom: 18, attribution: attribution});
 
   map = new L.Map('map');
-  cityll = new L.LatLng(32.836183, -83.631266);
+  cityll = new L.LatLng(40.442627, -79.942606);
   map.setView(cityll, 17).addLayer(baseMapLayer);
   
   menuPopup = new L.Popup();
 
   miniIcon = L.Icon.extend({
-    iconUrl: "/images/marker.png",
+    iconUrl: "/images/marker-icon.png",
     shadowUrl: "/images/marker-shadow.png",
     iconSize: new L.Point(20, 36),
     shadowSize: new L.Point(25, 30),
@@ -28,7 +28,7 @@ function init(){
   });
 
   baseIcon = L.Icon.extend({
-    iconUrl: "/images/marker.png",
+    iconUrl: "/images/marker-icon.png",
     shadowUrl: "/images/marker-shadow.png",
     iconSize: new L.Point(30, 36),
     shadowSize: new L.Point(42, 30),
