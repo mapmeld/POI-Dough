@@ -9,6 +9,7 @@ var buildids, parkids;
 var hoverbrush = null;
 var brushes = { };
 var brushimage = null;
+var brushpoly = null;
 
 function init(){
   var tileURL = "http://otile1.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png";
@@ -731,7 +732,9 @@ function bop(icon, frame){
 function highlight_on_hover(p){
   p.on("mouseover", function(e){
     if(brushimage){
+      brushpoly.setStyle({ fillOpacity: 0.3, opacity: 0.65 });
       map.removeLayer(brushimage);
+      brushimage = null;
     }
     if(!hoverbrush || hoverbrush == "0" || !brushes[hoverbrush]){
       p.setStyle( { color: "#f00" } );
@@ -774,11 +777,12 @@ function highlight_on_hover(p){
       var lngspan = latspan;
       var imageBounds = new L.LatLngBounds(new L.LatLng(latmin,lngmin), new L.LatLng(latmax,lngmax));
       brushimage = new L.ImageOverlay(canvas.toDataURL(), imageBounds);
+      brushpoly = p;
       map.addLayer(brushimage);
     }
   });
   p.on("mouseout", function(e){
-    p.setStyle({ fillOpacity: 0.3, opacity: 0.65, color: "#00f" });
+    p.setStyle({ color: "#00f" });
   });
 }
 
@@ -1052,6 +1056,7 @@ function changeBrush(){
   if(brushimage){
     map.removeLayer(brushimage);
     brushimage = null;
+    brushpoly.setStyle({ fillOpacity: 0.3, opacity: 0.65 });
   }
   if(hoverbrush != "0"){
     if(!brushes[ hoverbrush ]){
