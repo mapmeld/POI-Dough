@@ -194,11 +194,22 @@ function fetchPark(parkid, index){
       }
     });
 
-    promoted[ parkid ] = {
-      effect: "2D" + parkids[index].split("_")[1],
-      poly: footprint,
-      osmdata: data
-    };
+    if(parkids[index].split("_")[1].indexOf("kansas") > -1){
+      // new Kansas editor
+      promoted[ parkid ] = {
+        effect: parkids[index].split("_")[1],
+        poly: footprint,
+        osmdata: data
+      };
+    }
+    else{
+      // old 2D style
+      promoted[ parkid ] = {
+        effect: "2D" + parkids[index].split("_")[1],
+        poly: footprint,
+        osmdata: data
+      };
+    }
     
     prepPark(parks.length-1);
     if(parkids[index].indexOf("_") > -1){
@@ -628,21 +639,6 @@ function writePark(p){
 
     // set offset to [ center_pixel_x, center_pixel_y ] from upper left corner
     var offset = [ (latmax - ctrlat) * scale, (ctrlng - lngmin) * scale ];
-  var icon = tree;
-  if(parks[p].texture == "corn"){
-  	icon = corn;
-  }
-  else if(parks[p].texture == "coffee"){
-  	icon = coffee;  
-  }
-  else if(parks[p].texture == "watermelon"){
-  	icon = watermelon;
-  }
-  for(var x=0; x<canvas.width; x+=25){
-	for(var y=0; y<canvas.height; y+=25){
-	    ctx.drawImage(icon, x, y, 25, 25);
-	}
-  }
 
   var poly = promoted[ parks[p].wayid ].poly.getLatLngs().slice();
   if(poly.length == 0){
@@ -653,16 +649,50 @@ function writePark(p){
 	at_pt = toPixel( at_pt, ctrlat, ctrlng, scale );
 	poly[i] = at_pt;  // [x, y]
   }
-  imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-  for(var x=0; x<canvas.width; x++){
-	for(var y=0; y<canvas.height; y++){
-	  if(!ptInPoly([x,y], poly)){
-		imgData.data[y*4*canvas.width+x*4+3] = 0;
-	  }
-	}
-  }
-  ctx.putImageData(imgData, 0, 0);
   
+  if(promoted[parks[p].wayid].effect.indexOf("kansas") > -1){
+    // split off to do kansas rendering
+    var brush = promoted[parks[p].wayid].effect.split(":")[1];
+    if(brushes[brush]){
+      brushes[brush]( ctx, poly, "#2A2AA5", "#2A2AA5" );
+    }
+    else{
+      $.getJSON("/kansasexport?id=" + brush, function(data){
+        brushes[brush] = eval( data.code );
+        brushes[brush]( ctx, poly, "#2A2AA5", "#2A2AA5" );
+      });
+    }
+  }
+  else{
+    // conventional 2D textures
+
+    var icon = tree;
+    if(parks[p].texture == "corn"){
+      icon = corn;
+    }
+    else if(parks[p].texture == "coffee"){
+      icon = coffee;  
+    }
+    else if(parks[p].texture == "watermelon"){
+      icon = watermelon;
+    }
+    for(var x=0; x<canvas.width; x+=25){
+      for(var y=0; y<canvas.height; y+=25){
+	    ctx.drawImage(icon, x, y, 25, 25);
+	  }
+    }
+
+    imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    for(var x=0; x<canvas.width; x++){
+      for(var y=0; y<canvas.height; y++){
+	    if(!ptInPoly([x,y], poly)){
+	      imgData.data[y*4*canvas.width+x*4+3] = 0;
+	    }
+	  }
+    }
+    ctx.putImageData(imgData, 0, 0);
+  }
+
   var latspan = latmax - latmin;
   var lngspan = lngmax - lngmin;
   var latspan = Math.max(latspan, lngspan);
