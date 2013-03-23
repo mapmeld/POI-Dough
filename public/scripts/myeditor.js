@@ -767,12 +767,15 @@ function highlight_on_hover(p){
       var latspan = Math.max(latspan, lngspan);
       var lngspan = latspan;
       var imageBounds = new L.LatLngBounds(new L.LatLng(latmin,lngmin), new L.LatLng(latmax,lngmax));
-      var image = new L.ImageOverlay(canvas.toDataURL(), imageBounds);
-      map.addLayer(image);
+      p.image = new L.ImageOverlay(canvas.toDataURL(), imageBounds);
+      map.addLayer(p.image);
+      p.setStyle({ fillOpacity: 0 });
     }
   });
   p.on("mouseout", function(e){
-    p.setStyle( { color: "#00f" } );
+    p.setStyle({ fillOpacity: 0.3, color: "#00f" });
+    map.removeLayer( p.image );
+    p.image = null;
   });
 }
 
