@@ -737,6 +737,8 @@ function highlight_on_hover(p){
       p.setStyle( { color: "#f00" } );
     }
     else{
+      p.setStyle({ fillOpacity: 0, opacity: 0 });
+
       // preview with brush
       var latmax = -1000;
       var latmin = 1000;
@@ -773,11 +775,10 @@ function highlight_on_hover(p){
       var imageBounds = new L.LatLngBounds(new L.LatLng(latmin,lngmin), new L.LatLng(latmax,lngmax));
       brushimage = new L.ImageOverlay(canvas.toDataURL(), imageBounds);
       map.addLayer(brushimage);
-      p.setStyle({ fillOpacity: 0 });
     }
   });
   p.on("mouseout", function(e){
-    p.setStyle({ fillOpacity: 0.3, color: "#00f" });
+    p.setStyle({ fillOpacity: 0.3, opacity: 0.65 color: "#00f" });
   });
 }
 
