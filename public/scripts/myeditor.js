@@ -785,6 +785,7 @@ function highlight_on_hover(p){
         for(shape in promoted){
           if(promoted[shape].poly == brushpoly){
             promoted[shape].effect = "kansas:" + hoverbrush;
+            promoted[shape].drawnLayer = brushimage;
             brushimage = null;
             break;
           }
@@ -999,6 +1000,43 @@ function setEffect(wayid, settype){
         break;
       }
     }
+  }
+  else if(promoted[wayid].effect.indexOf("kansas:") == 0){
+    // use kansas renderer
+    var latmax = -1000;
+    var latmin = 1000;
+    var lngmax = -1000;
+    var lngmin = 1000;
+    var vertices = promoted[wayid].poly.getLatLngs();
+    for(var v=0; v<vertices.length; v++){
+      var pt = vertices[v];
+      latmax = Math.max(latmax, pt.lat);
+      latmin = Math.min(latmin, pt.lat);
+      lngmax = Math.max(lngmax, pt.lng);
+      lngmin = Math.min(lngmin, pt.lng);
+    }
+    var ctrlat = (latmax + latmin) / 2;
+    var ctrlng = (lngmax + lngmin) / 2;
+    var canvas = $("#parkCanvas")[0];
+    canvas.width = 300;
+    canvas.height = 300;
+    var scale = Math.min( ( canvas.width / 2 - 8) / (lngmax - lngmin) * 2, (canvas.height / 2 - 35) / (latmax - latmin) * 2);
+    scale *= 1.3;
+    var poly = promoted[wayid].poly.getLatLngs().slice();
+    for(var i=0; i<poly.length; i++){
+	  var at_pt = poly[i];
+	  at_pt = toPixel( at_pt, ctrlat, ctrlng, scale );
+	  poly[i] = at_pt;  // [x, y]
+    }
+    drawShape( canvas.getContext('2d'), poly, "#2A2AA5", "#2A2AA5");
+    var latspan = latmax - latmin;
+    var lngspan = lngmax - lngmin;
+    var latspan = Math.max(latspan, lngspan);
+    var lngspan = latspan;
+    var imageBounds = new L.LatLngBounds(new L.LatLng(latmin,lngmin), new L.LatLng(latmax,lngmax));
+    var mapimage = new L.ImageOverlay(canvas.toDataURL(), imageBounds);
+    promoted[wayid].drawnLayer = mapimage;
+    map.addLayer(mapimage);
   }
   promoted[wayid].effect = settype;
 }
