@@ -116,7 +116,7 @@ function prepBuilding(b){
 }
 
 function prepPark(p){
-  promoted[ getPromotedId( parks[p] ) ] = { effect: "2Dpark" };
+  promoted[ getPromotedId( parks[p] ) ] = { effect: parks[p].texture || parks[p].effect || "2Dpark") };
   
   // add a highlightable footprint
   var wll = parks[p].vertices.slice(0);

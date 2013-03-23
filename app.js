@@ -735,7 +735,7 @@ var init = exports.init = function (config) {
   }
   
   app.post('/kansassave', function(req, res){
-    var fixedVisuals = [ "4fc578ff59e0840100000005", "4fc57dd891b1ab0100000002", "4fc584dfa2239d0100000001", "4ff4e498970fce0100000003" ];
+    var fixedVisuals = [ "514dc6a78e5a460200000001" ];
     if(req.body.id && fixedVisuals.indexOf(req.body.id) == -1){
       // search for dangerous DOM access or annoying alerts before storing any code
       var codescan = replaceAll(replaceAll((req.body.code).toLowerCase()," ",""),"\n","");
