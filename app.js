@@ -127,10 +127,10 @@ var init = exports.init = function (config) {
           myEditMap.updated = new Date();
           myEditMap.save(function (err) {
             if (!err){
-              res.json({ id: myEditMap._id });
+              res.send({ id: myEditMap._id });
             }
             else{
-              res.json({ fail: err });
+              res.send({ fail: err });
             }
           });
         }
@@ -149,10 +149,10 @@ var init = exports.init = function (config) {
       });
       myNewMap.save(function (err) {
         if (!err){
-          res.json({ id: myNewMap._id });
+          res.send({ id: myNewMap._id });
         }
         else{
-          res.json({ fail: err });
+          res.send({ fail: err });
         }
       });
     }
