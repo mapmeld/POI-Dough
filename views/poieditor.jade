@@ -33,6 +33,8 @@ body
       .container
         a.brand(href='/')
           span POI Dough
+        
+        span.navbar-search Map Tiles:
         select#mapTiler.navbar-search(onchange='changeTiles()')
           option(value="mapquest", selected="selected") MapQuest Open
           option(value="mapbox") MapBox Streets
@@ -40,6 +42,12 @@ body
           option(value="transit") Transit
           option(value="terrain") Stamen Terrain
           option(value="watercolor") Stamen Watercolor
+        
+        span.navbar-search Brush Mode:
+        select.navbar-search
+          option(value="0") None
+          - for sketch in sketches
+            option(value="#{sketch._id}") #{sketch.name}
 
         //
           form.navbar-search.pull-right
@@ -56,12 +64,6 @@ body
       p Moving or adding points in this editor creates a new shape on POI Dough. You'll have the geometry you want, and keep a data link to OpenStreetMap.
       br
       a#editWand.btn.btn-info(href='#', onclick='toggleEditing()') Freeze Points
-      br
-      br
-      p Test: Kansas list
-      select.navbar-search
-        - for sketch in sketches
-          option #{sketch.name}
 
     .span12
       #map
