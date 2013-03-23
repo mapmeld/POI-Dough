@@ -751,6 +751,7 @@ function highlight_on_hover(p){
 
       $("#parkCanvas")[0].width = 300;
       $("#parkCanvas")[0].height = 300;
+      var scale = Math.min( ( 300 / 2 - 8) / (lngmax - lngmin) * 2, (300 / 2 - 35) / (latmax - latmin) * 2);
 
       var poly = p.getLatLngs().slice();
       for(var i=0; i<poly.length; i++){
