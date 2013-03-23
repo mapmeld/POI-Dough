@@ -581,7 +581,7 @@ function writePark(p){
       $.getJSON("/kansasexport?id=" + brush, function(data){
         brushes[brush] = eval( data.code );
         brushes[brush]( ctx, poly, "#2A2AA5", "#2A2AA5" );
-        writePark( p );
+        //writePark( p );
       });
     }
     return;
