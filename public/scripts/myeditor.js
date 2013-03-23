@@ -729,7 +729,46 @@ function bop(icon, frame){
 
 function highlight_on_hover(p){
   p.on("mouseover", function(e){
-    p.setStyle( { color: "#f00" } );
+    if(!hoverbrush || hoverbrush == "0" || !brushes[hoverbrush]){
+      p.setStyle( { color: "#f00" } );
+    }
+    else{
+      // preview with brush
+      var latmax = -1000;
+      var latmin = 1000;
+      var lngmax = -1000;
+      var lngmin = 1000;
+      var vertices = p.getLatLngs();
+      for(var v=0; v<vertices.length; v++){
+        var pt = vertices[v];
+        latmax = Math.max(latmax, pt.lat);
+        latmin = Math.min(latmin, pt.lat);
+        lngmax = Math.max(lngmax, pt.lng);
+        lngmin = Math.min(lngmin, pt.lng);
+      }
+      var ctrlat = (latmax + latmin) / 2;
+      var ctrlng = (lngmax + lngmin) / 2;
+
+      $("#parkCanvas")[0].width = 300;
+      $("#parkCanvas")[0].height = 300;
+
+      var poly = p.getLatLngs().slice();
+      for(var i=0; i<poly.length; i++){
+	    var at_pt = poly[i];
+	    at_pt = toPixel( at_pt, ctrlat, ctrlng, scale );
+	    poly[i] = at_pt;  // [x, y]
+      }
+      
+      drawShape( $("#parkCanvas")[0].getContext('2d'), poly, "#2A2AA5", "#2A2AA5");
+  
+      var latspan = latmax - latmin;
+      var lngspan = lngmax - lngmin;
+      var latspan = Math.max(latspan, lngspan);
+      var lngspan = latspan;
+      var imageBounds = new L.LatLngBounds(new L.LatLng(latmin,lngmin), new L.LatLng(latmax,lngmax));
+      var image = new L.ImageOverlay(canvas.toDataURL(), imageBounds);
+      map.addLayer(image);
+    }
   });
   p.on("mouseout", function(e){
     p.setStyle( { color: "#00f" } );
@@ -1007,7 +1046,7 @@ function changeBrush(){
     if(!brushes[ hoverbrush ]){
       // this brush has not been loaded before
       $.getJSON("/kansasexport?id=" + hoverbrush, function(program){
-        brushes[ hoverbrush ] = eval( program.code );
+        brushes[ hoverbrush ] = eval( "return " + program.code );
       });
     }
   }
