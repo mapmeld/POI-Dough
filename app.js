@@ -1154,7 +1154,7 @@ var init = exports.init = function (config) {
     res.render('doesnotexist',404);
   });
 
-  mongoose_auth.helpExpress(app);
+  //mongoose_auth.helpExpress(app);
 
   return app;
 };
