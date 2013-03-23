@@ -1100,7 +1100,7 @@ function exportPOI(){
   }
   window.location = url;*/
   $.post("/savemap", {
-    id: gup("id"),
+    id: (gup("id") || ""),
     bld: allbuildings.join(","),
     prk: allparks.join(","),
     createdby: "POI_Dough_Test",
@@ -1108,8 +1108,8 @@ function exportPOI(){
     ctr: map.getCenter().lat.toFixed(6) + "," + map.getCenter().lng.toFixed(6),
     z: map.getZoom()
   }, function(data){
-    console.log(data);
-    //window.location = "/view?id=" + data.id;  
+    //console.log(data);
+    window.location = "/openmap?id=" + data.id;  
   });
 }
 
