@@ -40,8 +40,7 @@ var init = exports.init = function (config) {
     app.use(express.bodyParser());
     app.use(express.cookieParser());
     app.use(express.methodOverride());
-    app.use(express.session({secret: 'top secret', store: session_store,
-      cookie: {maxAge: HOUR_IN_MILLISECONDS}}));
+    app.use(express.session({secret: 'super secret', store: session_store, cookie: {maxAge: HOUR_IN_MILLISECONDS}}));
     app.use(mongoose_auth.middleware());
     app.use(express.static(__dirname + '/public'));
     app.use(app.router);
@@ -58,9 +57,12 @@ var init = exports.init = function (config) {
   
   // POI Dough Mark 2
   app.get('/editor', function(req,res) {
-    poimap.POIMap.findOne({}, function(err, myEditMap){
+    procedure.Procedure.find({}, function(err, sketchlist){
       if(!err){
-        res.render('poieditor', { poimap: myEditMap });
+        res.render('poieditor', { sketches: sketchlist });
+      }
+      else{
+        res.send(err);
       }
     });
   });

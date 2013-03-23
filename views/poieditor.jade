@@ -41,8 +41,9 @@ body
           option(value="terrain") Stamen Terrain
           option(value="watercolor") Stamen Watercolor
 
-        form.navbar-search.pull-right
-          input.search-query(type='text', placeholder='Find Maps')
+        //
+          form.navbar-search.pull-right
+            input.search-query(type='text', placeholder='Find Maps')
 
   div.container
     .span2.sidebar
@@ -55,6 +56,12 @@ body
       p Moving or adding points in this editor creates a new shape on POI Dough. You'll have the geometry you want, and keep a data link to OpenStreetMap.
       br
       a#editWand.btn.btn-info(href='#', onclick='toggleEditing()') Freeze Points
+      br
+      br
+      p Test: Kansas list
+      select.navbar-search
+        - for sketch in sketches
+          option #{sketch.name}
 
     .span12
       #map
