@@ -227,7 +227,18 @@ function prepBuilding(b){
   var latmin = 1000;
   var lngmax = -1000;
   var lngmin = 1000;
-  var vertices = promoted[ buildings[b].wayid ].poly.getLatLngs();
+  var vertices;
+  if(buildings[b].customgeoid){
+    if(promoted[ buildings[b].customgeoid ]){
+      vertices = promoted[ buildings[b].customgeoid ].poly.getLatLngs();
+    }
+    else{
+      vertices = promoted[ "poi:" + buildings[b].customgeoid ].poly.getLatLngs();
+    }
+  }
+  else{
+    vertices = promoted[ buildings[b].wayid ].poly.getLatLngs();
+  }
   for(var v=0; v<vertices.length; v++){
     var pt = vertices[v];
     latmax = Math.max(latmax, pt.lat);
@@ -250,14 +261,25 @@ function prepPark(p){
   var latmin = 1000;
   var lngmax = -1000;
   var lngmin = 1000;
-  var vertices = promoted[ parks[p].wayid ].poly.getLatLngs();
+  var vertices; // = promoted[ (parks[p].customgeoid || ("poi:" + parks[p].customgeoid) || parks[p].wayid) ].poly.getLatLngs();
+  if(parks[p].customgeoid){
+    if(promoted[ parks[p].customgeoid ]){
+      vertices = promoted[ parks[p].customgeoid ].poly.getLatLngs();
+    }
+    else{
+      vertices = promoted[ "poi:" + parks[p].customgeoid ].poly.getLatLngs();
+    }
+  }
+  else{
+    vertices = promoted[ parks[p].wayid ].poly.getLatLngs();
+  }
   for(var v=0; v<vertices.length; v++){
     var pt = vertices[v];
     latmax = Math.max(latmax, pt.lat);
     latmin = Math.min(latmin, pt.lat);
     lngmax = Math.max(lngmax, pt.lng);
     lngmin = Math.min(lngmin, pt.lng);
-  }
+  }  
   var ctrlat = (latmax + latmin) / 2;
   var ctrlng = (lngmax + lngmin) / 2;
   parks[p].center = [ctrlat, ctrlng];
