@@ -320,6 +320,20 @@ function darken(hexcolor){
 	return hexcolor;
 }
 
+function getPromotedId(parkorbuild){
+  if(parkorbuild.customgeoid){
+    if(promoted["poi:" + parkorbuild.customgeoid]){
+      return "poi:" + parkorbuild.customgeoid;
+    }
+    else{
+      return parkorbuild.customgeoid;
+    }
+  }
+  else{
+    return parkorbuild.wayid;
+  }
+}
+
 function changeTiles(){
   var tiles = $('#mapTiler').val();
   var nMapLayer;
@@ -412,9 +426,9 @@ function writeBuilding(b){
 
     // then draw each foot-point, its corresponding ceiling point, and connections
     // start from the northernmost point and work your way south
-    var vertices = promoted[ buildings[b].wayid ].poly.getLatLngs();
+    var vertices = promoted[ getPromotedId( buildings[b] ) ].poly.getLatLngs();
     if(vertices.length == 0){
-      vertices = promoted[ buildings[b].wayid ].poly._originalPoints.slice();
+      vertices = promoted[ getPromotedId( buildings[b] ) ].poly._originalPoints.slice();
     }
     var sorted = vertices.slice();
     sorted.sort( function(pt1, pt2){ return pt2.lat - pt1.lat } );
@@ -662,9 +676,9 @@ function writePark(p){
     // set offset to [ center_pixel_x, center_pixel_y ] from upper left corner
     var offset = [ (latmax - ctrlat) * scale, (ctrlng - lngmin) * scale ];
 
-  var poly = promoted[ parks[p].wayid ].poly.getLatLngs().slice();
+  var poly = promoted[ getPromotedId( parks[p] ) ].poly.getLatLngs().slice();
   if(poly.length == 0){
-    poly = promoted[ buildings[b].wayid ].poly._originalPoints.slice();
+    poly = promoted[ getPromotedId( parks[p] ) ].poly._originalPoints.slice();
   }
   for(var i=0; i<poly.length; i++){
 	var at_pt = poly[i];
