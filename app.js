@@ -536,12 +536,9 @@ var init = exports.init = function (config) {
   
   function getCustomGeo(poi_id, format, res){
     poi_id = replaceAll(poi_id,"poi:","");
+    console.log(poi_id);
     
     customgeo.CustomGeo.findById(poi_id, function(err, custompoly){
-      if(!custompoly){
-        res.write( poi_id );
-        return res.end();
-      }
       if(!custompoly.addedToMap){
         // confirm this polygon is used, so it isn't purged
         custompoly.addedToMap = "yes";
