@@ -740,7 +740,7 @@ var init = exports.init = function (config) {
       // search for dangerous DOM access or annoying alerts before storing any code
       var codescan = replaceAll(replaceAll((req.body.code).toLowerCase()," ",""),"\n","");
       if((codescan.indexOf("document") > -1) || (codescan.indexOf("script") > -1) || (codescan.indexOf("eval") > -1) || (codescan.indexOf("parent") > -1) || (codescan.indexOf("$") > -1) || (codescan.indexOf("jquery") > -1) || (codescan.indexOf("alert") > -1)){
-        res.redirect('/kansas')
+        res.redirect('/kansas');
       }
 
       // acceptable document - update file
