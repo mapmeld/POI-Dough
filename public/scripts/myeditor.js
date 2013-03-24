@@ -623,6 +623,8 @@ function writeBuilding(b){
 
 function writePark(p){
   var canvas = $('#parkCanvas')[0];
+  canvas.width = 300;
+  canvas.height = 300;
   var ctx = canvas.getContext('2d');
 
   var ctrlat = parks[p].center[0];
@@ -666,8 +668,6 @@ function writePark(p){
     // split off to do kansas rendering
     var brush = promoted[ getPromotedId( parks[p] ) ].effect.split(":")[1];
     if(brushes[brush]){
-      canvas.width = 300;
-      canvas.height = 300;
       brushes[brush]( ctx, poly, "#2A2AA5", "#2A2AA5" );
     }
     else{
@@ -695,9 +695,7 @@ function writePark(p){
   }
   else{
     // conventional 2D textures
-    canvas.width = 300;
-    canvas.height = 300;
-    
+
     var icon = tree;
     if(parks[p].texture == "corn"){
       icon = corn;
