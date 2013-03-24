@@ -8,6 +8,7 @@ var POIMapSchema = new Schema({
   center: Array,
   zoom: String,
   basemap: String,
+  attribution: String,
   createdby: String,
   updated: Date
 });

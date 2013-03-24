@@ -17,6 +17,7 @@ function init(){
   var baseMapLayer = new L.TileLayer(tileURL, {maxZoom: 18, attribution: attribution});
 
   map = new L.Map('map');
+  map.attributionControl.setPrefix('');
   cityll = new L.LatLng(40.442627, -79.942606);
   map.setView(cityll, 17).addLayer(baseMapLayer);
   
