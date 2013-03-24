@@ -820,6 +820,12 @@ var init = exports.init = function (config) {
               lngmin = Math.min(lngmin, shape.vertices[pt][1]);
             }
           }
+          var boxspan = Math.max( latmax - latmin, lngmax - lngmin );
+          latmin = (latmax + latmin) / 2 - boxspan / 2;
+          latmax = latmin + boxspan;
+          lngmin = (lngmax + lngmin) / 2 - boxspan / 2;
+          lngmax = lngmin + boxspan;
+          
           kmldocs += '		<GroundOverlay id="' + shape_id + '">\n';
           kmldocs += '			<name>' + shape_id + '</name>\n';
           kmldocs += '			<visibility>1</visibility>\n';
