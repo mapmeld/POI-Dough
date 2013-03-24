@@ -580,7 +580,11 @@ function writePark(p){
     else{
       $.getJSON("/kansasexport?id=" + brush, function(data){
         brushes[brush] = eval( data.code );
-        brushes[brush]( ctx, poly, "#2A2AA5", "#2A2AA5" );
+        var throwaway = document.createElement('canvas');
+        throwaway.width = 300;
+        throwaway.height = 300;
+        var tctx = throwaway.getContext('2d');
+        brushes[brush]( tctx, poly, "#2A2AA5", "#2A2AA5" );
 
         // map the texture with an ImageOverlay
         var latspan = latmax - latmin;
@@ -588,7 +592,7 @@ function writePark(p){
         var latspan = Math.max(latspan, lngspan);
         var lngspan = latspan;
         var imageBounds = new L.LatLngBounds(new L.LatLng(latmin,lngmin), new L.LatLng(latmax,lngmax));
-        var image = new L.ImageOverlay(canvas.toDataURL(), imageBounds);
+        var image = new L.ImageOverlay(throwaway.toDataURL(), imageBounds);
         map.addLayer(image);
         promoted[ getPromotedId( parks[p] ) ].drawnLayer = image;
         
