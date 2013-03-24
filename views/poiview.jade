@@ -63,7 +63,7 @@ body
           input.search-query(type='text', placeholder='Find Maps')
 
   div.container.book
-    .span2.sidebar
+    .span2.sidebar(style="width:20%;")
       Sample Info
       br
       br
@@ -73,7 +73,7 @@ body
       a.btn.btn-primary(href="/export_#{poimap._id}.kml")
         img(src='/images/Download-icon.png', style='vertical-align:middle;')
         span(style='vertical-align:middle;') Download KML
-    .span12
+    .span12(style="width:79%;")
       #map
 
   canvas#parkCanvas(width="300", height="300")

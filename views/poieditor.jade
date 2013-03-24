@@ -54,18 +54,19 @@ body
             input.search-query(type='text', placeholder='Find Maps')
 
   div.container
-    .span2.sidebar
-      a#importButton.btn.btn-primary(href='#', onclick='importOSM()') Import OSM
-      br
-      br
-      a.btn.btn-primary(href='#', onclick='exportPOI()') Save Map
-      br
-      hr
-      p Moving or adding points in this editor creates a new shape on POI Dough. You'll have the geometry you want, and keep a data link to OpenStreetMap.
-      br
-      a#editWand.btn.btn-info(href='#', onclick='toggleEditing()') Freeze Points
+    div.row
+      .span2.sidebar(style="width:25%;")
+        a#importButton.btn.btn-primary(href='#', onclick='importOSM()') Import OSM
+        br
+        br
+        a.btn.btn-primary(href='#', onclick='exportPOI()') Save Map
+        br
+        hr
+        p Moving or adding points in this editor creates a new shape on POI Dough. You'll have the geometry you want, and keep a data link to OpenStreetMap.
+        br
+        a#editWand.btn.btn-info(href='#', onclick='toggleEditing()') Freeze Points
 
-    .span12
-      #map
+      .span12(style="width:79%;")
+        #map
 
   canvas#parkCanvas(width="300", height="300")
