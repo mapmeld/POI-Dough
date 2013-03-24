@@ -535,7 +535,7 @@ var init = exports.init = function (config) {
   }
   
   function getCustomGeo(poi_id, format, res){
-    poi_id = poi_id.replace("poi:","");
+    poi_id = replaceAll(poi_id,"poi:","");
     
     customgeo.CustomGeo.findById(poi_id, function(err, custompoly){
       if(!custompoly.addedToMap){
