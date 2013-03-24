@@ -876,7 +876,7 @@ var init = exports.init = function (config) {
               wayid = myViewMap.parks[b];
             }
             var custom = false;
-            if(wayid.indexOf(":") > -1){
+            if(wayid.indexOf("poi:") > -1){
               custom = true;
             }
             if(wayid.indexOf("_") > -1){
@@ -895,7 +895,7 @@ var init = exports.init = function (config) {
         if(myViewMap.buildings.length > 0){
           var wayid = myViewMap.buildings[0];
           var custom = false;
-          if(wayid.indexOf(":") > -1){
+          if(wayid.indexOf("poi:") > -1){
             custom = true;
           }
           if(wayid.indexOf("_") > -1){
@@ -914,7 +914,7 @@ var init = exports.init = function (config) {
           // no buildings, just parks
           var wayid = myViewMap.parks[0];
           var custom = false;
-          if(wayid.indexOf(":") > -1){
+          if(wayid.indexOf("poi:") > -1){
             custom = true;
           }
           if(wayid.indexOf("_") > -1){
