@@ -16,7 +16,7 @@ head
       font-family: arial;
     }
 body(onload="init()")
-  if program.name == "" && program.code == ""
+  if program.name == null && program.code == null
     span#codetitle(style="font-family:courier;") My Procedure
     input(type="button", value="Refresh", onclick="window.location.reload()")
     br

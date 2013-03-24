@@ -715,7 +715,7 @@ var init = exports.init = function (config) {
       });
     }
     else{
-      res.render('kansasedit', { program: { name: "" } });
+      res.render('kansasedit', { program: { name: null, code: null } });
     }
   });
   
