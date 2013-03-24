@@ -679,10 +679,12 @@ function writePark(p){
         var tctx = throwaway.getContext('2d');
         brushes[brush]( tctx, poly, "#2A2AA5", "#2A2AA5" );
         // map the texture with an ImageOverlay
-        var latspan = latmax - latmin;
-        var lngspan = lngmax - lngmin;
-        var latspan = Math.max(latspan, lngspan);
-        var lngspan = latspan;
+        var boxspan = Math.max(latmax - latmin, lngmax - lngmin);
+        var latmin = (latmin + latmax) / 2 - boxspan / 2;
+        var latmax = latmin + boxspan;
+        var lngmin = (lngmin + lngmax) / 2 - boxspan / 2;
+        var lngmax = lngmin + boxspan;
+
         var imageBounds = new L.LatLngBounds(new L.LatLng(latmin,lngmin), new L.LatLng(latmax,lngmax));
         var image = new L.ImageOverlay(throwaway.toDataURL(), imageBounds);
         map.addLayer(image);
