@@ -588,10 +588,10 @@ function writePark(p){
 
         // map the texture with an ImageOverlay
         var boxspan = Math.max(latmax - latmin, lngmax - lngmin);
-        var latmin = (latmin + latmax) / 2 - boxspan / 2;
-        var latmax = latmin + boxspan;
-        var lngmin = (lngmin + lngmax) / 2 - boxspan / 2;
-        var lngmax = lngmin + boxspan;
+        latmin = (latmin + latmax) / 2 - boxspan / 2;
+        latmax = latmin + boxspan;
+        lngmin = (lngmin + lngmax) / 2 - boxspan / 2;
+        lngmax = lngmin + boxspan;
         
         var imageBounds = new L.LatLngBounds(new L.LatLng(latmin,lngmin), new L.LatLng(latmax,lngmax));
         var image = new L.ImageOverlay(throwaway.toDataURL(), imageBounds);
@@ -637,10 +637,10 @@ function writePark(p){
   
   // map the texture with an ImageOverlay
   var boxspan = Math.max(latmax - latmin, lngmax - lngmin);
-  var latmin = (latmin + latmax) / 2 - boxspan / 2;
-  var latmax = latmin + boxspan;
-  var lngmin = (lngmin + lngmax) / 2 - boxspan / 2;
-  var lngmax = lngmin + boxspan;
+  latmin = (latmin + latmax) / 2 - boxspan / 2;
+  latmax = latmin + boxspan;
+  lngmin = (lngmin + lngmax) / 2 - boxspan / 2;
+  lngmax = lngmin + boxspan;
   
   var imageBounds = new L.LatLngBounds(new L.LatLng(latmin,lngmin), new L.LatLng(latmax,lngmax));
   var image = new L.ImageOverlay(canvas.toDataURL(), imageBounds);
