@@ -55,7 +55,7 @@ body
 
   div.container
     div.row
-      .span2.sidebar(style="width:25%;")
+      .span2.sidebar(style="width:18%;")
         a#importButton.btn.btn-primary(href='#', onclick='importOSM()') Import OSM
         br
         br
@@ -66,7 +66,7 @@ body
         br
         a#editWand.btn.btn-info(href='#', onclick='toggleEditing()') Freeze Points
 
-      .span12(style="width:79%;")
+      .span12(style="position:absolute;left:20%;width:78%;")
         #map
 
   canvas#parkCanvas(width="300", height="300")
