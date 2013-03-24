@@ -161,6 +161,7 @@ var init = exports.init = function (config) {
   app.get('/canvrender*', function(req,res){
     var canv = new canvas(300,300);
     var ctx = canv.getContext('2d');
+    var fixedVisuals = [ "514dc6a78e5a460200000001", "514e64f23f0ec80200000001", "514e62a73f2a6e0200000001" ];
     var toPixel = function(latlng, ctrlat, ctrlng, scale){
       pix_x_offset = canv.width / 2;
       pix_y_offset = canv.height / 2;  
@@ -425,37 +426,64 @@ var init = exports.init = function (config) {
         // set offset to [ center_pixel_x, center_pixel_y ] from upper left corner
         var offset = [ (latmax - ctrlat) * scale, (ctrlng - lngmin) * scale ];
   
-        // draw a solid repeating background of the texture
-        for(var x=0; x<canv.width; x+=25){
-	      for(var y=0; y<canv.height; y+=25){
-	        ctx.drawImage(icon, x, y, 25, 25);
-	      }
-        }
-
-        // create a mask to hide (alpha=0) pixels outside the polygon
+        // calculate pixel sets
         var poly = park.vertices;
         for(var i=0; i<poly.length; i++){
 	      var at_pt = poly[i];
 	      at_pt = toPixel( at_pt, ctrlat, ctrlng, scale );
 	      poly[i] = at_pt;  // [x, y]
         }
-        imgData = ctx.getImageData(0, 0, canv.width, canv.height);
-        for(var x=0; x<canv.width; x++){
-	      for(var y=0; y<canv.height; y++){
-	        if(!ptInPoly([x,y], poly)){
-		      imgData.data[y*4*canv.width+x*4+3] = 0;
-	        }
-	      }
-        }
-        ctx.putImageData(imgData, 0, 0);
-        if(req.url.indexOf(".png") == -1){
-          // JavaScript call
-          res.send('publishAt("' + poi_id + '","' + canv.toDataURL() + '");');
+        
+        if(effect.indexOf("kansas:") > -1){
+          // custom code
+          var effectid = effect.split("kansas:")[1];
+          if(fixedVisuals.indexOf(effectid) > -1){
+            // verified, unchangeable script
+            procedure.Procedure.findById(effectid, function(err, canvProgram){
+              var painter = eval( canvProgram.code );
+              painter( ctx, poly, "#2A2AA5", "#2A2AA5" );
+              if(req.url.indexOf(".png") == -1){
+                // JavaScript call
+                res.send('publishAt("' + poi_id + '","' + canv.toDataURL() + '");');
+              }
+              else{
+                // output PNG image
+                res.setHeader('Content-Type', 'image/png');
+                res.send( canv.toBuffer() );
+              }
+            });
+          }
+          else{
+            res.send('imgfail');
+          }
         }
         else{
-          // output PNG image
-          res.setHeader('Content-Type', 'image/png');
-          res.send( canv.toBuffer() );
+          // draw a solid repeating background of the texture
+          for(var x=0; x<canv.width; x+=25){
+            for(var y=0; y<canv.height; y+=25){
+	          ctx.drawImage(icon, x, y, 25, 25);
+	        }
+          }
+
+          // create a mask to hide (alpha=0) pixels outside the polygon
+          imgData = ctx.getImageData(0, 0, canv.width, canv.height);
+          for(var x=0; x<canv.width; x++){
+            for(var y=0; y<canv.height; y++){
+	          if(!ptInPoly([x,y], poly)){
+		        imgData.data[y*4*canv.width+x*4+3] = 0;
+	          }
+	        }
+          }
+          ctx.putImageData(imgData, 0, 0);
+          if(req.url.indexOf(".png") == -1){
+            // JavaScript call
+            res.send('publishAt("' + poi_id + '","' + canv.toDataURL() + '");');
+          }
+          else{
+            // output PNG image
+            res.setHeader('Content-Type', 'image/png');
+            res.send( canv.toBuffer() );
+          }
         }
       };
       var icon = new canvas.Image;
@@ -736,7 +764,7 @@ var init = exports.init = function (config) {
   }
   
   app.post('/kansassave', function(req, res){
-    var fixedVisuals = [ "514dc6a78e5a460200000001" ];
+    var fixedVisuals = [ "514dc6a78e5a460200000001", "514e64f23f0ec80200000001", "514e62a73f2a6e0200000001" ];
     if(req.body.id && fixedVisuals.indexOf(req.body.id) == -1){
       // search for dangerous DOM access or annoying alerts before storing any code
       var codescan = replaceAll(replaceAll((req.body.code).toLowerCase()," ",""),"\n","");
