@@ -638,6 +638,12 @@ function writePark(p){
   var lngspan = lngmax - lngmin;
   var latspan = Math.max(latspan, lngspan);
   var lngspan = latspan;
+  
+  latmin = (latmin + latmax) / 2 - latspan / 2;
+  latmax = latmin + latspan;
+  lngmin = (lngmin + lngmax) / 2 - lngspan / 2;
+  lngmax = lngmin + lngspan;
+  
   var imageBounds = new L.LatLngBounds(new L.LatLng(latmin,lngmin), new L.LatLng(latmax,lngmax));
   var image = new L.ImageOverlay(canvas.toDataURL(), imageBounds);
   map.addLayer(image);
