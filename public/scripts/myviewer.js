@@ -540,8 +540,6 @@ function writePark(p){
   }
 
   var canvas = $('#parkCanvas')[0];
-  canvas.width = 300;
-  canvas.height = 300;
   var ctx = canvas.getContext('2d');
   
   // set scale in pixels per degree
@@ -605,6 +603,8 @@ function writePark(p){
   }
   else{
     // conventional 2D textures  
+    canvas.width = 300;
+    canvas.height = 300;
 
     // set icon for 2D texturing
     var icon = tree;

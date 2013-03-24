@@ -623,8 +623,6 @@ function writeBuilding(b){
 
 function writePark(p){
   var canvas = $('#parkCanvas')[0];
-  canvas.width = 300;
-  canvas.height = 300;
   var ctx = canvas.getContext('2d');
 
   var ctrlat = parks[p].center[0];
@@ -695,7 +693,9 @@ function writePark(p){
   }
   else{
     // conventional 2D textures
-
+    canvas.width = 300;
+    canvas.height = 300;
+    
     var icon = tree;
     if(parks[p].texture == "corn"){
       icon = corn;
