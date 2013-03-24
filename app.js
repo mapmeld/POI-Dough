@@ -536,7 +536,7 @@ var init = exports.init = function (config) {
   
   function getCustomGeo(poi_id, format, res){
     poi_id = replaceAll(poi_id,"poi:","");
-    console.log(poi_id);
+    //console.log(poi_id);
     
     customgeo.CustomGeo.findById(poi_id, function(err, custompoly){
       if(!custompoly.addedToMap){
@@ -843,7 +843,7 @@ var init = exports.init = function (config) {
               // shift to parks
               var wayid = myViewMap.parks[0];
               var custom = false;
-              if(wayid.indexOf(":") > -1){
+              if(wayid.indexOf("poi:") > -1){
                 custom = true;
               }
               if(wayid.indexOf("_") > -1){
