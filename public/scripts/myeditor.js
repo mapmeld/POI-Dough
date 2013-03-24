@@ -723,10 +723,12 @@ function writePark(p){
     ctx.putImageData(imgData, 0, 0);
   }
 
-  var latspan = latmax - latmin;
-  var lngspan = lngmax - lngmin;
-  var latspan = Math.max(latspan, lngspan);
-  var lngspan = latspan;
+  var boxspan = Math.max(latmax - latmin, lngmax - lngmin);
+  var latmin = (latmin + latmax) / 2 - boxspan / 2;
+  var latmax = latmin + boxspan;
+  var lngmin = (lngmin + lngmax) / 2 - boxspan / 2;
+  var lngmax = lngmin + boxspan;
+
   var imageBounds = new L.LatLngBounds(new L.LatLng(latmin,lngmin), new L.LatLng(latmax,lngmax));
   var image = new L.ImageOverlay(canvas.toDataURL(), imageBounds);
   map.addLayer(image);
