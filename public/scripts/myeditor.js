@@ -666,6 +666,8 @@ function writePark(p){
     // split off to do kansas rendering
     var brush = promoted[ getPromotedId( parks[p] ) ].effect.split(":")[1];
     if(brushes[brush]){
+      canvas.width = 300;
+      canvas.height = 300;
       brushes[brush]( ctx, poly, "#2A2AA5", "#2A2AA5" );
     }
     else{
