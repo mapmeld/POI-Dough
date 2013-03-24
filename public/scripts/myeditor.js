@@ -1097,6 +1097,9 @@ function exportPOI(){
   var allparks = [];
   for(shape in promoted){
     var p = promoted[shape];
+    if(!p){
+      continue;
+    }
     if((p.effect.indexOf("2D") > -1) || (p.effect.indexOf("kansas") > -1)){
       if(p.customgeoid){
         allparks.push( "poi:" + p.customgeoid + "_" + p.effect );
