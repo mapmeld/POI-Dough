@@ -1,5 +1,7 @@
 # About POI Mark 2
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/mapmeld/POI-Dough.svg)](https://greenkeeper.io/)
+
 Show off Places of Interest (POI) by importing them from OpenStreetMap and styling them with HTML5 Canvas and CSS3.
 Each Place will be connected to a record on a NoSQL database: either MongoDB (through MongoLab) or CouchDB (through DataCouch).
 
